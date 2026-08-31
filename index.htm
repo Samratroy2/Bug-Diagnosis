@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>BugAI - Intelligent Bug Diagnosis</title>
+
+    <meta
+        name="description"
+        content="AI-powered bug analysis, diagnosis, duplicate detection and remediation system."
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+</head>
+
+<body>
+
+    <!-- ======================================================
+         SIDEBAR
+    ======================================================= -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <div class="sidebar-top">
+
+            <div class="brand">
+
+                <div class="brand-logo">
+                    <span>AI</span>
+                </div>
+
+                <div class="brand-text">
+                    <h2>BugAI</h2>
+                    <p>Diagnosis System</p>
+                </div>
+
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <button
+                    class="nav-item active"
+                    data-page="dashboard"
+                >
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </button>
+
+
+                <button
+                    class="nav-item"
+                    data-page="new-analysis"
+                >
+                    <span class="nav-icon">＋</span>
+                    <span>New Analysis</span>
+                </button>
+
+
+                <button
+                    class="nav-item"
+                    data-page="history"
+                >
+                    <span class="nav-icon">◷</span>
+                    <span>History</span>
+                </button>
+
+
+                <button
+                    class="nav-item"
+                    data-page="architecture"
+                >
+                    <span class="nav-icon">◇</span>
+                    <span>AI Agents</span>
+                </button>
+
+
+                <button
+                    class="nav-item"
+                    data-page="settings"
+                >
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </button>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-help">
+
+                <div class="help-icon">?</div>
+
+                <div>
+                    <strong>Need help?</strong>
+                    <p>Read project documentation</p>
+                </div>
+
+            </div>
+
+
+            <div class="user-box">
+
+                <div class="avatar">
+                    SR
+                </div>
+
+                <div class="user-info">
+                    <strong>Developer</strong>
+                    <span>Project User</span>
+                </div>
+
+                <button class="more-btn">⋮</button>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ======================================================
+         MAIN WRAPPER
+    ======================================================= -->
+
+    <main class="main-wrapper">
+
+
+        <!-- ==================================================
+             HEADER
+        =================================================== -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button
+                    class="mobile-menu"
+                    id="mobileMenu"
+                >
+                    ☰
+                </button>
+
+                <div>
+
+                    <h1 id="pageTitle">
+                        Dashboard
+                    </h1>
+
+                    <p id="pageSubtitle">
+                        Monitor and analyze software bugs using AI
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <button
+                    class="icon-button"
+                    title="Notifications"
+                >
+                    ♢
+
+                    <span class="notification-dot"></span>
+
+                </button>
+
+                <button
+                    class="primary-btn"
+                    id="headerAnalyzeBtn"
+                >
+                    <span>＋</span>
+                    New Analysis
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ==================================================
+             PAGE CONTENT
+        =================================================== -->
+
+        <div class="content">
+
+
+            <!-- ==================================================
+                 DASHBOARD PAGE
+            =================================================== -->
+
+            <section
+                class="page active-page"
+                id="dashboard"
+            >
+
+                <!-- Hero -->
+
+                <div class="hero-card">
+
+                    <div class="hero-content">
+
+                        <span class="hero-badge">
+                            ✦ AI-Powered Bug Intelligence
+                        </span>
+
+                        <h2>
+                            Diagnose software bugs
+                            <span>faster with AI.</span>
+                        </h2>
+
+                        <p>
+                            Analyze logs, identify root causes, find
+                            duplicate issues and receive intelligent
+                            remediation recommendations.
+                        </p>
+
+                        <div class="hero-actions">
+
+                            <button
+                                class="primary-btn hero-button"
+                                id="startAnalysisBtn"
+                            >
+                                Start Bug Analysis
+                                <span>→</span>
+                            </button>
+
+                            <button
+                                class="secondary-btn"
+                                data-open="architecture"
+                            >
+                                Explore AI Agents
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="hero-visual">
+
+                        <div class="ai-orbit">
+
+                            <div class="orbit orbit-one"></div>
+                            <div class="orbit orbit-two"></div>
+
+                            <div class="ai-core">
+
+                                <span>AI</span>
+
+                                <small>
+                                    Bug Intelligence
+                                </small>
+
+                            </div>
+
+
+                            <div class="orbit-node node-1">
+                                Triage
+                            </div>
+
+                            <div class="orbit-node node-2">
+                                Logs
+                            </div>
+
+                            <div class="orbit-node node-3">
+                                Root Cause
+                            </div>
+
+                            <div class="orbit-node node-4">
+                                Fix
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Statistics -->
+
+                <div class="section-heading">
+
+                    <div>
+                        <h3>System Overview</h3>
+                        <p>
+                            Current bug processing statistics
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="stats-grid">
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon purple">
+                            ◉
+                        </div>
+
+                        <div>
+                            <p>Total Analyses</p>
+                            <h3>128</h3>
+                            <span class="positive">
+                                ↑ 12% this month
+                            </span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon blue">
+                            ✓
+                        </div>
+
+                        <div>
+                            <p>Resolved Bugs</p>
+                            <h3>94</h3>
+                            <span>
+                                73.4% success rate
+                            </span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon orange">
+                            ◎
+                        </div>
+
+                        <div>
+                            <p>Duplicates Found</p>
+                            <h3>23</h3>
+                            <span>
+                                Prevented repeated work
+                            </span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon green">
+                            ⚡
+                        </div>
+
+                        <div>
+                            <p>Avg. Analysis</p>
+                            <h3>4.8s</h3>
+                            <span>
+                                AI processing time
+                            </span>
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+
+                <!-- Main Dashboard -->
+
+                <div class="dashboard-grid">
+
+                    <!-- Recent Analyses -->
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+
+                            <div>
+                                <h3>Recent Analyses</h3>
+                                <p>
+                                    Recently processed bug reports
+                                </p>
+                            </div>
+
+                            <button
+                                class="text-button"
+                                data-open="history"
+                            >
+                                View all →
+                            </button>
+
+                        </div>
+
+
+                        <div class="recent-list">
+
+
+                            <div class="recent-item">
+
+                                <div class="bug-type-icon critical">
+                                    !
+                                </div>
+
+                                <div class="recent-details">
+
+                                    <h4>
+                                        Authentication token expires unexpectedly
+                                    </h4>
+
+                                    <p>
+                                        BUG-1042 • API / Authentication
+                                    </p>
+
+                                </div>
+
+                                <span class="status resolved">
+                                    Resolved
+                                </span>
+
+                            </div>
+
+
+                            <div class="recent-item">
+
+                                <div class="bug-type-icon warning">
+                                    !
+                                </div>
+
+                                <div class="recent-details">
+
+                                    <h4>
+                                        MongoDB connection timeout
+                                    </h4>
+
+                                    <p>
+                                        BUG-1041 • Database
+                                    </p>
+
+                                </div>
+
+                                <span class="status analyzing">
+                                    Analyzing
+                                </span>
+
+                            </div>
+
+
+                            <div class="recent-item">
+
+                                <div class="bug-type-icon info">
+                                    i
+                                </div>
+
+                                <div class="recent-details">
+
+                                    <h4>
+                                        UI form validation not triggered
+                                    </h4>
+
+                                    <p>
+                                        BUG-1040 • Frontend
+                                    </p>
+
+                                </div>
+
+                                <span class="status resolved">
+                                    Resolved
+                                </span>
+
+                            </div>
+
+
+                            <div class="recent-item">
+
+                                <div class="bug-type-icon duplicate">
+                                    ≈
+                                </div>
+
+                                <div class="recent-details">
+
+                                    <h4>
+                                        API returns duplicate response data
+                                    </h4>
+
+                                    <p>
+                                        BUG-1039 • Backend
+                                    </p>
+
+                                </div>
+
+                                <span class="status duplicate-status">
+                                    Duplicate
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- AI Agents -->
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+
+                            <div>
+                                <h3>AI Agent Status</h3>
+                                <p>
+                                    Multi-agent diagnosis system
+                                </p>
+                            </div>
+
+                            <span class="system-online">
+                                ● System Online
+                            </span>
+
+                        </div>
+
+
+                        <div class="agent-list">
+
+                            <div class="agent-item">
+
+                                <div class="agent-icon">
+                                    T
+                                </div>
+
+                                <div>
+                                    <h4>Triage Agent</h4>
+                                    <p>Bug classification</p>
+                                </div>
+
+                                <span class="agent-online"></span>
+
+                            </div>
+
+
+                            <div class="agent-item">
+
+                                <div class="agent-icon">
+                                    L
+                                </div>
+
+                                <div>
+                                    <h4>Log Analysis Agent</h4>
+                                    <p>Log & stack analysis</p>
+                                </div>
+
+                                <span class="agent-online"></span>
+
+                            </div>
+
+
+                            <div class="agent-item">
+
+                                <div class="agent-icon">
+                                    R
+                                </div>
+
+                                <div>
+                                    <h4>Root Cause Agent</h4>
+                                    <p>Cause identification</p>
+                                </div>
+
+                                <span class="agent-online"></span>
+
+                            </div>
+
+
+                            <div class="agent-item">
+
+                                <div class="agent-icon">
+                                    D
+                                </div>
+
+                                <div>
+                                    <h4>Duplicate Detection</h4>
+                                    <p>Semantic comparison</p>
+                                </div>
+
+                                <span class="agent-online"></span>
+
+                            </div>
+
+
+                            <div class="agent-item">
+
+                                <div class="agent-icon">
+                                    F
+                                </div>
+
+                                <div>
+                                    <h4>Remediation Agent</h4>
+                                    <p>Fix recommendations</p>
+                                </div>
+
+                                <span class="agent-online"></span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================================
+                 NEW ANALYSIS
+            =================================================== -->
+
+            <section
+                class="page"
+                id="new-analysis"
+            >
+
+                <div class="analysis-layout">
+
+
+                    <!-- FORM -->
+
+                    <div class="analysis-form-panel">
+
+                        <div class="panel-header">
+
+                            <div>
+                                <h3>New Bug Analysis</h3>
+
+                                <p>
+                                    Provide bug details for AI-powered diagnosis
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <form id="bugForm">
+
+
+                            <div class="form-group">
+
+                                <label for="bugTitle">
+                                    Bug Title
+                                    <span>*</span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="bugTitle"
+                                    placeholder="e.g. API returns 500 error after login"
+                                    required
+                                >
+
+                            </div>
+
+
+
+                            <div class="two-column">
+
+                                <div class="form-group">
+
+                                    <label for="project">
+                                        Project
+                                    </label>
+
+                                    <select id="project">
+
+                                        <option value="">
+                                            Select project
+                                        </option>
+
+                                        <option>Mozilla</option>
+                                        <option>Apache</option>
+                                        <option>Eclipse</option>
+                                        <option>Custom Project</option>
+
+                                    </select>
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label for="severity">
+                                        Severity
+                                    </label>
+
+                                    <select id="severity">
+
+                                        <option>Critical</option>
+                                        <option selected>High</option>
+                                        <option>Medium</option>
+                                        <option>Low</option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="form-group">
+
+                                <label for="description">
+                                    Bug Description
+                                    <span>*</span>
+                                </label>
+
+                                <textarea
+                                    id="description"
+                                    rows="6"
+                                    placeholder="Describe the issue, expected behaviour and actual behaviour..."
+                                    required
+                                ></textarea>
+
+                                <div class="input-footer">
+
+                                    <small>
+                                        Include as much information as possible.
+                                    </small>
+
+                                    <span id="descriptionCount">
+                                        0 / 3000
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="form-group">
+
+                                <label for="stackTrace">
+                                    Stack Trace / Error Logs
+                                </label>
+
+                                <textarea
+                                    id="stackTrace"
+                                    class="code-input"
+                                    rows="9"
+                                    placeholder="Paste error logs or stack trace here..."
+                                ></textarea>
+
+                            </div>
+
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    Attach Log File
+                                </label>
+
+                                <div
+                                    class="upload-area"
+                                    id="uploadArea"
+                                >
+
+                                    <input
+                                        type="file"
+                                        id="logFile"
+                                        hidden
+                                        accept=".txt,.log,.json,.csv"
+                                    >
+
+                                    <div class="upload-icon">
+                                        ⇧
+                                    </div>
+
+                                    <h4>
+                                        Drop log file here or click to upload
+                                    </h4>
+
+                                    <p>
+                                        TXT, LOG, JSON or CSV • Max 10 MB
+                                    </p>
+
+                                    <span
+                                        id="selectedFile"
+                                        class="selected-file"
+                                    ></span>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="form-actions">
+
+                                <button
+                                    type="reset"
+                                    class="secondary-btn"
+                                    id="resetForm"
+                                >
+                                    Clear
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    class="primary-btn analyze-button"
+                                >
+                                    <span>✦</span>
+                                    Analyze Bug
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+
+
+                    <!-- PROCESS -->
+
+                    <aside class="analysis-info">
+
+                        <div class="info-card">
+
+                            <span class="mini-label">
+                                AI PROCESS
+                            </span>
+
+                            <h3>
+                                How your bug is analyzed
+                            </h3>
+
+                            <p>
+                                Your issue passes through multiple
+                                specialized AI agents.
+                            </p>
+
+
+                            <div class="process-steps">
+
+
+                                <div class="process-step">
+
+                                    <span>01</span>
+
+                                    <div>
+                                        <h4>Triage</h4>
+                                        <p>
+                                            Classifies severity and category.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="process-line"></div>
+
+
+                                <div class="process-step">
+
+                                    <span>02</span>
+
+                                    <div>
+                                        <h4>Log Analysis</h4>
+                                        <p>
+                                            Examines logs and stack traces.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="process-line"></div>
+
+
+                                <div class="process-step">
+
+                                    <span>03</span>
+
+                                    <div>
+                                        <h4>Root Cause</h4>
+                                        <p>
+                                            Identifies probable cause.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="process-line"></div>
+
+
+                                <div class="process-step">
+
+                                    <span>04</span>
+
+                                    <div>
+                                        <h4>Duplicate Detection</h4>
+                                        <p>
+                                            Searches similar historical bugs.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="process-line"></div>
+
+
+                                <div class="process-step">
+
+                                    <span>05</span>
+
+                                    <div>
+                                        <h4>Remediation</h4>
+                                        <p>
+                                            Generates fix recommendations.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================================
+                 ANALYSIS RESULT
+            =================================================== -->
+
+            <section
+                class="page"
+                id="result"
+            >
+
+                <div class="result-header">
+
+                    <div>
+
+                        <button
+                            class="back-button"
+                            data-open="new-analysis"
+                        >
+                            ← New Analysis
+                        </button>
+
+                        <span class="result-badge">
+                            Analysis Complete
+                        </span>
+
+                        <h2 id="resultBugTitle">
+                            Bug Diagnosis
+                        </h2>
+
+                        <p>
+                            Analysis ID:
+                            <strong id="analysisId">
+                                BUG-0000
+                            </strong>
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="secondary-btn"
+                        id="downloadReport"
+                    >
+                        ↓ Export Report
+                    </button>
+
+                </div>
+
+
+                <div class="result-summary-grid">
+
+                    <div class="summary-card">
+
+                        <small>SEVERITY</small>
+
+                        <strong
+                            class="severity-high"
+                            id="resultSeverity"
+                        >
+                            HIGH
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <small>CATEGORY</small>
+
+                        <strong>
+                            Backend / API
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <small>CONFIDENCE</small>
+
+                        <strong>
+                            94%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <small>DUPLICATE</small>
+
+                        <strong class="success-text">
+                            No
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="result-grid">
+
+
+                    <!-- Diagnosis -->
+
+                    <div class="result-column">
+
+                        <article class="result-card">
+
+                            <div class="result-card-heading">
+
+                                <span class="result-icon">
+                                    ◉
+                                </span>
+
+                                <div>
+                                    <h3>AI Diagnosis</h3>
+                                    <p>Root cause analysis</p>
+                                </div>
+
+                            </div>
+
+                            <div class="diagnosis-highlight">
+
+                                <strong>
+                                    Probable Root Cause
+                                </strong>
+
+                                <p>
+                                    The application appears to be encountering
+                                    an unexpected exception during request
+                                    processing. The issue is likely related
+                                    to missing validation or an invalid
+                                    application state.
+                                </p>
+
+                            </div>
+
+
+                            <h4 class="subheading">
+                                Key Findings
+                            </h4>
+
+                            <ul class="findings-list">
+
+                                <li>
+                                    Error occurs during backend request
+                                    processing.
+                                </li>
+
+                                <li>
+                                    Input or application state may not be
+                                    validated correctly.
+                                </li>
+
+                                <li>
+                                    Exception handling should be reviewed.
+                                </li>
+
+                            </ul>
+
+                        </article>
+
+
+
+                        <article class="result-card">
+
+                            <div class="result-card-heading">
+
+                                <span class="result-icon">
+                                    ≈
+                                </span>
+
+                                <div>
+                                    <h3>Similar Bugs</h3>
+
+                                    <p>
+                                        Semantic search results
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div class="similar-bug">
+
+                                <div>
+
+                                    <strong>
+                                        BUG-0872
+                                    </strong>
+
+                                    <h4>
+                                        API failure caused by invalid request
+                                    </h4>
+
+                                </div>
+
+                                <span>
+                                    86% match
+                                </span>
+
+                            </div>
+
+
+                            <div class="similar-bug">
+
+                                <div>
+
+                                    <strong>
+                                        BUG-0641
+                                    </strong>
+
+                                    <h4>
+                                        Backend exception not handled correctly
+                                    </h4>
+
+                                </div>
+
+                                <span>
+                                    73% match
+                                </span>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+
+
+                    <!-- Fix -->
+
+                    <div class="result-column">
+
+                        <article class="result-card fix-card">
+
+                            <div class="result-card-heading">
+
+                                <span class="result-icon">
+                                    ⚡
+                                </span>
+
+                                <div>
+                                    <h3>Recommended Fix</h3>
+
+                                    <p>
+                                        AI generated remediation
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div class="recommendation-step">
+
+                                <span>1</span>
+
+                                <div>
+
+                                    <h4>
+                                        Validate input data
+                                    </h4>
+
+                                    <p>
+                                        Ensure request data is validated before
+                                        passing it to business logic.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="recommendation-step">
+
+                                <span>2</span>
+
+                                <div>
+
+                                    <h4>
+                                        Add exception handling
+                                    </h4>
+
+                                    <p>
+                                        Catch application exceptions and return
+                                        meaningful API error responses.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="recommendation-step">
+
+                                <span>3</span>
+
+                                <div>
+
+                                    <h4>
+                                        Review backend logs
+                                    </h4>
+
+                                    <p>
+                                        Add structured logs around the failing
+                                        operation to identify the exact source.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="code-box">
+
+                                <div class="code-header">
+
+                                    <span>
+                                        Example Fix
+                                    </span>
+
+                                    <button id="copyCode">
+                                        Copy
+                                    </button>
+
+                                </div>
+
+                                <pre><code id="fixCode">try {
+    const result = await processRequest(data);
+
+    if (!result) {
+        throw new Error("Invalid result");
+    }
+
+    return result;
+} catch (error) {
+    console.error(error);
+}</code></pre>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================================
+                 HISTORY
+            =================================================== -->
+
+            <section
+                class="page"
+                id="history"
+            >
+
+                <div class="panel">
+
+                    <div class="panel-header history-header">
+
+                        <div>
+
+                            <h3>Analysis History</h3>
+
+                            <p>
+                                View previously analyzed software bugs
+                            </p>
+
+                        </div>
+
+
+                        <div class="search-box">
+
+                            <span>⌕</span>
+
+                            <input
+                                type="text"
+                                id="historySearch"
+                                placeholder="Search bugs..."
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table id="historyTable">
+
+                            <thead>
+
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Bug</th>
+                                    <th>Project</th>
+                                    <th>Severity</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>BUG-1042</td>
+
+                                    <td>
+                                        Authentication token expires unexpectedly
+                                    </td>
+
+                                    <td>Apache</td>
+
+                                    <td>
+                                        <span class="table-severity critical-tag">
+                                            Critical
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="status resolved">
+                                            Resolved
+                                        </span>
+                                    </td>
+
+                                    <td>30 Aug 2026</td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>BUG-1041</td>
+
+                                    <td>
+                                        MongoDB connection timeout
+                                    </td>
+
+                                    <td>Custom</td>
+
+                                    <td>
+                                        <span class="table-severity high-tag">
+                                            High
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="status analyzing">
+                                            Analyzing
+                                        </span>
+                                    </td>
+
+                                    <td>29 Aug 2026</td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>BUG-1040</td>
+
+                                    <td>
+                                        UI form validation not triggered
+                                    </td>
+
+                                    <td>Eclipse</td>
+
+                                    <td>
+                                        <span class="table-severity medium-tag">
+                                            Medium
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="status resolved">
+                                            Resolved
+                                        </span>
+                                    </td>
+
+                                    <td>28 Aug 2026</td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>BUG-1039</td>
+
+                                    <td>
+                                        API returns duplicate response data
+                                    </td>
+
+                                    <td>Mozilla</td>
+
+                                    <td>
+                                        <span class="table-severity medium-tag">
+                                            Medium
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="status duplicate-status">
+                                            Duplicate
+                                        </span>
+                                    </td>
+
+                                    <td>27 Aug 2026</td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================================
+                 AI ARCHITECTURE
+            =================================================== -->
+
+            <section
+                class="page"
+                id="architecture"
+            >
+
+                <div class="architecture-intro">
+
+                    <span class="hero-badge">
+                        MULTI-AGENT SYSTEM
+                    </span>
+
+                    <h2>
+                        AI Bug Diagnosis Architecture
+                    </h2>
+
+                    <p>
+                        Five specialized agents collaborate to analyze
+                        software bugs and generate actionable findings.
+                    </p>
+
+                </div>
+
+
+                <div class="architecture-flow">
+
+
+                    <div class="architecture-node user-node">
+                        USER BUG REPORT
+                    </div>
+
+                    <div class="flow-arrow">
+                        ↓
+                    </div>
+
+                    <div class="architecture-node process-node">
+                        Bug Processing
+                    </div>
+
+                    <div class="flow-arrow">
+                        ↓
+                    </div>
+
+                    <div class="architecture-node vector-node">
+                        Semantic Search + RAG
+                    </div>
+
+                    <div class="flow-arrow">
+                        ↓
+                    </div>
+
+                    <div class="architecture-node ai-node">
+                        AI Agent Orchestrator
+                    </div>
+
+                    <div class="flow-arrow">
+                        ↓
+                    </div>
+
+
+                    <div class="agent-flow-grid">
+
+                        <div class="flow-agent">
+                            <span>T</span>
+                            <strong>Triage Agent</strong>
+                            <small>Classify</small>
+                        </div>
+
+                        <div class="flow-agent">
+                            <span>L</span>
+                            <strong>Log Analysis</strong>
+                            <small>Inspect</small>
+                        </div>
+
+                        <div class="flow-agent">
+                            <span>R</span>
+                            <strong>Root Cause</strong>
+                            <small>Diagnose</small>
+                        </div>
+
+                        <div class="flow-agent">
+                            <span>D</span>
+                            <strong>Duplicate</strong>
+                            <small>Compare</small>
+                        </div>
+
+                        <div class="flow-agent">
+                            <span>F</span>
+                            <strong>Remediation</strong>
+                            <small>Recommend</small>
+                        </div>
+
+                    </div>
+
+
+                    <div class="flow-arrow">
+                        ↓
+                    </div>
+
+                    <div class="architecture-node result-node">
+                        Diagnosis & Fix Recommendation
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==================================================
+                 SETTINGS
+            =================================================== -->
+
+            <section
+                class="page"
+                id="settings"
+            >
+
+                <div class="settings-grid">
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+
+                            <div>
+
+                                <h3>Interface Settings</h3>
+
+                                <p>
+                                    Configure frontend preferences
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div>
+                                <h4>Dark Theme</h4>
+
+                                <p>
+                                    Switch between light and dark interface
+                                </p>
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="themeToggle"
+                                >
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="setting-row">
+
+                            <div>
+
+                                <h4>Desktop Notifications</h4>
+
+                                <p>
+                                    Show notification when analysis completes
+                                </p>
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    checked
+                                >
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+
+                            <div>
+
+                                <h3>System Information</h3>
+
+                                <p>
+                                    Frontend application details
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="system-info-list">
+
+                            <div>
+                                <span>Frontend</span>
+                                <strong>HTML / CSS / JavaScript</strong>
+                            </div>
+
+                            <div>
+                                <span>Backend</span>
+                                <strong>FastAPI</strong>
+                            </div>
+
+                            <div>
+                                <span>Database</span>
+                                <strong>MongoDB</strong>
+                            </div>
+
+                            <div>
+                                <span>Vector DB</span>
+                                <strong>ChromaDB</strong>
+                            </div>
+
+                            <div>
+                                <span>AI Framework</span>
+                                <strong>LangChain</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ======================================================
+         ANALYSIS LOADER
+    ======================================================= -->
+
+    <div
+        class="analysis-loader"
+        id="analysisLoader"
+    >
+
+        <div class="loader-card">
+
+            <div class="loader-animation">
+
+                <div class="loader-circle"></div>
+
+                <div class="loader-core">
+                    AI
+                </div>
+
+            </div>
+
+            <h2>
+                Analyzing Bug
+            </h2>
+
+            <p id="loaderStatus">
+                Starting AI agents...
+            </p>
+
+
+            <div class="progress-track">
+
+                <div
+                    class="progress-bar"
+                    id="analysisProgress"
+                ></div>
+
+            </div>
+
+
+            <div class="loader-agents">
+
+                <span id="agentTriage">
+                    Triage
+                </span>
+
+                <span id="agentLogs">
+                    Logs
+                </span>
+
+                <span id="agentRoot">
+                    Root Cause
+                </span>
+
+                <span id="agentDuplicate">
+                    Duplicate
+                </span>
+
+                <span id="agentFix">
+                    Remediation
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ======================================================
+         TOAST
+    ======================================================= -->
+
+    <div
+        class="toast"
+        id="toast"
+    >
+        <span id="toastMessage">
+            Message
+        </span>
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
