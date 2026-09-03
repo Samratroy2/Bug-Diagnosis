@@ -1,0 +1,822 @@
+/* =========================================================
+   BUGAI — SHARED SIDEBAR
+   Used by all BugAI pages
+========================================================= */
+
+
+/* =========================================================
+   ROOT VARIABLES
+========================================================= */
+
+:root {
+
+    --sidebar-width: 250px;
+
+    --sidebar-bg: #0f172a;
+
+    --sidebar-border: #1e293b;
+
+    --sidebar-text: #cbd5e1;
+
+    --sidebar-muted: #64748b;
+
+    --sidebar-hover: #172033;
+
+    --sidebar-active: #1d4ed8;
+
+    --sidebar-active-light: #2563eb;
+
+    --sidebar-white: #f8fafc;
+
+    --status-online: #22c55e;
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html {
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.bugai-sidebar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: var(--sidebar-width);
+
+    display: flex;
+
+    flex-direction: column;
+
+    background: var(--sidebar-bg);
+
+    border-right: 1px solid var(--sidebar-border);
+
+    z-index: 1000;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        #334155
+        transparent;
+
+}
+
+
+/* =========================================================
+   SIDEBAR SCROLLBAR
+========================================================= */
+
+.bugai-sidebar::-webkit-scrollbar {
+
+    width: 5px;
+
+}
+
+
+.bugai-sidebar::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+
+.bugai-sidebar::-webkit-scrollbar-thumb {
+
+    background: #334155;
+
+    border-radius: 10px;
+
+}
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.sidebar-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 78px;
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid var(--sidebar-border);
+
+}
+
+
+/* =========================================================
+   BRAND LOGO
+========================================================= */
+
+.brand-logo {
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    box-shadow:
+        0 6px 18px
+        rgba(37, 99, 235, 0.25);
+
+}
+
+
+.brand-logo-icon {
+
+    font-size: 22px;
+
+    line-height: 1;
+
+}
+
+
+/* =========================================================
+   BRAND TEXT
+========================================================= */
+
+.brand-text {
+
+    min-width: 0;
+
+}
+
+
+.brand-name {
+
+    margin: 0;
+
+    color: var(--sidebar-white);
+
+    font-size: 19px;
+
+    line-height: 1.1;
+
+    font-weight: 800;
+
+    letter-spacing: -0.3px;
+
+}
+
+
+.brand-subtitle {
+
+    margin-top: 5px;
+
+    color: #94a3b8;
+
+    font-size: 9px;
+
+    line-height: 1.2;
+
+    font-weight: 600;
+
+    letter-spacing: 0.35px;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.sidebar-navigation {
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 20px 12px;
+
+    flex: 1;
+
+}
+
+
+/* =========================================================
+   NAVIGATION LABEL
+========================================================= */
+
+.navigation-label {
+
+    padding: 0 12px;
+
+    margin: 0 0 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    line-height: 1.2;
+
+    font-weight: 800;
+
+    letter-spacing: 1.3px;
+
+}
+
+
+.navigation-label-spaced {
+
+    margin-top: 24px;
+
+}
+
+
+/* =========================================================
+   SIDEBAR LINK
+========================================================= */
+
+.sidebar-link {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 44px;
+
+    width: 100%;
+
+    margin: 2px 0;
+
+    padding: 10px 12px;
+
+    border-radius: 9px;
+
+    color: var(--sidebar-text);
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+
+/* =========================================================
+   NAV ICON
+========================================================= */
+
+.nav-icon {
+
+    width: 22px;
+
+    height: 22px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: #94a3b8;
+
+    font-size: 17px;
+
+    line-height: 1;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+
+.nav-text {
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.sidebar-link:hover {
+
+    color: #f8fafc;
+
+    background: var(--sidebar-hover);
+
+}
+
+
+.sidebar-link:hover .nav-icon {
+
+    color: #60a5fa;
+
+    transform: translateX(1px);
+
+}
+
+
+/* =========================================================
+   ACTIVE LINK
+========================================================= */
+
+.sidebar-link.active {
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(37, 99, 235, 0.28),
+            rgba(37, 99, 235, 0.12)
+        );
+
+}
+
+
+.sidebar-link.active::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 8px;
+
+    bottom: 8px;
+
+    width: 3px;
+
+    border-radius: 0 4px 4px 0;
+
+    background: #3b82f6;
+
+}
+
+
+.sidebar-link.active .nav-icon {
+
+    color: #60a5fa;
+
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+========================================================= */
+
+.sidebar-footer {
+
+    padding: 15px 16px 18px;
+
+    border-top: 1px solid var(--sidebar-border);
+
+}
+
+
+/* =========================================================
+   SYSTEM STATUS
+========================================================= */
+
+.sidebar-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 11px 10px;
+
+    border-radius: 10px;
+
+    background: rgba(
+        255,
+        255,
+        255,
+        0.025
+    );
+
+}
+
+
+/* =========================================================
+   STATUS DOT
+========================================================= */
+
+.status-dot {
+
+    width: 8px;
+
+    height: 8px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--status-online);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(34, 197, 94, 0.10);
+
+}
+
+
+.status-dot.online {
+
+    background: var(--status-online);
+
+    animation:
+        bugaiPulse 2.2s infinite;
+
+}
+
+
+@keyframes bugaiPulse {
+
+    0%,
+    100% {
+
+        box-shadow:
+            0 0 0 4px
+            rgba(34, 197, 94, 0.10);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 0 7px
+            rgba(34, 197, 94, 0.02);
+
+    }
+
+}
+
+
+/* =========================================================
+   STATUS TEXT
+========================================================= */
+
+.status-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 3px;
+
+}
+
+
+.status-text strong {
+
+    color: #dbeafe;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+.status-text span {
+
+    color: #64748b;
+
+    font-size: 9px;
+
+    font-weight: 500;
+
+}
+
+
+/* =========================================================
+   VERSION
+========================================================= */
+
+.sidebar-version {
+
+    padding:
+
+        10px
+        10px
+        0;
+
+    color: #475569;
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+========================================================= */
+
+.sidebar-menu-button {
+
+    display: none;
+
+    position: fixed;
+
+    top: 15px;
+    left: 15px;
+
+    width: 42px;
+    height: 42px;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    padding: 0;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 5px 20px
+        rgba(15, 23, 42, 0.12);
+
+    cursor: pointer;
+
+    z-index: 1100;
+
+}
+
+
+/* Hamburger lines */
+
+.sidebar-menu-button span {
+
+    display: block;
+
+    width: 18px;
+    height: 2px;
+
+    border-radius: 2px;
+
+    background: #334155;
+
+    transition: 0.2s;
+
+}
+
+
+/* =========================================================
+   MOBILE OVERLAY
+========================================================= */
+
+.sidebar-overlay {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(
+            15,
+            23,
+            42,
+            0.55
+        );
+
+    backdrop-filter: blur(2px);
+
+    z-index: 900;
+
+}
+
+
+.sidebar-overlay.active {
+
+    display: block;
+
+}
+
+
+/* =========================================================
+   PREVENT BODY SCROLL
+========================================================= */
+
+body.sidebar-open {
+
+    overflow: hidden;
+
+}
+
+
+/* =========================================================
+   DESKTOP CONTENT SUPPORT
+========================================================= */
+
+@media (min-width: 901px) {
+
+    /*
+     * Your individual page CSS normally contains:
+     *
+     * margin-left: 250px;
+     *
+     * This sidebar does not force a layout so that
+     * each page can control its own content width.
+     */
+
+}
+
+
+/* =========================================================
+   TABLET / MOBILE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .bugai-sidebar {
+
+        width: 270px;
+
+        transform:
+            translateX(-100%);
+
+        transition:
+            transform 0.25s ease;
+
+        box-shadow:
+            12px 0 30px
+            rgba(15, 23, 42, 0.20);
+
+    }
+
+
+    .bugai-sidebar.open {
+
+        transform:
+            translateX(0);
+
+    }
+
+
+    .sidebar-menu-button {
+
+        display: flex;
+
+    }
+
+
+    .sidebar-brand {
+
+        padding-left: 22px;
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .bugai-sidebar {
+
+        width: 285px;
+
+    }
+
+
+    .sidebar-menu-button {
+
+        width: 40px;
+
+        height: 40px;
+
+        top: 12px;
+
+        left: 12px;
+
+    }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+.sidebar-link:focus-visible {
+
+    outline: 2px solid #60a5fa;
+
+    outline-offset: 2px;
+
+}
+
+
+.sidebar-menu-button:focus-visible {
+
+    outline: 2px solid #2563eb;
+
+    outline-offset: 2px;
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .bugai-sidebar,
+    .sidebar-link,
+    .nav-icon,
+    .sidebar-menu-button span {
+
+        transition: none;
+
+    }
+
+
+    .status-dot.online {
+
+        animation: none;
+
+    }
+
+}

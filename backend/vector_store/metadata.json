@@ -1,0 +1,62 @@
+[
+  {
+    "bug_id": "MOZ-101",
+    "project": "Mozilla",
+    "title": "Browser crashes when session object is missing",
+    "description": "The browser crashes during login when the session object is not initialized. The failure occurs before the account page is displayed.",
+    "stack_trace": "NullPointerException: session is null",
+    "resolution": "Validate the session object before access and add a regression test for an unauthenticated session.",
+    "chunk_id": 0,
+    "chunk": "Project: Mozilla Title: Browser crashes when session object is missing Description: The browser crashes during login when the session object is not initialized. The failure occurs before the account page is displayed. Stack Trace: NullPointerException: session is null Resolution: Validate the session object before access and add a regression test for an unauthenticated session."
+  },
+  {
+    "bug_id": "MOZ-102",
+    "project": "Mozilla",
+    "title": "Page load timeout after network interruption",
+    "description": "A page remains in loading state after a temporary network interruption and eventually reports a timeout.",
+    "stack_trace": "TimeoutError: request timed out",
+    "resolution": "Add bounded retry handling and explicitly recover the loading state after network failures.",
+    "chunk_id": 0,
+    "chunk": "Project: Mozilla Title: Page load timeout after network interruption Description: A page remains in loading state after a temporary network interruption and eventually reports a timeout. Stack Trace: TimeoutError: request timed out Resolution: Add bounded retry handling and explicitly recover the loading state after network failures."
+  },
+  {
+    "bug_id": "APA-201",
+    "project": "Apache",
+    "title": "Connection refused while starting service",
+    "description": "The application cannot connect to a configured service when the dependency is unavailable.",
+    "stack_trace": "ConnectionError: connection refused",
+    "resolution": "Check dependency health before startup and provide retry/backoff with a clear error message.",
+    "chunk_id": 0,
+    "chunk": "Project: Apache Title: Connection refused while starting service Description: The application cannot connect to a configured service when the dependency is unavailable. Stack Trace: ConnectionError: connection refused Resolution: Check dependency health before startup and provide retry/backoff with a clear error message."
+  },
+  {
+    "bug_id": "APA-202",
+    "project": "Apache",
+    "title": "Permission denied while writing log file",
+    "description": "The service fails when it attempts to create or append to a log file without sufficient permissions.",
+    "stack_trace": "PermissionError: access denied",
+    "resolution": "Verify directory permissions during startup and handle permission failures with actionable diagnostics.",
+    "chunk_id": 0,
+    "chunk": "Project: Apache Title: Permission denied while writing log file Description: The service fails when it attempts to create or append to a log file without sufficient permissions. Stack Trace: PermissionError: access denied Resolution: Verify directory permissions during startup and handle permission failures with actionable diagnostics."
+  },
+  {
+    "bug_id": "ECL-301",
+    "project": "Eclipse",
+    "title": "Null value causes editor exception",
+    "description": "The editor throws an exception when a document provider returns a null value for an optional resource.",
+    "stack_trace": "NullPointerException: document provider returned null",
+    "resolution": "Add null checks around the optional resource and create a regression test for missing documents.",
+    "chunk_id": 0,
+    "chunk": "Project: Eclipse Title: Null value causes editor exception Description: The editor throws an exception when a document provider returns a null value for an optional resource. Stack Trace: NullPointerException: document provider returned null Resolution: Add null checks around the optional resource and create a regression test for missing documents."
+  },
+  {
+    "bug_id": "ECL-302",
+    "project": "Eclipse",
+    "title": "Out of memory during large project indexing",
+    "description": "Indexing a very large project consumes excessive memory and the process terminates.",
+    "stack_trace": "OutOfMemoryError: Java heap space",
+    "resolution": "Reduce peak indexing memory, process resources incrementally and add a large-project regression test.",
+    "chunk_id": 0,
+    "chunk": "Project: Eclipse Title: Out of memory during large project indexing Description: Indexing a very large project consumes excessive memory and the process terminates. Stack Trace: OutOfMemoryError: Java heap space Resolution: Reduce peak indexing memory, process resources incrementally and add a large-project regression test."
+  }
+]

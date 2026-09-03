@@ -1,0 +1,11 @@
+body{margin:0;background:#f5f7fb;color:#172033;font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.55}
+main{margin-left:250px;padding:48px 56px;max-width:1500px}
+header{margin-bottom:28px} header h1{margin:5px 0 8px;font-size:36px;line-height:1.15} header p{margin:0;color:#64748b;font-size:16px}
+.card,.information,.recent,.note,.explanation{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:28px;box-shadow:0 5px 18px rgba(15,23,42,.04)}
+button,.primary-btn{border:0;border-radius:8px;padding:11px 16px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.primary,.primary-btn{background:#2563eb;color:#fff}.secondary{background:#e2e8f0;color:#172033}
+input,select,textarea{width:100%;font:inherit;border:1px solid #cbd5e1;border-radius:8px;padding:11px 13px;outline:none;background:#fff}
+input:focus,select:focus,textarea:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+@media(max-width:900px){main{margin-left:0;padding:80px 22px 30px}}
+
+header>span{font-size:12px;font-weight:800;color:#2563eb;letter-spacing:.1em}.pipeline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:24px}.pipeline div{background:#fff;border:1px solid #dbe4ef;border-radius:9px;padding:12px 15px;font-weight:600}.pipeline b{color:#2563eb}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.stats article{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px}.stats span{color:#64748b;font-size:13px}.stats strong{display:block;font-size:29px;margin-top:5px}.controls{display:grid;grid-template-columns:1fr 200px auto;gap:12px;margin:24px 0}.record{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:19px;margin-bottom:12px}.record-head{display:flex;justify-content:space-between;gap:10px}.record h3{margin:0 0 4px}.record p{color:#64748b;margin:7px 0}.tag{font-size:12px;background:#eef2ff;padding:5px 8px;border-radius:6px}.note{margin-top:24px;color:#475569}@media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}.controls{grid-template-columns:1fr}}@media(max-width:550px){.stats{grid-template-columns:1fr}}

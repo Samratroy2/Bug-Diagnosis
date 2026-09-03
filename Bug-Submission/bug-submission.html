@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BugAI - Bug Submission</title><link rel="stylesheet" href="../sidebar.css"><link rel="stylesheet" href="bug-submission.css"></head>
+<body><div id="sidebar-container"></div><main>
+<header><h1>Bug Submission</h1><p>Submit a software defect for intelligent diagnosis.</p></header>
+<section class="card"><form id="bugForm">
+<div class="form-group"><label for="bugTitle">Bug Title *</label><input id="bugTitle" required placeholder="Example: Application crashes during login"></div>
+<div class="two-column"><div class="form-group"><label for="project">Project</label><select id="project"><option>Mozilla</option><option>Apache</option><option>Eclipse</option><option>Custom Project</option></select></div>
+<div class="form-group"><label for="severity">Severity</label><select id="severity"><option>Low</option><option selected>Medium</option><option>High</option><option>Critical</option></select></div></div>
+<div class="form-group"><label for="description">Bug Description *</label><textarea id="description" rows="6" required placeholder="Describe the problem, expected behaviour and actual behaviour..."></textarea></div>
+<div class="form-group"><label for="stackTrace">Stack Trace / Error Logs</label><textarea id="stackTrace" rows="8" placeholder="Paste stack trace or application error logs here..."></textarea></div>
+<div class="form-group"><label for="logFile">Attach Log File</label><div id="dropZone" class="upload-zone"><strong>Drop your file here</strong><p>or click to browse</p><small>TXT, LOG, JSON or CSV — Maximum 10 MB</small><input id="logFile" type="file" accept=".txt,.log,.json,.csv"></div><div id="fileInfo"></div></div>
+<div class="actions"><button type="button" class="secondary" id="resetBtn">Reset</button><button type="submit" class="primary">Analyze Bug</button></div>
+</form></section><section id="result" class="card result hidden"></section>
+</main><script src="../sidebar.js"></script><script src="bug-submission.js"></script></body></html>

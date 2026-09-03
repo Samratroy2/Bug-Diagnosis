@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BugAI - Knowledge Base</title><link rel="stylesheet" href="../sidebar.css"><link rel="stylesheet" href="knowledge-base.css"></head>
+<body><div id="sidebar-container"></div><main>
+<header><span>RAG KNOWLEDGE BASE</span><h1>Historical Defect Knowledge Base</h1><p>Dataset preparation, chunking, embedding generation and vector indexing for historical defects.</p></header>
+<section class="pipeline"><div>Bug Dataset</div><b>→</b><div>Clean Data</div><b>→</b><div>Chunking</div><b>→</b><div>Embedding</div><b>→</b><div>FAISS Index</div></section>
+<section class="stats"><article><span>Mozilla</span><strong id="mozillaCount">0</strong></article><article><span>Apache</span><strong id="apacheCount">0</strong></article><article><span>Eclipse</span><strong id="eclipseCount">0</strong></article><article><span>Indexed Records</span><strong id="indexedCount">0</strong></article></section>
+<section class="controls"><input id="search" type="text" placeholder="Search historical defects..."><select id="projectFilter"><option value="">All Projects</option><option>Mozilla</option><option>Apache</option><option>Eclipse</option></select><button id="buildIndex">Build / Rebuild Vector Index</button></section>
+<section id="records"></section>
+<section class="note"><strong>Implementation</strong><p>This Milestone 1 prototype performs server-side chunking, sentence-transformer embedding generation and FAISS vector indexing. The included CSV is a seed dataset; additional public Mozilla, Apache and Eclipse records can be imported using the same schema.</p></section>
+</main><script src="../sidebar.js"></script><script src="knowledge-base.js"></script></body></html>

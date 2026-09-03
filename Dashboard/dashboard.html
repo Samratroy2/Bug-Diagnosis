@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BugAI - Dashboard</title>
+<link rel="stylesheet" href="../sidebar.css"><link rel="stylesheet" href="dashboard.css">
+</head><body>
+<div id="sidebar-container"></div>
+<main>
+<header class="topbar"><div><h1>Dashboard</h1><p>Intelligent Bug Diagnosis Platform</p></div><a class="primary-btn" href="../Bug-Submission/bug-submission.html">+ New Analysis</a></header>
+<section class="hero"><span class="badge">BUGAI PLATFORM</span><h2>Diagnose software defects intelligently</h2>
+<p>Analyze bug reports, stack traces and error logs, retrieve related historical defects and generate probable root-cause and fix recommendations.</p>
+<a class="primary-btn" href="../Bug-Submission/bug-submission.html">Start Bug Analysis</a></section>
+<section class="stats">
+<div class="stat-card"><span>Total Analyses</span><strong id="totalAnalyses">0</strong></div>
+<div class="stat-card"><span>Historical Defects</span><strong id="historicalDefects">0</strong></div>
+<div class="stat-card"><span>AI Agents</span><strong>5</strong></div>
+<div class="stat-card"><span>Projects</span><strong>3</strong></div>
+</section>
+<section><div class="section-heading"><div><h2>Milestone 1 Coverage</h2><p>Implemented prototype modules for the four Milestone 1 activities.</p></div></div>
+<div class="feature-grid">
+<article class="feature"><span>01</span><h3>Defect Analysis Workflow</h3><p>Bug-report structure, triage, diagnosis, duplicate detection and remediation workflow.</p></article>
+<article class="feature"><span>02</span><h3>Multi-Agent Architecture</h3><p>Five specialized agents, orchestration flow and responsibilities.</p></article>
+<article class="feature"><span>03</span><h3>Bug Submission</h3><p>Structured defect entry, stack traces, error logs and TXT/LOG/JSON/CSV uploads.</p></article>
+<article class="feature"><span>04</span><h3>RAG Knowledge Base</h3><p>Dataset preparation, chunking, embeddings, FAISS vector indexing and similarity retrieval prototype.</p></article>
+</div></section>
+<section class="recent"><h2>Recent Analyses</h2><div id="recentAnalyses"></div></section>
+</main>
+<script src="../sidebar.js"></script><script src="dashboard.js"></script>
+</body></html>
