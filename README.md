@@ -1,4 +1,4 @@
-# BugAI — Milestone 1 Complete Prototype
+# BugAI — Milestone 2 Complete Prototype
 
 ## Project
 **Creation of Intelligent Bug Diagnosis Platform with Fix Recommendation Assistance**
@@ -85,3 +85,48 @@ Root Cause + Remediation Prototype
 - Vector-store indexing: Complete using FAISS
 - Semantic similarity retrieval: Complete
 - Production-scale dataset ingestion and deployment: Future work
+
+
+## Milestone 2 — Bug Triage, Log Analysis & Agent Orchestration
+
+Milestone 2 extends the Milestone 1 RAG prototype with two first-level analysis agents and a validation workflow.
+
+### M2.1 Triage Agent
+- Classifies severity as Critical / High / Medium / Low.
+- Assigns P1 / P2 / P3 / P4 priority.
+- Infers the affected component from bug text and technical evidence.
+- Returns confidence, diagnostic signals and reasoning in a stable JSON schema.
+
+### M2.2 Log Analysis Agent
+- Detects common exception/error types.
+- Extracts error messages.
+- Parses Java and Python stack traces.
+- Extracts file, class, method and line number where available.
+- Builds an ordered code-path representation.
+- Returns confidence and structured analysis.
+
+### M2.3 Multi-Agent Orchestration
+`POST /api/analyze` now automatically runs Triage Agent and Log Analysis Agent, combines their outputs into `bug_context`, and passes that context into the downstream historical retrieval / root-cause / remediation pipeline.
+
+The orchestration response also reports missing-log handling and whether the context is ready for Milestone 3.
+
+### M2.4 Accuracy Validation
+Open:
+`http://127.0.0.1:5000/Validation/validation.html`
+
+The validation page runs seeded historical defects and varied Java/Python/messy/description-only cases. It reports accuracy for:
+- Triage severity
+- Triage priority
+- Affected component
+- Exception type
+- Failure file
+- Failure line
+
+Individual test cases are shown as PASS or REVIEW so incorrect cases can be inspected.
+
+### Milestone 2 API
+- `GET /api/health`
+- `POST /api/analyze`
+- `GET /api/validation/milestone2`
+
+The original Milestone 1 RAG endpoints remain available.

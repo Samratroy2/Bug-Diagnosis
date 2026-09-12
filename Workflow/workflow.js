@@ -1,9 +1,9 @@
 const workflowSteps=[
-["01","Bug Intake","Capture title, project, severity, description, stack trace and logs."],
-["02","Triage","Classify the defect and identify priority and initial signals."],
-["03","Log Analysis","Extract meaningful errors, exceptions and failure patterns."],
-["04","Diagnosis & Retrieval","Compare the defect with historical records using semantic retrieval."],
-["05","Remediation","Present probable cause, similar defects and a fix recommendation."]
+["01","Bug Intake","Capture title, project, description, stack trace and attached logs."],
+["02","Triage Agent","Classify severity, priority and affected component with confidence and reasoning."],
+["03","Log Analysis Agent","Extract exception type, error message, failure point and code path."],
+["04","Multi-Agent Orchestration","Run both agents automatically and combine their outputs into a common bug context."],
+["05","Diagnosis & Retrieval","Pass the structured context to historical defect retrieval, root-cause analysis and remediation."]
 ];
 document.addEventListener("DOMContentLoaded",()=>{
  const el=document.getElementById("workflow");

@@ -10,3 +10,37 @@ input:focus,select:focus,textarea:focus{border-color:#2563eb;box-shadow:0 0 0 3p
 
 .form-group{margin-bottom:22px}.form-group label{display:block;font-weight:700;margin-bottom:8px}.two-column{display:grid;grid-template-columns:1fr 1fr;gap:22px}.upload-zone{border:2px dashed #cbd5e1;border-radius:10px;padding:28px;text-align:center;cursor:pointer;background:#f8fafc}.upload-zone p{margin:6px 0;color:#64748b}.upload-zone small{color:#94a3b8}.upload-zone input{margin-top:12px;border:0;padding:0;background:transparent}.actions{display:flex;justify-content:flex-end;gap:10px}.result{margin-top:22px}.hidden{display:none}.result h2{margin-top:0}.result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.result-box{background:#f8fafc;border-radius:10px;padding:16px}.result-box h3{margin:0 0 7px;font-size:14px}.result-box p{margin:0;color:#475569}.match{border-top:1px solid #e2e8f0;padding:12px 0}.score{font-weight:700;color:#2563eb}
 @media(max-width:700px){.two-column,.result-grid{grid-template-columns:1fr}}
+
+
+/* =========================================================
+   MILESTONE 2 — AGENT RESULT STYLING
+========================================================= */
+.agent-card {
+    min-height: 220px;
+}
+
+.agent-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.agent-heading h3 {
+    margin: 0;
+}
+
+.agent-status {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: 5px 8px;
+    border-radius: 999px;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.result-box p {
+    margin: 8px 0;
+}

@@ -235,6 +235,21 @@ function setActiveSidebarPage() {
 
 
     /*
+     * Milestone 2 Validation
+     */
+
+    else if (
+        pathname.includes(
+            "/validation/"
+        )
+    ) {
+
+        currentPage = "validation";
+
+    }
+
+
+    /*
      * Settings
      */
 

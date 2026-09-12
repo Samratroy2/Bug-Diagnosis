@@ -1,9 +1,15 @@
 /* =========================================================
    BUGAI — BUG SUBMISSION
+   Frontend → Flask Backend → RAG / FAISS
    Backend: http://127.0.0.1:5000
    ========================================================= */
 
 const API_BASE_URL = "http://127.0.0.1:5000";
+
+
+/* =========================================================
+   DOM ELEMENTS
+   ========================================================= */
 
 const form = document.getElementById("bugForm");
 const fileInput = document.getElementById("logFile");
@@ -42,12 +48,19 @@ function showFile(file) {
             "Supported files: TXT, LOG, JSON and CSV."
         );
 
-        fileInput.value = "";
-        fileInfo.textContent = "";
+        if (fileInput) {
+            fileInput.value = "";
+        }
+
+        if (fileInfo) {
+            fileInfo.textContent = "";
+        }
 
         return;
     }
 
+
+    /* Maximum file size = 10 MB */
 
     const maxSize = 10 * 1024 * 1024;
 
@@ -58,8 +71,13 @@ function showFile(file) {
             "Maximum allowed size is 10 MB."
         );
 
-        fileInput.value = "";
-        fileInfo.textContent = "";
+        if (fileInput) {
+            fileInput.value = "";
+        }
+
+        if (fileInfo) {
+            fileInfo.textContent = "";
+        }
 
         return;
     }
@@ -67,8 +85,11 @@ function showFile(file) {
 
     const sizeKB = file.size / 1024;
 
-    fileInfo.textContent =
-        `Selected file: ${file.name} (${sizeKB.toFixed(1)} KB)`;
+    if (fileInfo) {
+
+        fileInfo.textContent =
+            `Selected file: ${file.name} (${sizeKB.toFixed(1)} KB)`;
+    }
 }
 
 
@@ -85,10 +106,8 @@ if (fileInput) {
             const file = event.target.files[0];
 
             showFile(file);
-
         }
     );
-
 }
 
 
@@ -105,7 +124,6 @@ if (dropZone) {
             event.preventDefault();
 
             dropZone.classList.add("dragging");
-
         }
     );
 
@@ -115,7 +133,6 @@ if (dropZone) {
         function () {
 
             dropZone.classList.remove("dragging");
-
         }
     );
 
@@ -136,8 +153,9 @@ if (dropZone) {
 
             const file = files[0];
 
+
             /*
-             * Assign dropped file to the file input.
+             * Assign dropped file to the file input
              */
 
             try {
@@ -154,14 +172,12 @@ if (dropZone) {
                     "Could not assign dropped file:",
                     error
                 );
-
             }
 
-            showFile(file);
 
+            showFile(file);
         }
     );
-
 }
 
 
@@ -175,17 +191,22 @@ if (resetBtn) {
         "click",
         function () {
 
-            form.reset();
+            if (form) {
+                form.reset();
+            }
 
-            fileInfo.textContent = "";
+            if (fileInfo) {
+                fileInfo.textContent = "";
+            }
 
-            result.innerHTML = "";
+            if (result) {
 
-            result.classList.add("hidden");
+                result.innerHTML = "";
 
+                result.classList.add("hidden");
+            }
         }
     );
-
 }
 
 
@@ -202,70 +223,117 @@ if (form) {
             event.preventDefault();
 
 
+            /* -------------------------------------------------
+               SUBMIT BUTTON
+            ------------------------------------------------- */
+
             const submitButton =
                 form.querySelector(
                     'button[type="submit"]'
                 );
 
 
+            /* -------------------------------------------------
+               GET FORM VALUES
+            ------------------------------------------------- */
+
+            const titleElement =
+                document.getElementById("bugTitle");
+
+            const projectElement =
+                document.getElementById("project");
+
+            const severityElement =
+                document.getElementById("severity");
+
+            const descriptionElement =
+                document.getElementById("description");
+
+            const stackTraceElement =
+                document.getElementById("stackTrace");
+
+
             const bugTitle =
-                document.getElementById(
-                    "bugTitle"
-                ).value.trim();
+                titleElement
+                    ? titleElement.value.trim()
+                    : "";
 
 
             const project =
-                document.getElementById(
-                    "project"
-                ).value;
+                projectElement
+                    ? projectElement.value.trim()
+                    : "";
 
 
             const severity =
-                document.getElementById(
-                    "severity"
-                ).value;
+                severityElement
+                    ? severityElement.value.trim()
+                    : "";
 
 
             const description =
-                document.getElementById(
-                    "description"
-                ).value.trim();
+                descriptionElement
+                    ? descriptionElement.value.trim()
+                    : "";
 
 
             let stackTrace =
-                document.getElementById(
-                    "stackTrace"
-                ).value.trim();
+                stackTraceElement
+                    ? stackTraceElement.value.trim()
+                    : "";
 
 
-            /* ---------------------------------------------
+            /* -------------------------------------------------
                BASIC VALIDATION
-            --------------------------------------------- */
+            ------------------------------------------------- */
 
             if (!bugTitle) {
 
-                alert("Please enter a bug title.");
+                alert(
+                    "Please enter a bug title."
+                );
 
                 return;
+            }
 
+
+            if (!project) {
+
+                alert(
+                    "Please select a project."
+                );
+
+                return;
+            }
+
+
+            if (!severity) {
+
+                alert(
+                    "Please select a severity."
+                );
+
+                return;
             }
 
 
             if (!description) {
 
-                alert("Please enter a bug description.");
+                alert(
+                    "Please enter a bug description."
+                );
 
                 return;
-
             }
 
 
-            /* ---------------------------------------------
+            /* -------------------------------------------------
                READ ATTACHED FILE
-            --------------------------------------------- */
+            ------------------------------------------------- */
 
             const file =
                 fileInput &&
+                fileInput.files &&
                 fileInput.files.length > 0
                     ? fileInput.files[0]
                     : null;
@@ -287,7 +355,6 @@ if (form) {
                             file.name +
                             "\n" +
                             fileContent;
-
                     }
 
                 } catch (error) {
@@ -302,15 +369,13 @@ if (form) {
                     );
 
                     return;
-
                 }
-
             }
 
 
-            /* ---------------------------------------------
-               CREATE PAYLOAD
-            --------------------------------------------- */
+            /* -------------------------------------------------
+               CREATE API PAYLOAD
+            ------------------------------------------------- */
 
             const payload = {
 
@@ -323,42 +388,77 @@ if (form) {
                 description: description,
 
                 stack_trace: stackTrace
-
             };
 
 
-            /* ---------------------------------------------
+            console.log(
+                "BugAI API Request:",
+                payload
+            );
+
+
+            /* -------------------------------------------------
                BUTTON STATE
-            --------------------------------------------- */
+            ------------------------------------------------- */
 
-            submitButton.disabled = true;
+            if (submitButton) {
 
-            submitButton.textContent =
-                "Analyzing...";
+                submitButton.disabled = true;
+
+                submitButton.textContent =
+                    "Analyzing...";
+            }
 
 
-            result.classList.remove("hidden");
+            /* -------------------------------------------------
+               SHOW ANALYZING STATE
+            ------------------------------------------------- */
 
-            result.innerHTML = `
-                <h2>Analyzing Bug...</h2>
+            if (result) {
 
-                <p>
-                    The BugAI backend is processing the
-                    defect through the diagnosis pipeline.
-                </p>
-            `;
+                result.classList.remove(
+                    "hidden"
+                );
 
+                result.innerHTML = `
+                    <h2>Analyzing Bug...</h2>
+
+                    <p>
+                        BugAI is processing the submitted
+                        defect through the diagnosis pipeline.
+                    </p>
+
+                    <div class="result-box">
+
+                        <p>
+                            <strong>Project:</strong>
+                            ${escapeHTML(project)}
+                        </p>
+
+                        <p>
+                            <strong>Severity:</strong>
+                            ${escapeHTML(severity)}
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong>
+                            Searching historical defects...
+                        </p>
+
+                    </div>
+                `;
+            }
+
+
+            /* -------------------------------------------------
+               BACKEND REQUEST
+            ------------------------------------------------- */
 
             try {
-
-                /* -----------------------------------------
-                   BACKEND REQUEST
-                ----------------------------------------- */
 
                 const response = await fetch(
                     `${API_BASE_URL}/api/analyze`,
                     {
-
                         method: "POST",
 
                         headers: {
@@ -368,92 +468,86 @@ if (form) {
 
                         body:
                             JSON.stringify(payload)
-
                     }
                 );
 
 
-                /* -----------------------------------------
-                   HANDLE EMPTY / INVALID RESPONSE
-                ----------------------------------------- */
+                /* -------------------------------------------------
+                   READ RESPONSE SAFELY
+                ------------------------------------------------- */
 
                 const responseText =
                     await response.text();
 
 
-                let data;
+                console.log(
+                    "Backend HTTP Status:",
+                    response.status
+                );
+
+                console.log(
+                    "Backend Response:",
+                    responseText
+                );
 
 
-                try {
+                let data = {};
 
-                    data =
-                        responseText
-                            ? JSON.parse(responseText)
-                            : {};
 
-                } catch (jsonError) {
+                if (responseText.trim()) {
 
-                    console.error(
-                        "Invalid JSON response:",
-                        responseText
-                    );
+                    try {
 
-                    throw new Error(
-                        `Backend returned an invalid response (HTTP ${response.status}).`
-                    );
+                        data =
+                            JSON.parse(
+                                responseText
+                            );
 
+                    } catch (jsonError) {
+
+                        console.error(
+                            "Invalid JSON returned by backend:",
+                            responseText
+                        );
+
+                        throw new Error(
+                            `Backend returned invalid JSON (HTTP ${response.status}).`
+                        );
+                    }
                 }
 
+
+                /* -------------------------------------------------
+                   HANDLE HTTP ERRORS
+                ------------------------------------------------- */
 
                 if (!response.ok) {
 
                     throw new Error(
                         data.error ||
+                        data.message ||
                         `Backend request failed (HTTP ${response.status}).`
                     );
-
                 }
 
 
-                /* -----------------------------------------
-                   SAVE LOCAL ANALYSIS HISTORY
-                ----------------------------------------- */
+                /* -------------------------------------------------
+                   SAVE ANALYSIS HISTORY
+                ------------------------------------------------- */
 
-                const analyses =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "bugaiAnalyses"
-                        ) || "[]"
-                    );
-
-
-                analyses.unshift({
-
-                    ...payload,
-
-                    created_at:
-                        new Date()
-                            .toLocaleString()
-
-                });
-
-
-                localStorage.setItem(
-
-                    "bugaiAnalyses",
-
-                    JSON.stringify(
-                        analyses.slice(0, 20)
-                    )
-
+                saveAnalysisHistory(
+                    payload,
+                    data
                 );
 
 
-                /* -----------------------------------------
+                /* -------------------------------------------------
                    DISPLAY RESULT
-                ----------------------------------------- */
+                ------------------------------------------------- */
 
-                renderResult(data);
+                renderResult(
+                    data
+                );
 
 
             } catch (error) {
@@ -464,65 +558,125 @@ if (form) {
                 );
 
 
-                result.classList.remove(
-                    "hidden"
-                );
+                if (result) {
 
+                    result.classList.remove(
+                        "hidden"
+                    );
 
-                result.innerHTML = `
+                    result.innerHTML = `
 
-                    <h2>
-                        Analysis Error
-                    </h2>
-
-                    <p>
-                        ${escapeHTML(
-                            getFriendlyErrorMessage(error)
-                        )}
-                    </p>
-
-                    <div class="result-box">
-
-                        <h3>
-                            Check the following
-                        </h3>
+                        <h2>
+                            Analysis Error
+                        </h2>
 
                         <p>
-                            1. Make sure the Python backend
-                            is running.
+                            ${escapeHTML(
+                                getFriendlyErrorMessage(
+                                    error
+                                )
+                            )}
                         </p>
 
-                        <p>
-                            2. Run:
-                            <strong>
-                                python backend/app.py
-                            </strong>
-                        </p>
 
-                        <p>
-                            3. Confirm that the backend is
-                            available at:
-                            <strong>
-                                http://127.0.0.1:5000
-                            </strong>
-                        </p>
+                        <div class="result-box">
 
-                    </div>
+                            <h3>
+                                Check the following
+                            </h3>
 
-                `;
+                            <p>
+                                <strong>1.</strong>
+                                Make sure the Python backend
+                                is running.
+                            </p>
+
+                            <p>
+                                <strong>2.</strong>
+                                Run:
+                            </p>
+
+                            <pre>python backend/app.py</pre>
+
+                            <p>
+                                <strong>3.</strong>
+                                Confirm that the backend is
+                                available at:
+                            </p>
+
+                            <pre>http://127.0.0.1:5000</pre>
+
+                            <p>
+                                <strong>4.</strong>
+                                Open the browser console
+                                with F12 to see detailed
+                                API errors.
+                            </p>
+
+                        </div>
+                    `;
+                }
 
             } finally {
 
-                submitButton.disabled = false;
+                if (submitButton) {
 
-                submitButton.textContent =
-                    "Analyze Bug";
+                    submitButton.disabled = false;
 
+                    submitButton.textContent =
+                        "Analyze Bug";
+                }
             }
-
         }
     );
+}
 
+
+/* =========================================================
+   SAVE ANALYSIS HISTORY
+   ========================================================= */
+
+function saveAnalysisHistory(
+    payload,
+    data
+) {
+
+    try {
+
+        const analyses =
+            JSON.parse(
+                localStorage.getItem(
+                    "bugaiAnalyses"
+                ) || "[]"
+            );
+
+
+        analyses.unshift({
+
+            ...payload,
+
+            analysis: data,
+
+            created_at:
+                new Date().toLocaleString()
+        });
+
+
+        localStorage.setItem(
+            "bugaiAnalyses",
+            JSON.stringify(
+                analyses.slice(0, 20)
+            )
+        );
+
+
+    } catch (error) {
+
+        console.warn(
+            "Could not save analysis history:",
+            error
+        );
+    }
 }
 
 
@@ -532,10 +686,19 @@ if (form) {
 
 function renderResult(data) {
 
+    if (!result) {
+        return;
+    }
+
+
     result.classList.remove(
         "hidden"
     );
 
+
+    /* -------------------------------------------------
+       EXTRACT RESPONSE DATA
+    ------------------------------------------------- */
 
     const triage =
         data.triage || {};
@@ -543,6 +706,9 @@ function renderResult(data) {
 
     const logAnalysis =
         data.log_analysis || {};
+
+    const orchestration =
+        data.orchestration || {};
 
 
     const similarDefects =
@@ -563,8 +729,12 @@ function renderResult(data) {
         "No remediation recommendation available.";
 
 
+    /* -------------------------------------------------
+       SIMILAR DEFECTS
+    ------------------------------------------------- */
+
     let similarHTML =
-        "<p>No similar historical defects found.</p>";
+        `<p>No similar historical defects found.</p>`;
 
 
     if (similarDefects.length > 0) {
@@ -573,10 +743,21 @@ function renderResult(data) {
             similarDefects
                 .map(function (match) {
 
-                    const score =
+                    const rawScore =
                         Number(
                             match.score || 0
-                        ) * 100;
+                        );
+
+
+                    /*
+                     * Backend normally returns
+                     * similarity between 0 and 1.
+                     */
+
+                    const score =
+                        rawScore <= 1
+                            ? rawScore * 100
+                            : rawScore;
 
 
                     return `
@@ -584,36 +765,48 @@ function renderResult(data) {
                         <div class="match">
 
                             <div>
+
                                 <strong>
                                     ${escapeHTML(
-                                        match.title
+                                        match.title ||
+                                        "Untitled defect"
                                     )}
                                 </strong>
 
                                 <span>
                                     —
                                     ${escapeHTML(
-                                        match.project
+                                        match.project ||
+                                        "Unknown project"
                                     )}
                                 </span>
 
                                 <span class="score">
                                     ${score.toFixed(1)}%
                                 </span>
+
                             </div>
 
+
                             <small>
+
                                 Bug ID:
                                 ${escapeHTML(
-                                    match.bug_id
+                                    match.bug_id ||
+                                    "N/A"
                                 )}
+
                             </small>
 
+
                             <div>
+
                                 ${escapeHTML(
                                     match.resolution ||
+                                    match.description ||
                                     "No resolution recorded."
                                 )}
+
                             </div>
 
                         </div>
@@ -622,9 +815,88 @@ function renderResult(data) {
 
                 })
                 .join("");
-
     }
 
+
+    /* -------------------------------------------------
+       TRIAGE SIGNALS
+    ------------------------------------------------- */
+
+    let triageSignalsHTML = "";
+
+
+    if (
+        Array.isArray(
+            triage.signals
+        ) &&
+        triage.signals.length > 0
+    ) {
+
+        triageSignalsHTML = `
+
+            <p>
+
+                <strong>
+                    Signals:
+                </strong>
+
+                ${triage.signals
+                    .map(function (signal) {
+
+                        return escapeHTML(
+                            signal
+                        );
+
+                    })
+                    .join(", ")}
+
+            </p>
+
+        `;
+    }
+
+
+    /* -------------------------------------------------
+       LOG PATTERNS
+    ------------------------------------------------- */
+
+    let logPatternsHTML = "";
+
+
+    if (
+        Array.isArray(
+            logAnalysis.patterns
+        ) &&
+        logAnalysis.patterns.length > 0
+    ) {
+
+        logPatternsHTML = `
+
+            <p>
+
+                <strong>
+                    Detected Patterns:
+                </strong>
+
+                ${logAnalysis.patterns
+                    .map(function (pattern) {
+
+                        return escapeHTML(
+                            pattern
+                        );
+
+                    })
+                    .join(", ")}
+
+            </p>
+
+        `;
+    }
+
+
+    /* -------------------------------------------------
+       RESULT HTML
+    ------------------------------------------------- */
 
     result.innerHTML = `
 
@@ -636,81 +908,101 @@ function renderResult(data) {
         <div class="result-grid">
 
 
-            <!-- Triage -->
+            <!-- Triage Agent -->
 
-            <div class="result-box">
+            <div class="result-box agent-card">
 
-                <h3>
-                    Triage Agent
-                </h3>
+                <div class="agent-heading">
+                    <h3>Triage Agent</h3>
+                    <span class="agent-status">Completed</span>
+                </div>
 
                 <p>
-                    ${escapeHTML(
-                        triage.summary ||
-                        "No triage summary."
-                    )}
+                    <strong>Severity:</strong>
+                    ${escapeHTML(triage.severity || "N/A")}
+                </p>
+                <p>
+                    <strong>Priority:</strong>
+                    ${escapeHTML(triage.priority || "N/A")}
+                </p>
+                <p>
+                    <strong>Affected Component:</strong>
+                    ${escapeHTML(triage.affected_component || "N/A")}
+                </p>
+                <p>
+                    <strong>Confidence:</strong>
+                    ${Number(triage.confidence || 0) * 100}%
+                </p>
+                <p>
+                    <strong>Reasoning:</strong>
+                    ${escapeHTML(triage.reasoning || triage.summary || "N/A")}
                 </p>
 
-                ${
-                    triage.signals &&
-                    triage.signals.length
-                        ? `
-                            <p>
-                                <strong>
-                                    Signals:
-                                </strong>
-
-                                ${triage.signals
-                                    .map(
-                                        escapeHTML
-                                    )
-                                    .join(", ")}
-                            </p>
-                          `
-                        : ""
-                }
+                ${triageSignalsHTML}
 
             </div>
 
 
-            <!-- Log Analysis -->
+            <!-- Log Analysis Agent -->
 
-            <div class="result-box">
+            <div class="result-box agent-card">
 
-                <h3>
-                    Log Analysis Agent
-                </h3>
+                <div class="agent-heading">
+                    <h3>Log Analysis Agent</h3>
+                    <span class="agent-status">Completed</span>
+                </div>
 
                 <p>
+                    <strong>Exception Type:</strong>
+                    ${escapeHTML(logAnalysis.exception_type || "N/A")}
+                </p>
+                <p>
+                    <strong>Error Message:</strong>
+                    ${escapeHTML(logAnalysis.error_message || "Not available")}
+                </p>
+                <p>
+                    <strong>Failure Point:</strong>
                     ${escapeHTML(
-                        logAnalysis.summary ||
-                        "No log analysis summary."
+                        (logAnalysis.failure_point?.file || "N/A") +
+                        (logAnalysis.failure_point?.line ? ":" + logAnalysis.failure_point.line : "")
                     )}
                 </p>
+                <p>
+                    <strong>Method:</strong>
+                    ${escapeHTML(logAnalysis.failure_point?.method || "N/A")}
+                </p>
+                <p>
+                    <strong>Confidence:</strong>
+                    ${Number(logAnalysis.confidence || 0) * 100}%
+                </p>
 
-                ${
-                    logAnalysis.patterns &&
-                    logAnalysis.patterns.length
-                        ? `
-                            <p>
-                                <strong>
-                                    Detected Patterns:
-                                </strong>
-
-                                ${logAnalysis.patterns
-                                    .map(
-                                        escapeHTML
-                                    )
-                                    .join(", ")}
-                            </p>
-                          `
-                        : ""
-                }
+                ${logPatternsHTML}
 
             </div>
 
 
-            <!-- Root Cause -->
+            <!-- Combined Agent Context -->
+
+            <div class="result-box agent-card">
+
+                <div class="agent-heading">
+                    <h3>Agent Orchestration</h3>
+                    <span class="agent-status">Ready for M3</span>
+                </div>
+
+                <p>
+                    <strong>Status:</strong>
+                    ${escapeHTML(orchestration.status || "completed")}
+                </p>
+                <p>
+                    Triage and Log Analysis outputs were combined into a
+                    structured bug context for downstream diagnosis.
+                </p>
+
+            </div>
+
+
+            <!-- Root Cause Agent -->
 
             <div class="result-box">
 
@@ -727,7 +1019,7 @@ function renderResult(data) {
             </div>
 
 
-            <!-- Remediation -->
+            <!-- Remediation Agent -->
 
             <div class="result-box">
 
@@ -761,11 +1053,14 @@ function renderResult(data) {
     `;
 
 
+    /* -------------------------------------------------
+       SCROLL TO RESULT
+    ------------------------------------------------- */
+
     result.scrollIntoView({
         behavior: "smooth",
         block: "start"
     });
-
 }
 
 
@@ -773,7 +1068,9 @@ function renderResult(data) {
    FRIENDLY ERROR MESSAGE
    ========================================================= */
 
-function getFriendlyErrorMessage(error) {
+function getFriendlyErrorMessage(
+    error
+) {
 
     if (
         error instanceof TypeError &&
@@ -787,13 +1084,21 @@ function getFriendlyErrorMessage(error) {
             "Please make sure python backend/app.py " +
             "is running on port 5000."
         );
-
     }
 
 
-    return error.message ||
-        "An unexpected error occurred.";
+    if (
+        error &&
+        error.message
+    ) {
 
+        return error.message;
+    }
+
+
+    return (
+        "An unexpected error occurred."
+    );
 }
 
 
@@ -812,18 +1117,19 @@ function escapeHTML(value) {
             const entities = {
 
                 "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#039;"
 
+                "<": "&lt;",
+
+                ">": "&gt;",
+
+                '"': "&quot;",
+
+                "'": "&#039;"
             };
 
             return entities[
                 character
             ];
-
         }
     );
-
 }

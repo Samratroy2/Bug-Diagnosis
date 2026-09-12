@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BugAI - Milestone 2 Validation</title>
+<link rel="stylesheet" href="../sidebar.css">
+<link rel="stylesheet" href="validation.css">
+</head>
+<body>
+<div id="sidebar-container"></div>
+<main>
+<header>
+<span>Milestone 2.4</span>
+<h1>Agent Accuracy Validation</h1>
+<p>Validate Triage and Log Analysis agents against seeded and varied bug-report formats.</p>
+</header>
+
+<section class="summary-grid" id="metrics">
+<div class="metric"><strong>--</strong><span>Triage Severity</span></div>
+<div class="metric"><strong>--</strong><span>Triage Priority</span></div>
+<div class="metric"><strong>--</strong><span>Triage Component</span></div>
+<div class="metric"><strong>--</strong><span>Exception Type</span></div>
+<div class="metric"><strong>--</strong><span>Failure File</span></div>
+<div class="metric"><strong>--</strong><span>Failure Line</span></div>
+</div>
+
+<section class="card">
+<div class="section-head">
+<div><h2>Validation Results</h2><p id="status">Running Milestone 2 test suite...</p></div>
+<button id="runBtn" class="primary">Run Validation</button>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Test Case</th><th>Severity</th><th>Priority</th><th>Component</th><th>Exception</th><th>Result</th></tr></thead>
+<tbody id="results"><tr><td colspan="6">Loading...</td></tr></tbody>
+</table>
+</div>
+</section>
+</main>
+<script src="../sidebar.js"></script>
+<script src="validation.js"></script>
+</body>
+</html>
