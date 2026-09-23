@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BugAI - Semantic Similarity</title><link rel="stylesheet" href="../sidebar.css"><link rel="stylesheet" href="similarity.css"></head>
+<body><div id="sidebar-container"></div><main>
+<header><span>RAG RETRIEVAL</span><h1>Semantic Similarity Search</h1><p>Compare a new bug description with historical defect records using generated embeddings.</p></header>
+<section class="card"><label for="query">Bug Description / Error</label><textarea id="query" rows="7" placeholder="Example: Application throws null pointer exception when browser session is missing..."></textarea>
+<div class="controls"><select id="project"><option value="">All Projects</option><option>Mozilla</option><option>Apache</option><option>Eclipse</option></select><select id="topK"><option>3</option><option>5</option><option>10</option></select><button id="searchButton">Find Similar Defects</button></div></section>
+<section class="pipeline"><span>Query</span><b>→</b><span>Embedding Model</span><b>→</b><span>FAISS Search</span><b>→</b><span>Cosine Similarity</span><b>→</b><span>Rank Results</span></section>
+<section id="results"></section>
+<section class="explanation"><h2>How retrieval works</h2><p>The backend creates semantic embeddings for prepared defect chunks and stores them in a FAISS vector index. A submitted bug is embedded with the same model, searched against the index and ranked by similarity.</p></section>
+</main><script src="../sidebar.js"></script><script src="similarity.js"></script></body></html>

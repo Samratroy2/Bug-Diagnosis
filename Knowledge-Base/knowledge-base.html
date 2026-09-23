@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BugAI - Knowledge Base</title>
+
+    <link rel="stylesheet" href="../sidebar.css">
+    <link rel="stylesheet" href="knowledge-base.css">
+</head>
+
+<body>
+
+<div id="sidebar-container"></div>
+
+<main>
+
+    <header class="page-header">
+        <span class="eyebrow">RAG KNOWLEDGE BASE</span>
+
+        <h1>Historical Defect Knowledge Base</h1>
+
+        <p>
+            Historical bug reports used by BugAI for semantic search,
+            duplicate detection, root-cause analysis and remediation.
+        </p>
+    </header>
+
+
+    <!-- PIPELINE -->
+
+    <section class="pipeline">
+
+        <div class="pipeline-step active">
+            <span class="pipeline-number">1</span>
+            <span>Bug Dataset</span>
+        </div>
+
+        <b>→</b>
+
+        <div class="pipeline-step active">
+            <span class="pipeline-number">2</span>
+            <span>Clean Data</span>
+        </div>
+
+        <b>→</b>
+
+        <div class="pipeline-step active">
+            <span class="pipeline-number">3</span>
+            <span>Chunking</span>
+        </div>
+
+        <b>→</b>
+
+        <div class="pipeline-step active">
+            <span class="pipeline-number">4</span>
+            <span>Embedding</span>
+        </div>
+
+        <b>→</b>
+
+        <div class="pipeline-step" id="faissPipelineStep">
+            <span class="pipeline-number">5</span>
+            <span>FAISS Index</span>
+        </div>
+
+    </section>
+
+
+    <!-- DATASET STATISTICS -->
+
+    <section class="stats">
+
+        <article class="stat-card">
+            <span>Mozilla</span>
+            <strong id="mozillaCount">—</strong>
+        </article>
+
+        <article class="stat-card">
+            <span>Apache</span>
+            <strong id="apacheCount">—</strong>
+        </article>
+
+        <article class="stat-card">
+            <span>Eclipse</span>
+            <strong id="eclipseCount">—</strong>
+        </article>
+
+        <article class="stat-card">
+            <span>Total Records</span>
+            <strong id="totalCount">—</strong>
+        </article>
+
+        <article class="stat-card">
+            <span>Indexed Vectors</span>
+            <strong id="indexedCount">—</strong>
+        </article>
+
+        <article class="stat-card status-card">
+            <span>Index Status</span>
+            <strong id="indexStatus" class="status checking">
+                Checking...
+            </strong>
+        </article>
+
+    </section>
+
+
+    <!-- INDEX INFORMATION -->
+
+    <section class="index-info">
+
+        <div class="info-item">
+            <span>Embedding Model</span>
+            <strong id="embeddingModel">—</strong>
+        </div>
+
+        <div class="info-item">
+            <span>Vector Dimension</span>
+            <strong id="vectorDimension">—</strong>
+        </div>
+
+        <div class="info-item">
+            <span>FAISS Vectors</span>
+            <strong id="faissVectors">—</strong>
+        </div>
+
+        <div class="info-item">
+            <span>Dataset Records</span>
+            <strong id="datasetRecords">—</strong>
+        </div>
+
+    </section>
+
+
+    <!-- CONTROLS -->
+
+    <section class="controls">
+
+        <div class="search-wrapper">
+
+            <input
+                id="search"
+                type="text"
+                autocomplete="off"
+                placeholder="Search historical defects..."
+            >
+
+            <span id="searchInfo" class="search-info">
+                Search records
+            </span>
+
+        </div>
+
+        <select id="projectFilter">
+            <option value="">All Projects</option>
+            <option value="Mozilla">Mozilla</option>
+            <option value="Apache">Apache</option>
+            <option value="Eclipse">Eclipse</option>
+        </select>
+
+        <button id="refreshStats" type="button">
+            Refresh Status
+        </button>
+
+    </section>
+
+
+    <!-- PAGINATION -->
+
+    <section class="records-toolbar">
+
+        <span id="recordsSummary">
+            Loading records...
+        </span>
+
+        <div class="pagination">
+
+            <button
+                id="previousPage"
+                type="button"
+                disabled
+            >
+                ← Previous
+            </button>
+
+            <span id="pageNumber">
+                Page 1
+            </span>
+
+            <button
+                id="nextPage"
+                type="button"
+                disabled
+            >
+                Next →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- RECORDS -->
+
+    <section id="records">
+
+        <div class="card loading-card">
+            <div class="loading-spinner"></div>
+
+            <h3>Loading knowledge base...</h3>
+
+            <p>
+                Fetching historical defect records.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- NOTE -->
+
+    <section class="note">
+
+        <strong>Milestone 3 RAG Implementation</strong>
+
+        <p>
+            BugAI uses historical Mozilla, Apache and Eclipse defect
+            records as the retrieval knowledge base. Records are
+            converted into normalized text, embedded using
+            <strong>all-MiniLM-L6-v2</strong>, and indexed using FAISS
+            for semantic similarity search.
+        </p>
+
+        <p>
+            The full dataset contains
+            <strong>1,311,079</strong> historical defect records.
+            The FAISS index contains the complete dataset and is
+            generated separately by the backend indexing process.
+        </p>
+
+    </section>
+
+</main>
+
+<script src="../sidebar.js"></script>
+<script src="knowledge-base.js"></script>
+
+</body>
+</html>

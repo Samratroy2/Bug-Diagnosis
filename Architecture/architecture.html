@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BugAI - AI Architecture</title><link rel="stylesheet" href="../sidebar.css"><link rel="stylesheet" href="architecture.css"></head>
+<body><div id="sidebar-container"></div><main>
+<header><span>Milestone 1</span><h1>AI System Architecture</h1><p>Designed architecture, agent responsibilities, orchestration flow and historical-defect RAG pipeline.</p></header>
+<section class="flow"><div>User Bug Report</div><b>→</b><div>Bug Processing</div><b>→</b><div>Agent Orchestrator</div><b>→</b><div>Semantic Search + RAG</div><b>→</b><div>Diagnosis + Fix Recommendation</div></section>
+<section><h2>Agent Responsibilities</h2><div id="agents" class="agent-grid"></div></section>
+<section class="rag"><h2>Historical Defect RAG Architecture</h2><div class="rag-flow">
+<div>Historical Datasets</div><b>→</b><div>Cleaning</div><b>→</b><div>Chunking</div><b>→</b><div>Embedding Model</div><b>→</b><div>FAISS Vector Index</div><b>→</b><div>Top-K Retrieval</div>
+</div><p class="note-text">The prototype uses sentence-transformers embeddings and FAISS for vector indexing. The retrieved historical records are supplied to the diagnosis workflow.</p></section>
+<section><h2>Historical Defect Data Model</h2><div class="table-wrap"><table><thead><tr><th>Field</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>bug_id</td><td>Unique defect identifier</td></tr><tr><td>project</td><td>Mozilla, Apache or Eclipse</td></tr><tr><td>title</td><td>Short defect summary</td></tr><tr><td>description</td><td>Detailed defect statement</td></tr><tr><td>stack_trace</td><td>Failure trace or diagnostic logs</td></tr><tr><td>resolution</td><td>Known resolution/fix</td></tr><tr><td>embedding</td><td>Generated semantic vector stored in the vector index</td></tr></tbody></table></div></section>
+<section class="status"><h2>Milestone 1 Implementation Status</h2><ul><li>Defect workflow study and representation — <strong>Completed</strong></li><li>System architecture and five-agent design — <strong>Completed</strong></li><li>Bug submission and file upload module — <strong>Completed</strong></li><li>Dataset preparation, chunking, embeddings and FAISS indexing prototype — <strong>Completed</strong></li><li>Semantic similarity retrieval API — <strong>Completed</strong></li></ul></section>
+</main><script src="../sidebar.js"></script><script src="architecture.js"></script></body></html>

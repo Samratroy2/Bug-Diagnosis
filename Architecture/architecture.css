@@ -1,0 +1,11 @@
+body{margin:0;background:#f5f7fb;color:#172033;font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.55}
+main{margin-left:250px;padding:48px 56px;max-width:1500px}
+header{margin-bottom:28px} header h1{margin:5px 0 8px;font-size:36px;line-height:1.15} header p{margin:0;color:#64748b;font-size:16px}
+.card,.information,.recent,.note,.explanation{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:28px;box-shadow:0 5px 18px rgba(15,23,42,.04)}
+button,.primary-btn{border:0;border-radius:8px;padding:11px 16px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.primary,.primary-btn{background:#2563eb;color:#fff}.secondary{background:#e2e8f0;color:#172033}
+input,select,textarea{width:100%;font:inherit;border:1px solid #cbd5e1;border-radius:8px;padding:11px 13px;outline:none;background:#fff}
+input:focus,select:focus,textarea:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+@media(max-width:900px){main{margin-left:0;padding:80px 22px 30px}}
+
+header>span{font-size:12px;font-weight:700;color:#2563eb;letter-spacing:.08em}.flow,.rag-flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:30px}.flow div,.rag-flow div{background:#fff;border:1px solid #dbe4ef;border-radius:10px;padding:14px 16px;font-weight:600}.flow b,.rag-flow b{color:#2563eb}.agent-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.agent-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px}.agent-number{font-size:11px;color:#2563eb;font-weight:800}.agent-card h3{margin:8px 0}.agent-card p{color:#64748b;font-size:14px;margin:0}.rag{margin-top:30px;background:#eef6ff;border-radius:14px;padding:25px}.note-text{color:#475569}.table-wrap{overflow:auto;background:#fff;border:1px solid #e2e8f0;border-radius:12px}.table-wrap table{width:100%;border-collapse:collapse}.table-wrap th,.table-wrap td{text-align:left;padding:13px;border-bottom:1px solid #e2e8f0}.status{margin-top:30px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:25px}.status li{margin:9px 0}@media(max-width:1200px){.agent-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:700px){.agent-grid{grid-template-columns:1fr}}

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BugAI — Settings</title>
+
+    <link rel="stylesheet" href="../sidebar.css">
+    <link rel="stylesheet" href="settings.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar-container"></div>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="settings-page">
+
+        <!-- PAGE HEADER -->
+        <section class="settings-header">
+
+            <div>
+                <span class="page-label">BUGAI CONFIGURATION</span>
+
+                <h1>Settings</h1>
+
+                <p>
+                    Customize your BugAI experience, analysis preferences,
+                    notifications, and appearance.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- SETTINGS CONTENT -->
+        <section class="settings-container">
+
+
+            <!-- =========================================
+                 APPEARANCE
+            ========================================== -->
+
+            <div class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        🌙
+                    </div>
+
+                    <div>
+                        <h2>Appearance</h2>
+
+                        <p>
+                            Choose how the BugAI interface should look.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="appearance-options">
+
+                    <button
+                        class="appearance-option"
+                        data-theme="light"
+                        id="lightTheme"
+                    >
+
+                        <span class="appearance-icon">☀️</span>
+
+                        <span>
+                            <strong>Light</strong>
+                            <small>Clean and bright interface</small>
+                        </span>
+
+                        <span class="theme-check">✓</span>
+
+                    </button>
+
+
+                    <button
+                        class="appearance-option"
+                        data-theme="dark"
+                        id="darkTheme"
+                    >
+
+                        <span class="appearance-icon">🌙</span>
+
+                        <span>
+                            <strong>Dark</strong>
+                            <small>Dark interface for low-light use</small>
+                        </span>
+
+                        <span class="theme-check">✓</span>
+
+                    </button>
+
+
+                    <button
+                        class="appearance-option"
+                        data-theme="system"
+                        id="systemTheme"
+                    >
+
+                        <span class="appearance-icon">💻</span>
+
+                        <span>
+                            <strong>System</strong>
+                            <small>Follow your device preference</small>
+                        </span>
+
+                        <span class="theme-check">✓</span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================================
+                 NOTIFICATIONS
+            ========================================== -->
+
+            <div class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        🔔
+                    </div>
+
+                    <div>
+                        <h2>Notifications</h2>
+
+                        <p>
+                            Control BugAI notifications and alerts.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-description">
+
+                        <strong>Enable Notifications</strong>
+
+                        <span>
+                            Show notifications when analysis and system
+                            operations are completed.
+                        </span>
+
+                    </div>
+
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="notificationToggle"
+                        >
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================================
+                 SOUND
+            ========================================== -->
+
+            <div class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        🔊
+                    </div>
+
+                    <div>
+                        <h2>Sound</h2>
+
+                        <p>
+                            Manage notification and interface sounds.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-description">
+
+                        <strong>Sound Effects</strong>
+
+                        <span>
+                            Play a short sound when BugAI displays
+                            an important notification.
+                        </span>
+
+                    </div>
+
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="soundToggle"
+                        >
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================================
+                 ANALYSIS PREFERENCES
+            ========================================== -->
+
+            <div class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        ⚡
+                    </div>
+
+                    <div>
+                        <h2>Analysis Preferences</h2>
+
+                        <p>
+                            Configure how BugAI presents analysis results.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-description">
+
+                        <strong>Auto Display Results</strong>
+
+                        <span>
+                            Automatically display the analysis result
+                            after a successful bug analysis.
+                        </span>
+
+                    </div>
+
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="autoResultToggle"
+                        >
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-divider"></div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-description">
+
+                        <strong>Analysis Mode</strong>
+
+                        <span>
+                            Select the level of detail shown in analysis results.
+                        </span>
+
+                    </div>
+
+
+                    <select id="analysisMode">
+
+                        <option value="standard">
+                            Standard
+                        </option>
+
+                        <option value="detailed">
+                            Detailed
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================================
+                 SYSTEM INFORMATION
+            ========================================== -->
+
+            <div class="settings-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        ⚙️
+                    </div>
+
+                    <div>
+                        <h2>System Preferences</h2>
+
+                        <p>
+                            Additional BugAI interface preferences.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-description">
+
+                        <strong>Save Analysis History</strong>
+
+                        <span>
+                            Keep recent analysis results in this browser.
+                        </span>
+
+                    </div>
+
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="historyToggle"
+                        >
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="setting-divider"></div>
+
+
+                <div class="setting-row">
+
+                    <div class="setting-description">
+
+                        <strong>Confirm Before Reset</strong>
+
+                        <span>
+                            Ask for confirmation before resetting settings.
+                        </span>
+
+                    </div>
+
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="confirmResetToggle"
+                        >
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================================
+                 RESET
+            ========================================== -->
+
+            <div class="danger-card">
+
+                <div>
+
+                    <h2>Reset Settings</h2>
+
+                    <p>
+                        Restore all BugAI settings to their default values.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="resetSettings"
+                    class="reset-button"
+                >
+                    Reset to Default
+                </button>
+
+            </div>
+
+
+            <!-- SAVE STATUS -->
+
+            <div
+                id="saveStatus"
+                class="save-status"
+            >
+                ✓ Settings are automatically saved
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="../sidebar.js"></script>
+    <script src="settings.js"></script>
+
+</body>
+</html>

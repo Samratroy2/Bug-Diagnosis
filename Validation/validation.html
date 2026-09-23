@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BugAI - Milestone 2 / 3 Validation</title>
+<link rel="stylesheet" href="../sidebar.css">
+<link rel="stylesheet" href="validation.css">
+</head>
+<body>
+<div id="sidebar-container"></div>
+<main>
+<header>
+<span>Milestone 3.5</span>
+<h1>Milestone 2 / 3 Validation</h1>
+<p>Validate M2 extraction and M3 duplicate classification against controlled known cases.</p>
+</header>
+
+<section class="summary-grid" id="metrics">
+<div class="metric"><strong>--</strong><span>M3 Duplicate Classification</span></div>
+</div>
+
+<section class="card">
+<div class="section-head">
+<div><h2>Validation Results</h2><p id="status">Running M2 / M3 test suite...</p></div>
+<button id="runBtn" class="primary">Run Validation</button>
+</div>
+<div class="table-wrap">
+<table>
+<thead><tr><th>Test Case</th><th>Expected</th><th>Actual</th><th>Status</th><th>Top Match</th></tr></thead>
+<tbody id="results"><tr><td colspan="5">Loading...</td></tr></tbody>
+</table>
+</div>
+</section>
+</main>
+<script src="../sidebar.js"></script>
+<script src="validation.js"></script>
+</body>
+</html>
