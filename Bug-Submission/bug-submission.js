@@ -1,12 +1,2048 @@
-const API_BASE_URL="http://127.0.0.1:5000";
-const form=document.getElementById("bugForm"), fileInput=document.getElementById("logFile"), dropZone=document.getElementById("dropZone"), fileInfo=document.getElementById("fileInfo"), result=document.getElementById("result"), resetBtn=document.getElementById("resetBtn");
-const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
-const pct=v=>`${(Number(v||0)*100).toFixed(1)}%`;
-function showFile(file){if(!file)return; const ok=["txt","log","json","csv"].includes(file.name.split(".").pop().toLowerCase()); if(!ok||file.size>10*1024*1024){alert(ok?"Maximum file size is 10 MB.":"Supported files: TXT, LOG, JSON and CSV.");fileInput.value="";fileInfo.textContent="";return;} fileInfo.textContent=`Selected file: ${file.name} (${(file.size/1024).toFixed(1)} KB)`;}
-fileInput?.addEventListener("change",e=>showFile(e.target.files[0]));
-dropZone?.addEventListener("dragover",e=>{e.preventDefault();dropZone.classList.add("dragging")}); dropZone?.addEventListener("dragleave",()=>dropZone.classList.remove("dragging")); dropZone?.addEventListener("drop",e=>{e.preventDefault();dropZone.classList.remove("dragging");const f=e.dataTransfer.files[0];if(f){try{const dt=new DataTransfer();dt.items.add(f);fileInput.files=dt.files}catch{}showFile(f)}});
-resetBtn?.addEventListener("click",()=>{form.reset();fileInfo.textContent="";result.innerHTML="";result.classList.add("hidden")});
-form?.addEventListener("submit",async e=>{e.preventDefault();const btn=form.querySelector('button[type="submit"]');const payload={title:document.getElementById("bugTitle").value.trim(),project:document.getElementById("project").value.trim(),severity:document.getElementById("severity").value.trim(),description:document.getElementById("description").value.trim(),stack_trace:document.getElementById("stackTrace").value.trim()}; if(fileInput?.files?.[0]) payload.stack_trace+=`\n\nAttached File: ${fileInput.files[0].name}\n${await fileInput.files[0].text()}`; if(!payload.title||!payload.description){alert("Bug title and description are required.");return;} btn.disabled=true;btn.textContent="Analyzing M3 Pipeline...";result.classList.remove("hidden");result.innerHTML='<h2>Analyzing...</h2><p>Running Triage → Log Analysis → Root Cause → Duplicate Detection → Remediation.</p>'; try{const r=await fetch(`${API_BASE_URL}/api/analyze`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const text=await r.text();let data={};try{data=JSON.parse(text)}catch{throw new Error(`Backend returned invalid JSON (HTTP ${r.status}).`)} if(!r.ok||!data.ok)throw new Error(data.error||`HTTP ${r.status}`); saveHistory(payload,data);renderResult(data);}catch(err){result.innerHTML=`<h2>Analysis Error</h2><p>${esc(err.message)}</p><div class="result-box"><strong>Backend:</strong> Run <code>python backend/app.py</code> and keep it on http://127.0.0.1:5000.</div>`}finally{btn.disabled=false;btn.textContent="Analyze Bug";}});
-function saveHistory(payload,data){try{const a=JSON.parse(localStorage.getItem("bugaiAnalyses")||"[]");a.unshift({...payload,analysis:data,created_at:new Date().toLocaleString()});localStorage.setItem("bugaiAnalyses",JSON.stringify(a.slice(0,20)))}catch{}}
-function evidenceHTML(e){if(!e?.length)return '<p class="muted">No retrieved evidence.</p>';return e.map(x=>`<div class="evidence"><strong>${esc(x.bug_id)}</strong> — ${esc(x.title)} <span class="score">${pct(x.similarity)}</span><p>${esc(x.description)}</p><small><b>Historical resolution:</b> ${esc(x.resolution||"Not recorded")}</small></div>`).join("")}
-function renderResult(d){const t=d.triage||{},l=d.log_analysis||{},rc=d.root_cause||{},dd=d.duplicate_detection||{},rm=d.remediation||{};const matches=dd.matches||[];result.innerHTML=`<div class="findings-header"><div><h2>Structured Bug Diagnosis Report</h2><p><b>${esc(d.bug_context?.bug?.title)}</b> · ${esc(d.bug_context?.bug?.project)}</p></div><span class="agent-status">M3 Completed</span></div><div class="result-grid"><div class="result-box agent-card"><div class="agent-heading"><h3>01 · Triage Agent</h3><span class="agent-status">${pct(t.confidence)}</span></div><p><b>Severity:</b> ${esc(t.severity)}</p><p><b>Priority:</b> ${esc(t.priority)}</p><p><b>Component:</b> ${esc(t.affected_component)}</p><p><b>Reasoning:</b> ${esc(t.reasoning)}</p></div><div class="result-box agent-card"><div class="agent-heading"><h3>02 · Log Analysis Agent</h3><span class="agent-status">${pct(l.confidence)}</span></div><p><b>Exception:</b> ${esc(l.exception_type)}</p><p><b>Error:</b> ${esc(l.error_message||"Not available")}</p><p><b>Failure:</b> ${esc(l.failure_point?.file||"N/A")}${l.failure_point?.line?":"+l.failure_point.line:""}</p><p><b>Code path frames:</b> ${(l.code_path||[]).length}</p></div></div><div class="m3-section"><div class="section-title"><h3>03 · Root Cause Agent</h3><span class="status-pill">${esc(rc.status||"Insufficient Evidence")}</span></div><div class="primary-cause"><strong>${esc(rc.primary_hypothesis||"Insufficient Evidence")}</strong><span>${pct(rc.confidence)}</span></div><p>${esc(rc.reasoning_boundary||"")}</p>${evidenceHTML(rc.supporting_evidence)}</div><div class="m3-section"><div class="section-title"><h3>04 · Duplicate Detection Agent</h3><span class="status-pill">${esc(dd.status||"New / Unmatched")}</span></div><p>Thresholds: Duplicate ≥ ${pct(dd.thresholds?.duplicate)} · Related ≥ ${pct(dd.thresholds?.related)}</p>${matches.length?matches.map(m=>`<div class="duplicate-row"><div><strong>${esc(m.bug_id)} — ${esc(m.title)}</strong><p>${esc(m.reason)}</p><small>${esc(m.project)} · ${esc(m.classification)} · ${esc(m.resolution_summary||"No historical resolution")}</small></div><b>${pct(m.similarity)}</b></div>`).join(""):'<p>Insufficient matching evidence; issue is treated as new/unmatched.</p>'}</div><div class="m3-section"><div class="section-title"><h3>05 · Remediation Agent</h3><span class="status-pill">${esc(rm.status||"Insufficient Evidence")}</span></div>${(rm.recommendations||[]).map((x,i)=>`<div class="recommendation"><h4>${i+1}. ${esc(x.recommendation)} <span>${pct(x.confidence)}</span></h4><p><b>Basis:</b> ${esc(x.basis)} ${x.source_bug_ids?.length?`· Sources: ${x.source_bug_ids.map(esc).join(", ")}`:""}</p><p><b>Implementation guidance:</b></p><ul>${(x.implementation_guidance||[]).map(y=>`<li>${esc(y)}</li>`).join("")}</ul><p><b>Validation:</b> ${(x.validation_steps||[]).map(esc).join(" · ")}</p></div>`).join("")||'<p>Insufficient evidence for a specific recommendation.</p>'}</div><div class="m3-section evidence-panel"><div class="section-title"><h3>Retrieved Historical Evidence</h3><span>${d.retrieval?.count||0} records</span></div>${evidenceHTML(d.retrieval?.records||[])}</div>`;result.scrollIntoView({behavior:"smooth",block:"start"});}
+// ============================================================
+// BugAI - Bug Submission
+// Milestone 3
+// ============================================================
+
+"use strict";
+
+// ============================================================
+// CONFIGURATION
+// ============================================================
+
+const API_BASE_URL = "http://127.0.0.1:5000";
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+
+const ALLOWED_EXTENSIONS = [
+    "txt",
+    "log",
+    "json",
+    "csv"
+];
+
+
+// ============================================================
+// DOM ELEMENTS
+// ============================================================
+
+const bugForm = document.getElementById("bugForm");
+
+const bugTitle = document.getElementById("bugTitle");
+const project = document.getElementById("project");
+const description = document.getElementById("description");
+const stackTrace = document.getElementById("stackTrace");
+
+const dropZone = document.getElementById("dropZone");
+const logFile = document.getElementById("logFile");
+const fileInfo = document.getElementById("fileInfo");
+
+const resetBtn = document.getElementById("resetBtn");
+
+const result = document.getElementById("result");
+
+const submitButton =
+    bugForm
+        ? bugForm.querySelector(".primary")
+        : null;
+
+
+// ============================================================
+// STATE
+// ============================================================
+
+let selectedFile = null;
+
+
+// ============================================================
+// INITIALIZATION
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log(
+        "BugAI Milestone 3 Bug Submission JS ready."
+    );
+
+    initializeFileUpload();
+
+});
+
+
+// ============================================================
+// FILE UPLOAD INITIALIZATION
+// ============================================================
+
+function initializeFileUpload() {
+
+    if (!dropZone || !logFile) {
+        return;
+    }
+
+
+    // --------------------------------------------
+    // File input
+    // --------------------------------------------
+
+    logFile.addEventListener(
+        "change",
+        () => {
+
+            if (
+                logFile.files &&
+                logFile.files.length > 0
+            ) {
+
+                handleFile(
+                    logFile.files[0]
+                );
+
+            }
+
+        }
+    );
+
+
+    // --------------------------------------------
+    // Click drop zone
+    // --------------------------------------------
+
+    dropZone.addEventListener(
+        "click",
+        (event) => {
+
+            if (
+                event.target === logFile
+            ) {
+                return;
+            }
+
+            logFile.click();
+
+        }
+    );
+
+
+    // --------------------------------------------
+    // Drag over
+    // --------------------------------------------
+
+    dropZone.addEventListener(
+        "dragover",
+        (event) => {
+
+            event.preventDefault();
+
+            dropZone.classList.add(
+                "drag-over"
+            );
+
+        }
+    );
+
+
+    // --------------------------------------------
+    // Drag leave
+    // --------------------------------------------
+
+    dropZone.addEventListener(
+        "dragleave",
+        () => {
+
+            dropZone.classList.remove(
+                "drag-over"
+            );
+
+        }
+    );
+
+
+    // --------------------------------------------
+    // Drop
+    // --------------------------------------------
+
+    dropZone.addEventListener(
+        "drop",
+        (event) => {
+
+            event.preventDefault();
+
+            dropZone.classList.remove(
+                "drag-over"
+            );
+
+
+            const files =
+                event.dataTransfer.files;
+
+
+            if (
+                files &&
+                files.length > 0
+            ) {
+
+                handleFile(
+                    files[0]
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// HANDLE FILE
+// ============================================================
+
+function handleFile(file) {
+
+    const validation =
+        validateFile(file);
+
+
+    if (!validation.valid) {
+
+        selectedFile = null;
+
+        logFile.value = "";
+
+        showFileError(
+            validation.message
+        );
+
+        return;
+
+    }
+
+
+    selectedFile = file;
+
+
+    const sizeMB =
+        (
+            file.size /
+            (1024 * 1024)
+        ).toFixed(2);
+
+
+    fileInfo.innerHTML = `
+
+        <div class="file-success">
+
+            <strong>
+                ✓ ${escapeHtml(file.name)}
+            </strong>
+
+            <span>
+                ${sizeMB} MB
+            </span>
+
+            <button
+                type="button"
+                id="removeFile"
+            >
+                Remove
+            </button>
+
+        </div>
+
+    `;
+
+
+    const removeButton =
+        document.getElementById(
+            "removeFile"
+        );
+
+
+    if (removeButton) {
+
+        removeButton.addEventListener(
+            "click",
+            removeFile
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// VALIDATE FILE
+// ============================================================
+
+function validateFile(file) {
+
+    if (!file) {
+
+        return {
+            valid: false,
+            message: "No file selected."
+        };
+
+    }
+
+
+    const fileName =
+        file.name || "";
+
+
+    const extension =
+        fileName
+            .split(".")
+            .pop()
+            .toLowerCase();
+
+
+    if (
+        !ALLOWED_EXTENSIONS.includes(
+            extension
+        )
+    ) {
+
+        return {
+            valid: false,
+            message:
+                "Invalid file type. Please upload TXT, LOG, JSON or CSV."
+        };
+
+    }
+
+
+    if (
+        file.size >
+        MAX_FILE_SIZE
+    ) {
+
+        return {
+            valid: false,
+            message:
+                "File is too large. Maximum allowed size is 10 MB."
+        };
+
+    }
+
+
+    return {
+        valid: true,
+        message: ""
+    };
+
+}
+
+
+// ============================================================
+// REMOVE FILE
+// ============================================================
+
+function removeFile() {
+
+    selectedFile = null;
+
+    if (logFile) {
+        logFile.value = "";
+    }
+
+    if (fileInfo) {
+        fileInfo.innerHTML = "";
+    }
+
+}
+
+
+// ============================================================
+// FORM SUBMISSION
+// ============================================================
+
+if (bugForm) {
+
+    bugForm.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+
+            // --------------------------------------------
+            // Validate
+            // --------------------------------------------
+
+            if (!validateForm()) {
+                return;
+            }
+
+
+            // --------------------------------------------
+            // Save original button text
+            // --------------------------------------------
+
+            const originalButtonText =
+                submitButton
+                    ? submitButton.textContent
+                    : "Analyze Bug";
+
+
+            // --------------------------------------------
+            // Loading state
+            // --------------------------------------------
+
+            if (submitButton) {
+
+                submitButton.disabled = true;
+
+                submitButton.textContent =
+                    "Analyzing...";
+
+            }
+
+
+            hideResult();
+
+
+            try {
+
+                // ====================================================
+                // CREATE BUG DATA
+                // ====================================================
+
+                const bugData = {
+
+                    title:
+                        bugTitle.value.trim(),
+
+                    project:
+                        project.value,
+
+                    description:
+                        description.value.trim(),
+
+                    stack_trace:
+                        stackTrace.value.trim()
+
+                };
+
+
+                // ====================================================
+                // IF A FILE IS SELECTED
+                //
+                // The current backend accepts JSON and analyzes
+                // stack_trace. Therefore we read the selected file
+                // in the browser and append its text to stack_trace.
+                // ====================================================
+
+                if (selectedFile) {
+
+                    try {
+
+                        const fileText =
+                            await selectedFile.text();
+
+
+                        if (fileText.trim()) {
+
+                            if (
+                                bugData.stack_trace.trim()
+                            ) {
+
+                                bugData.stack_trace +=
+                                    "\n\n--- Attached File: " +
+                                    selectedFile.name +
+                                    " ---\n\n" +
+                                    fileText;
+
+                            } else {
+
+                                bugData.stack_trace =
+                                    "--- Attached File: " +
+                                    selectedFile.name +
+                                    " ---\n\n" +
+                                    fileText;
+
+                            }
+
+                        }
+
+                    } catch (fileError) {
+
+                        console.warn(
+                            "Unable to read attached file:",
+                            fileError
+                        );
+
+                    }
+
+                }
+
+
+                // ====================================================
+                // DEBUG LOG
+                //
+                // IMPORTANT:
+                // bugData exists ONLY inside this submit function.
+                // There is NO bugData reference outside this scope.
+                // ====================================================
+
+                console.log(
+                    "Sending bug to BugAI:",
+                    bugData
+                );
+
+
+                // ====================================================
+                // API REQUEST
+                // ====================================================
+
+                const response =
+                    await fetch(
+                        `${API_BASE_URL}/api/analyze`,
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    bugData
+                                )
+
+                        }
+                    );
+
+
+                // ====================================================
+                // READ RESPONSE AS TEXT FIRST
+                // ====================================================
+
+                const responseText =
+                    await response.text();
+
+
+                console.log(
+                    "BugAI raw response:",
+                    responseText
+                );
+
+
+                // ====================================================
+                // PARSE JSON
+                // ====================================================
+
+                let data = {};
+
+
+                if (
+                    responseText &&
+                    responseText.trim()
+                ) {
+
+                    try {
+
+                        data =
+                            JSON.parse(
+                                responseText
+                            );
+
+                    } catch (jsonError) {
+
+                        console.error(
+                            "JSON parsing error:",
+                            jsonError
+                        );
+
+                        throw new Error(
+                            "Backend returned an invalid JSON response."
+                        );
+
+                    }
+
+                }
+
+
+                // ====================================================
+                // HTTP ERROR
+                // ====================================================
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error ||
+                        data.message ||
+                        `Server returned HTTP ${response.status}`
+                    );
+
+                }
+
+
+                // ====================================================
+                // BACKEND ERROR
+                // ====================================================
+
+                if (
+                    data.ok === false
+                ) {
+
+                    throw new Error(
+                        data.error ||
+                        "Bug analysis failed."
+                    );
+
+                }
+
+
+                // ====================================================
+                // SUCCESS
+                // ====================================================
+
+                console.log(
+                    "BugAI analysis completed:",
+                    data
+                );
+
+
+                displayAnalysis(
+                    data
+                );
+
+
+            } catch (error) {
+
+                // ====================================================
+                // ERROR
+                // ====================================================
+
+                console.error(
+                    "BugAI analysis error:",
+                    error
+                );
+
+
+                showError(
+                    error.message ||
+                    "Unable to connect to the BugAI backend."
+                );
+
+
+            } finally {
+
+                // ====================================================
+                // RESTORE BUTTON
+                // ====================================================
+
+                if (submitButton) {
+
+                    submitButton.disabled =
+                        false;
+
+                    submitButton.textContent =
+                        originalButtonText;
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// FORM VALIDATION
+// ============================================================
+
+function validateForm() {
+
+    const title =
+        bugTitle
+            ? bugTitle.value.trim()
+            : "";
+
+
+    const desc =
+        description
+            ? description.value.trim()
+            : "";
+
+
+    if (!title) {
+
+        showError(
+            "Please enter a bug title."
+        );
+
+        if (bugTitle) {
+            bugTitle.focus();
+        }
+
+        return false;
+
+    }
+
+
+    if (!desc) {
+
+        showError(
+            "Please enter a bug description."
+        );
+
+        if (description) {
+            description.focus();
+        }
+
+        return false;
+
+    }
+
+
+    if (selectedFile) {
+
+        const validation =
+            validateFile(
+                selectedFile
+            );
+
+
+        if (!validation.valid) {
+
+            showFileError(
+                validation.message
+            );
+
+            return false;
+
+        }
+
+    }
+
+
+    return true;
+
+}
+
+
+// ============================================================
+// DISPLAY COMPLETE ANALYSIS
+// ============================================================
+
+function displayAnalysis(data) {
+
+    const triage =
+        data.triage || {};
+
+
+    const log =
+        data.log_analysis || {};
+
+
+    const rootCause =
+        data.root_cause || {};
+
+
+    const duplicate =
+        data.duplicate_detection || {};
+
+
+    const remediation =
+        data.remediation || {};
+
+
+    const retrieval =
+        data.retrieval || {};
+
+
+    const orchestration =
+        data.orchestration || {};
+
+
+    result.classList.remove(
+        "hidden"
+    );
+
+
+    result.innerHTML = `
+
+        <!-- ================================================= -->
+        <!-- RESULT HEADER -->
+        <!-- ================================================= -->
+
+        <div class="result-header">
+
+            <div>
+
+                <h2>
+                    Bug Analysis Result
+                </h2>
+
+                <p>
+                    BugAI Milestone 3 analysis completed.
+                </p>
+
+            </div>
+
+            <span class="status-badge">
+
+                ${escapeHtml(
+                    orchestration.status ||
+                    "Completed"
+                )}
+
+            </span>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- TRIAGE -->
+        <!-- ================================================= -->
+
+        <div class="result-section">
+
+            <h3>
+                Triage Analysis
+            </h3>
+
+
+            <div class="analysis-grid">
+
+                <div class="analysis-item">
+
+                    <span class="label">
+                        Severity
+                    </span>
+
+                    <strong
+                        class="${getSeverityClass(
+                            triage.severity
+                        )}"
+                    >
+
+                        ${escapeHtml(
+                            triage.severity ||
+                            "Not determined"
+                        )}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="analysis-item">
+
+                    <span class="label">
+                        Priority
+                    </span>
+
+                    <strong>
+
+                        ${escapeHtml(
+                            triage.priority ||
+                            "Not determined"
+                        )}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="analysis-item">
+
+                    <span class="label">
+                        Affected Component
+                    </span>
+
+                    <strong>
+
+                        ${escapeHtml(
+                            triage.affected_component ||
+                            "Unknown / Unclassified"
+                        )}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="analysis-item">
+
+                    <span class="label">
+                        Confidence
+                    </span>
+
+                    <strong>
+
+                        ${formatConfidence(
+                            triage.confidence
+                        )}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            ${
+                triage.reasoning
+                    ? `
+
+                        <div class="reasoning-box">
+
+                            <strong>
+                                Reasoning
+                            </strong>
+
+                            <p>
+                                ${escapeHtml(
+                                    triage.reasoning
+                                )}
+                            </p>
+
+                        </div>
+
+                    `
+                    : ""
+            }
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- LOG ANALYSIS -->
+        <!-- ================================================= -->
+
+        <div class="result-section">
+
+            <h3>
+                Log Analysis
+            </h3>
+
+
+            <div class="analysis-grid">
+
+                <div class="analysis-item">
+
+                    <span class="label">
+                        Exception Type
+                    </span>
+
+                    <strong>
+
+                        ${escapeHtml(
+                            log.exception_type ||
+                            "Unknown / Not Detected"
+                        )}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="analysis-item">
+
+                    <span class="label">
+                        Confidence
+                    </span>
+
+                    <strong>
+
+                        ${formatConfidence(
+                            log.confidence
+                        )}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="analysis-item">
+
+                    <span class="label">
+                        Failure Point
+                    </span>
+
+                    <strong>
+
+                        ${formatFailurePoint(
+                            log.failure_point
+                        )}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="analysis-item">
+
+                    <span class="label">
+                        Error Message
+                    </span>
+
+                    <strong>
+
+                        ${escapeHtml(
+                            log.error_message ||
+                            "Not detected"
+                        )}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            ${renderPatterns(
+                log.patterns
+            )}
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- ROOT CAUSE -->
+        <!-- ================================================= -->
+
+        <div class="result-section">
+
+            <h3>
+                Root Cause Analysis
+            </h3>
+
+
+            <div class="status-line">
+
+                <span class="status-label">
+                    Status
+                </span>
+
+                <span class="status-value">
+
+                    ${escapeHtml(
+                        rootCause.status ||
+                        "Not determined"
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <div class="root-cause-box">
+
+                <strong>
+                    Primary Hypothesis
+                </strong>
+
+                <p>
+
+                    ${escapeHtml(
+                        rootCause.primary_hypothesis ||
+                        "No root cause hypothesis available."
+                    )}
+
+                </p>
+
+            </div>
+
+
+            <div class="confidence-row">
+
+                <span>
+                    Confidence
+                </span>
+
+                <strong>
+
+                    ${formatConfidence(
+                        rootCause.confidence
+                    )}
+
+                </strong>
+
+            </div>
+
+
+            ${
+                rootCause.reasoning_boundary
+                    ? `
+
+                        <small class="boundary-note">
+
+                            ${escapeHtml(
+                                rootCause.reasoning_boundary
+                            )}
+
+                        </small>
+
+                    `
+                    : ""
+            }
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- DUPLICATE DETECTION -->
+        <!-- ================================================= -->
+
+        <div class="result-section">
+
+            <h3>
+                Duplicate Detection
+            </h3>
+
+
+            <div class="duplicate-status">
+
+                <strong>
+
+                    ${escapeHtml(
+                        duplicate.status ||
+                        "New / Unmatched"
+                    )}
+
+                </strong>
+
+
+                ${
+                    duplicate.likely_duplicate
+                        ? `
+
+                            <span class="duplicate-badge">
+                                Possible Duplicate
+                            </span>
+
+                        `
+                        : ""
+                }
+
+            </div>
+
+
+            ${renderSimilarDefects(
+                duplicate.matches
+            )}
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- REMEDIATION -->
+        <!-- ================================================= -->
+
+        <div class="result-section">
+
+            <h3>
+                Recommended Fix
+            </h3>
+
+
+            ${
+                remediation.status
+                    ? `
+
+                        <div class="status-line">
+
+                            <span class="status-label">
+                                Recommendation Status
+                            </span>
+
+                            <span class="status-value">
+
+                                ${escapeHtml(
+                                    remediation.status
+                                )}
+
+                            </span>
+
+                        </div>
+
+                    `
+                    : ""
+            }
+
+
+            ${renderRecommendations(
+                remediation.recommendations
+            )}
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- KNOWLEDGE BASE -->
+        <!-- ================================================= -->
+
+        <div class="result-section">
+
+            <h3>
+                Knowledge Base Evidence
+            </h3>
+
+
+            <p>
+
+                Retrieved
+
+                <strong>
+                    ${Number(
+                        retrieval.count || 0
+                    )}
+                </strong>
+
+                similar historical defect(s).
+
+            </p>
+
+        </div>
+
+    `;
+
+
+    result.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+// ============================================================
+// SIMILAR DEFECTS
+// ============================================================
+
+function renderSimilarDefects(
+    matches
+) {
+
+    if (
+        !matches ||
+        !Array.isArray(matches) ||
+        matches.length === 0
+    ) {
+
+        return `
+
+            <div class="empty-state">
+
+                No similar defects were retrieved.
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div class="similar-defects">
+
+            ${matches
+                .slice(0, 5)
+                .map(
+                    (match, index) => `
+
+                        <div class="defect-card">
+
+                            <div class="defect-card-header">
+
+                                <strong>
+
+                                    #${index + 1}
+
+                                    ${escapeHtml(
+                                        match.bug_id ||
+                                        "Unknown ID"
+                                    )}
+
+                                </strong>
+
+
+                                <span class="similarity">
+
+                                    ${formatConfidence(
+                                        match.similarity
+                                    )}
+
+                                </span>
+
+                            </div>
+
+
+                            <h4>
+
+                                ${escapeHtml(
+                                    match.title ||
+                                    "Untitled defect"
+                                )}
+
+                            </h4>
+
+
+                            <p>
+
+                                ${escapeHtml(
+                                    truncate(
+                                        match.description ||
+                                        "No description available.",
+                                        220
+                                    )
+                                )}
+
+                            </p>
+
+
+                            <div class="defect-meta">
+
+                                <span>
+
+                                    Project:
+
+                                    ${escapeHtml(
+                                        match.project ||
+                                        "Unknown"
+                                    )}
+
+                                </span>
+
+
+                                ${
+                                    match.classification
+                                        ? `
+
+                                            <span>
+
+                                                Classification:
+
+                                                ${escapeHtml(
+                                                    match.classification
+                                                )}
+
+                                            </span>
+
+                                        `
+                                        : ""
+                                }
+
+                            </div>
+
+
+                            ${
+                                match.resolution_summary
+                                    ? `
+
+                                        <div class="resolution">
+
+                                            <strong>
+                                                Historical Resolution:
+                                            </strong>
+
+                                            <p>
+
+                                                ${escapeHtml(
+                                                    match.resolution_summary
+                                                )}
+
+                                            </p>
+
+                                        </div>
+
+                                    `
+                                    : ""
+                            }
+
+                        </div>
+
+                    `
+                )
+                .join("")}
+
+        </div>
+
+    `;
+
+}
+
+
+// ============================================================
+// REMEDIATION RECOMMENDATIONS
+// ============================================================
+
+function renderRecommendations(
+    recommendations
+) {
+
+    if (
+        !recommendations ||
+        !Array.isArray(recommendations) ||
+        recommendations.length === 0
+    ) {
+
+        return `
+
+            <div class="empty-state">
+
+                No remediation recommendation available.
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div class="recommendations">
+
+            ${recommendations
+                .map(
+                    (item, index) => `
+
+                        <div class="recommendation-card">
+
+                            <div class="recommendation-header">
+
+                                <span>
+
+                                    Recommendation
+                                    ${index + 1}
+
+                                </span>
+
+
+                                <strong>
+
+                                    ${formatConfidence(
+                                        item.confidence
+                                    )}
+
+                                </strong>
+
+                            </div>
+
+
+                            <p class="recommendation-text">
+
+                                ${escapeHtml(
+                                    item.recommendation ||
+                                    "No recommendation provided."
+                                )}
+
+                            </p>
+
+
+                            ${
+                                item.basis
+                                    ? `
+
+                                        <div class="recommendation-basis">
+
+                                            <strong>
+                                                Basis:
+                                            </strong>
+
+                                            ${escapeHtml(
+                                                item.basis
+                                            )}
+
+                                        </div>
+
+                                    `
+                                    : ""
+                            }
+
+
+                            ${
+                                Array.isArray(
+                                    item.source_bug_ids
+                                ) &&
+                                item.source_bug_ids.length > 0
+                                    ? `
+
+                                        <div class="source-bugs">
+
+                                            <strong>
+                                                Source Bug(s):
+                                            </strong>
+
+                                            ${item.source_bug_ids
+                                                .map(
+                                                    id =>
+                                                        `<span>
+                                                            ${escapeHtml(id)}
+                                                        </span>`
+                                                )
+                                                .join("")}
+
+                                        </div>
+
+                                    `
+                                    : ""
+                            }
+
+
+                            ${
+                                Array.isArray(
+                                    item.implementation_guidance
+                                ) &&
+                                item.implementation_guidance.length > 0
+                                    ? `
+
+                                        <div class="guidance">
+
+                                            <strong>
+                                                Implementation Guidance
+                                            </strong>
+
+
+                                            <ul>
+
+                                                ${item
+                                                    .implementation_guidance
+                                                    .map(
+                                                        step =>
+                                                            `<li>
+                                                                ${escapeHtml(step)}
+                                                            </li>`
+                                                    )
+                                                    .join("")}
+
+                                            </ul>
+
+                                        </div>
+
+                                    `
+                                    : ""
+                            }
+
+
+                            ${
+                                Array.isArray(
+                                    item.validation_steps
+                                ) &&
+                                item.validation_steps.length > 0
+                                    ? `
+
+                                        <div class="validation">
+
+                                            <strong>
+                                                Validation Steps
+                                            </strong>
+
+
+                                            <ol>
+
+                                                ${item
+                                                    .validation_steps
+                                                    .map(
+                                                        step =>
+                                                            `<li>
+                                                                ${escapeHtml(step)}
+                                                            </li>`
+                                                    )
+                                                    .join("")}
+
+                                            </ol>
+
+                                        </div>
+
+                                    `
+                                    : ""
+                            }
+
+                        </div>
+
+                    `
+                )
+                .join("")}
+
+        </div>
+
+    `;
+
+}
+
+
+// ============================================================
+// DETECTED LOG PATTERNS
+// ============================================================
+
+function renderPatterns(
+    patterns
+) {
+
+    if (
+        !patterns ||
+        !Array.isArray(patterns) ||
+        patterns.length === 0
+    ) {
+
+        return "";
+
+    }
+
+
+    return `
+
+        <div class="patterns">
+
+            <strong>
+                Detected Patterns
+            </strong>
+
+
+            <div class="pattern-list">
+
+                ${patterns
+                    .map(
+                        pattern => `
+
+                            <span class="pattern-tag">
+
+                                ${escapeHtml(
+                                    pattern
+                                )}
+
+                            </span>
+
+                        `
+                    )
+                    .join("")}
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+// ============================================================
+// FAILURE POINT FORMAT
+// ============================================================
+
+function formatFailurePoint(
+    failurePoint
+) {
+
+    if (!failurePoint) {
+
+        return "Not detected";
+
+    }
+
+
+    if (
+        typeof failurePoint !==
+        "object"
+    ) {
+
+        return escapeHtml(
+            String(failurePoint)
+        );
+
+    }
+
+
+    const file =
+        failurePoint.file || "";
+
+
+    const line =
+        failurePoint.line
+            ? `:${failurePoint.line}`
+            : "";
+
+
+    const method =
+        failurePoint.method
+            ? ` → ${failurePoint.method}()`
+            : "";
+
+
+    const className =
+        failurePoint.class
+            ? `${failurePoint.class}.`
+            : "";
+
+
+    const output =
+        `${file}${line}${method}`;
+
+
+    if (!output) {
+
+        return "Not detected";
+
+    }
+
+
+    return escapeHtml(
+        `${className}${output}`
+    );
+
+}
+
+
+// ============================================================
+// CONFIDENCE FORMAT
+// ============================================================
+
+function formatConfidence(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        return "N/A";
+
+    }
+
+
+    const number =
+        Number(value);
+
+
+    if (
+        Number.isNaN(number)
+    ) {
+
+        return escapeHtml(
+            String(value)
+        );
+
+    }
+
+
+    // Backend normally returns 0.0 - 0.99
+    if (
+        number <= 1
+    ) {
+
+        return `${(
+            number * 100
+        ).toFixed(1)}%`;
+
+    }
+
+
+    return `${number.toFixed(1)}%`;
+
+}
+
+
+// ============================================================
+// SEVERITY CLASS
+// ============================================================
+
+function getSeverityClass(
+    severity
+) {
+
+    const value =
+        String(
+            severity || ""
+        ).toLowerCase();
+
+
+    if (
+        value.includes(
+            "critical"
+        )
+    ) {
+
+        return "severity-critical";
+
+    }
+
+
+    if (
+        value.includes(
+            "high"
+        )
+    ) {
+
+        return "severity-high";
+
+    }
+
+
+    if (
+        value.includes(
+            "medium"
+        )
+    ) {
+
+        return "severity-medium";
+
+    }
+
+
+    if (
+        value.includes(
+            "low"
+        )
+    ) {
+
+        return "severity-low";
+
+    }
+
+
+    return "";
+
+}
+
+
+// ============================================================
+// RESET
+// ============================================================
+
+if (resetBtn) {
+
+    resetBtn.addEventListener(
+        "click",
+        () => {
+
+            bugForm.reset();
+
+            selectedFile = null;
+
+
+            if (fileInfo) {
+                fileInfo.innerHTML = "";
+            }
+
+
+            if (logFile) {
+                logFile.value = "";
+            }
+
+
+            hideResult();
+
+
+            if (bugTitle) {
+                bugTitle.focus();
+            }
+
+        }
+    );
+
+}
+
+
+// ============================================================
+// HIDE RESULT
+// ============================================================
+
+function hideResult() {
+
+    if (!result) {
+        return;
+    }
+
+
+    result.classList.add(
+        "hidden"
+    );
+
+
+    result.innerHTML = "";
+
+}
+
+
+// ============================================================
+// ERROR MESSAGE
+// ============================================================
+
+function showError(
+    message
+) {
+
+    if (!result) {
+        return;
+    }
+
+
+    result.classList.remove(
+        "hidden"
+    );
+
+
+    result.innerHTML = `
+
+        <div class="error-message">
+
+            <h3>
+                Analysis Failed
+            </h3>
+
+
+            <p>
+
+                ${escapeHtml(
+                    message
+                )}
+
+            </p>
+
+
+            <div class="error-help">
+
+                <strong>
+                    Check:
+                </strong>
+
+
+                <ul>
+
+                    <li>
+                        Flask backend is running.
+                    </li>
+
+                    <li>
+                        API endpoint:
+                        <code>
+                            http://127.0.0.1:5000/api/analyze
+                        </code>
+                    </li>
+
+                    <li>
+                        Browser Console for additional errors.
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    result.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+// ============================================================
+// FILE ERROR
+// ============================================================
+
+function showFileError(
+    message
+) {
+
+    if (!fileInfo) {
+        return;
+    }
+
+
+    fileInfo.innerHTML = `
+
+        <div class="file-error">
+
+            ✕ ${escapeHtml(message)}
+
+        </div>
+
+    `;
+
+}
+
+
+// ============================================================
+// TRUNCATE TEXT
+// ============================================================
+
+function truncate(
+    text,
+    maxLength
+) {
+
+    const value =
+        String(
+            text || ""
+        );
+
+
+    if (
+        value.length <=
+        maxLength
+    ) {
+
+        return value;
+
+    }
+
+
+    return (
+        value.substring(
+            0,
+            maxLength
+        ) + "..."
+    );
+
+}
+
+
+// ============================================================
+// ESCAPE HTML
+// ============================================================
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+// ============================================================
+// FINAL DEBUG MESSAGE
+// ============================================================
+
+console.log(
+    "BugAI Milestone 3 Bug Submission JS loaded successfully."
+);

@@ -1,0 +1,12 @@
+data/defects.csv filter=lfs diff=lfs merge=lfs -text
+data/apache/comments.bson filter=lfs diff=lfs merge=lfs -text
+data/apache/events.bson filter=lfs diff=lfs merge=lfs -text
+data/defects.faiss filter=lfs diff=lfs merge=lfs -text
+data/defects_final.csv filter=lfs diff=lfs merge=lfs -text
+data/apache/apache_normalized.csv filter=lfs diff=lfs merge=lfs -text
+data/apache/issues.bson filter=lfs diff=lfs merge=lfs -text
+data/defects_backup_before_full_merge.csv filter=lfs diff=lfs merge=lfs -text
+data/defects_merged.csv filter=lfs diff=lfs merge=lfs -text
+data/defects_metadata.json filter=lfs diff=lfs merge=lfs -text
+data/defects_parts/defects_part_01.csv filter=lfs diff=lfs merge=lfs -text
+data/defects_parts/defects_part_02.csv filter=lfs diff=lfs merge=lfs -text

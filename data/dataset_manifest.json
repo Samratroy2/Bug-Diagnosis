@@ -1,0 +1,148 @@
+{
+  "files": [
+    {
+      "file": "data/mozilla/fix.csv",
+      "project": "Mozilla",
+      "split": "full",
+      "rows": 32428,
+      "used_for_rag": true,
+      "status": "ok",
+      "mapped_columns": {
+        "bug_id": null,
+        "title": null,
+        "description": "description",
+        "stack_trace": null,
+        "resolution": null,
+        "severity": null,
+        "priority": null,
+        "affected_component": null
+      }
+    },
+    {
+      "file": "data/mozilla/fix_test.csv",
+      "project": "Mozilla",
+      "split": "test",
+      "rows": 4427,
+      "used_for_rag": false,
+      "status": "ok",
+      "mapped_columns": {
+        "bug_id": null,
+        "title": null,
+        "description": "description",
+        "stack_trace": null,
+        "resolution": null,
+        "severity": null,
+        "priority": null,
+        "affected_component": null
+      }
+    },
+    {
+      "file": "data/mozilla/fix_train.csv",
+      "project": "Mozilla",
+      "split": "train",
+      "rows": 28000,
+      "used_for_rag": false,
+      "status": "ok",
+      "mapped_columns": {
+        "bug_id": null,
+        "title": null,
+        "description": "description",
+        "stack_trace": null,
+        "resolution": null,
+        "severity": null,
+        "priority": null,
+        "affected_component": null
+      }
+    },
+    {
+      "file": "data/mozilla/sev.csv",
+      "project": "Mozilla",
+      "split": "full",
+      "rows": 32428,
+      "used_for_rag": true,
+      "status": "ok",
+      "mapped_columns": {
+        "bug_id": null,
+        "title": null,
+        "description": "description",
+        "stack_trace": null,
+        "resolution": null,
+        "severity": "severity",
+        "priority": null,
+        "affected_component": null
+      }
+    },
+    {
+      "file": "data/mozilla/sev_test.csv",
+      "project": "Mozilla",
+      "split": "test",
+      "rows": 4427,
+      "used_for_rag": false,
+      "status": "ok",
+      "mapped_columns": {
+        "bug_id": null,
+        "title": null,
+        "description": "description",
+        "stack_trace": null,
+        "resolution": null,
+        "severity": "severity",
+        "priority": null,
+        "affected_component": null
+      }
+    },
+    {
+      "file": "data/mozilla/sev_train.csv",
+      "project": "Mozilla",
+      "split": "train",
+      "rows": 28000,
+      "used_for_rag": false,
+      "status": "ok",
+      "mapped_columns": {
+        "bug_id": null,
+        "title": null,
+        "description": "description",
+        "stack_trace": null,
+        "resolution": null,
+        "severity": "severity",
+        "priority": null,
+        "affected_component": null
+      }
+    },
+    {
+      "file": "data/eclipse/sample_data.csv",
+      "project": "Eclipse",
+      "split": "full",
+      "rows": 100,
+      "used_for_rag": true,
+      "status": "ok",
+      "mapped_columns": {
+        "bug_id": "id",
+        "title": "summary",
+        "description": "description",
+        "stack_trace": null,
+        "resolution": "resolution",
+        "severity": "severity",
+        "priority": "priority",
+        "affected_component": "component"
+      }
+    }
+  ],
+  "summary": {
+    "total_files_scanned": 7,
+    "rag_files": 3,
+    "training_testing_files_skipped_from_rag": 4,
+    "total_normalized_rag_records": 64956,
+    "validation_records": 4427,
+    "records_by_project": {
+      "Mozilla": 64856,
+      "Eclipse": 100
+    },
+    "records_by_source": {
+      "data/mozilla/fix.csv": 32428,
+      "data/mozilla/sev.csv": 32428,
+      "data/eclipse/sample_data.csv": 100
+    }
+  },
+  "knowledge_base": "data/defects.csv",
+  "validation_file": "data/m2_validation.csv"
+}

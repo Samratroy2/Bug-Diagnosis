@@ -852,14 +852,32 @@ def ensure_index():
 # ============================================================
 # VECTOR SEARCH
 # ============================================================
+# ============================================================
+# VECTOR SEARCH
+# ============================================================
 
 def search_index(
     query,
     top_k=8,
     project=""
 ):
+    """
+    Semantic search over the FAISS knowledge base.
 
-    index_info = ensure_index()
+    When project is supplied:
+        - Build an exact list of metadata positions belonging
+          to that canonical project.
+        - Search only vectors belonging to that project.
+
+    When project is empty:
+        - Search the complete FAISS index.
+
+    This prevents the old problem where FAISS returned only a
+    small global candidate pool and the Mozilla/Apache/Eclipse
+    filter was applied afterwards.
+    """
+
+    ensure_index()
 
     index = faiss.read_index(
         str(INDEX_FILE)
@@ -884,13 +902,9 @@ def search_index(
     model = get_model()
 
     query_vector = model.encode(
-
         [query],
-
         normalize_embeddings=True,
-
         show_progress_bar=False,
-
         convert_to_numpy=True
     )
 
@@ -899,87 +913,232 @@ def search_index(
         dtype="float32"
     )
 
-    search_count = min(
+    # --------------------------------------------------------
+    # GLOBAL SEARCH
+    # --------------------------------------------------------
 
-        max(
-            top_k * 6,
-            top_k
-        ),
+    if not project:
 
-        index.ntotal
-    )
+        search_count = min(
+            max(top_k * 6, top_k),
+            index.ntotal
+        )
 
-    scores, ids = index.search(
+        scores, ids = index.search(
+            query_vector,
+            search_count
+        )
 
-        query_vector,
+        results = []
+        seen = set()
 
-        search_count
-    )
+        for score, idx in zip(
+            scores[0],
+            ids[0]
+        ):
 
-    results = []
+            if idx < 0:
+                continue
 
-    seen = set()
+            item = metadata[int(idx)]
 
-    for score, idx in zip(
-        scores[0],
-        ids[0]
-    ):
+            bug_id = item.get(
+                "bug_id",
+                ""
+            )
 
-        if idx < 0:
-            continue
+            if bug_id in seen:
+                continue
 
-        item = metadata[
-            int(idx)
-        ]
+            seen.add(bug_id)
 
-        if (
-            project
-            and canonical_project(
+            result = {
+                key: item.get(
+                    key,
+                    ""
+                )
+                for key in [
+                    "bug_id",
+                    "project",
+                    "title",
+                    "description",
+                    "stack_trace",
+                    "resolution"
+                ]
+            }
+
+            result["project"] = canonical_project(
                 item.get("project", ""),
                 item.get("source_file", ""),
                 item.get("bug_id", ""),
                 item.get("title", "")
-            ) != canonical_project(project)
-        ):
-            continue
+            )
+
+            result["score"] = round(
+                float(score),
+                4
+            )
+
+            results.append(result)
+
+            if len(results) >= top_k:
+                break
+
+        return results
+
+    # --------------------------------------------------------
+    # PROJECT-FILTERED SEARCH
+    # --------------------------------------------------------
+
+    target_project = canonical_project(
+        project
+    )
+
+    print(
+        f"[RAG] Project-filtered search: {target_project}",
+        flush=True
+    )
+
+    # Find all metadata/vector positions belonging to
+    # the requested canonical project.
+    project_ids = []
+
+    for idx, item in enumerate(metadata):
+
+        item_project = canonical_project(
+            item.get("project", ""),
+            item.get("source_file", ""),
+            item.get("bug_id", ""),
+            item.get("title", "")
+        )
+
+        if item_project == target_project:
+            project_ids.append(idx)
+
+    print(
+        f"[RAG] {target_project} candidate vectors: "
+        f"{len(project_ids):,}",
+        flush=True
+    )
+
+    if not project_ids:
+        return []
+
+    # --------------------------------------------------------
+    # EXACT PROJECT SEARCH
+    # --------------------------------------------------------
+    #
+    # Your FAISS index is IndexFlatIP. We reconstruct only
+    # vectors belonging to the requested project and perform
+    # exact cosine/IP similarity against them.
+    #
+    # Embeddings were created with normalize_embeddings=True,
+    # therefore inner product == cosine similarity.
+    # --------------------------------------------------------
+
+    project_vectors = np.empty(
+        (
+            len(project_ids),
+            index.d
+        ),
+        dtype="float32"
+    )
+
+    for position, original_idx in enumerate(project_ids):
+
+        project_vectors[position] = index.reconstruct(
+            int(original_idx)
+        )
+
+    # Exact similarity calculation.
+    similarities = np.dot(
+        project_vectors,
+        query_vector[0]
+    )
+
+    # Number of candidates required.
+    candidate_count = min(
+        max(top_k * 10, 50),
+        len(project_ids)
+    )
+
+    # Get highest-scoring candidate positions.
+    if candidate_count < len(similarities):
+
+        candidate_positions = np.argpartition(
+            similarities,
+            -candidate_count
+        )[-candidate_count:]
+
+        candidate_positions = candidate_positions[
+            np.argsort(
+                similarities[candidate_positions]
+            )[::-1]
+        ]
+
+    else:
+
+        candidate_positions = np.argsort(
+            similarities
+        )[::-1]
+
+    # --------------------------------------------------------
+    # BUILD RESULTS
+    # --------------------------------------------------------
+
+    results = []
+    seen = set()
+
+    for local_position in candidate_positions:
+
+        original_idx = project_ids[
+            int(local_position)
+        ]
+
+        score = float(
+            similarities[
+                int(local_position)
+            ]
+        )
+
+        item = metadata[
+            original_idx
+        ]
 
         bug_id = item.get(
-            "bug_id"
+            "bug_id",
+            ""
         )
 
         if bug_id in seen:
             continue
 
-        seen.add(
-            bug_id
-        )
+        seen.add(bug_id)
 
         result = {
-
-            key:
-                item.get(
-                    key,
-                    ""
-                )
-
+            key: item.get(
+                key,
+                ""
+            )
             for key in [
-
                 "bug_id",
-
                 "project",
-
                 "title",
-
                 "description",
-
                 "stack_trace",
-
                 "resolution"
             ]
         }
 
+        result["project"] = canonical_project(
+            item.get("project", ""),
+            item.get("source_file", ""),
+            item.get("bug_id", ""),
+            item.get("title", "")
+        )
+
         result["score"] = round(
-            float(score),
+            score,
             4
         )
 
@@ -990,8 +1149,13 @@ def search_index(
         if len(results) >= top_k:
             break
 
-    return results
+    print(
+        f"[RAG] Returning {len(results)} "
+        f"{target_project} results.",
+        flush=True
+    )
 
+    return results
 
 # ============================================================
 # GENERAL HELPERS
