@@ -1,11 +1,19 @@
 /* =========================================================
    BUGAI SETTINGS PAGE
+   Page-specific styles only
+   Sidebar is controlled by sidebar.css
+========================================================= */
+
+
+/* =========================================================
+   SETTINGS PAGE
 ========================================================= */
 
 .settings-page {
     min-height: 100vh;
-    padding: 42px 48px 60px;
-    margin-left: 250px;
+
+    padding: 42px 56px 60px;
+
     background: #f5f7fb;
     color: #102a43;
 }
@@ -16,7 +24,9 @@
 ========================================================= */
 
 .settings-header {
-    max-width: 1100px;
+    width: 100%;
+    max-width: 1650px;
+
     margin: 0 auto 30px;
 }
 
@@ -59,8 +69,10 @@
 ========================================================= */
 
 .settings-container {
-    max-width: 1100px;
-    margin: auto;
+    width: 100%;
+    max-width: 1650px;
+
+    margin: 0 auto;
 
     display: flex;
     flex-direction: column;
@@ -74,6 +86,8 @@
 ========================================================= */
 
 .settings-card {
+    width: 100%;
+
     background: #ffffff;
 
     border: 1px solid #e2e8f0;
@@ -106,6 +120,7 @@
     height: 44px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -222,7 +237,7 @@
 
     background: #2563eb;
 
-    color: white;
+    color: #ffffff;
 
     font-size: 12px;
     font-weight: 700;
@@ -333,7 +348,7 @@
     left: 3px;
     top: 3px;
 
-    background: white;
+    background: #ffffff;
 
     border-radius: 50%;
 
@@ -365,7 +380,7 @@
 
     border-radius: 9px;
 
-    background: white;
+    background: #ffffff;
 
     color: #172b4d;
 
@@ -424,7 +439,7 @@
 .reset-button {
     border: 1px solid #dc2626;
 
-    background: white;
+    background: #ffffff;
 
     color: #dc2626;
 
@@ -438,13 +453,15 @@
 
     cursor: pointer;
 
-    transition: 0.2s;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
 }
 
 .reset-button:hover {
     background: #dc2626;
 
-    color: white;
+    color: #ffffff;
 }
 
 
@@ -570,7 +587,7 @@ body.dark-mode .reset-button {
 body.dark-mode .reset-button:hover {
     background: #dc2626;
 
-    color: white;
+    color: #ffffff;
 }
 
 body.dark-mode .save-status {
@@ -582,25 +599,35 @@ body.dark-mode .save-status {
    RESPONSIVE
 ========================================================= */
 
+@media (max-width: 1200px) {
+
+    .settings-page {
+        padding: 42px 38px 55px;
+    }
+
+    .settings-header,
+    .settings-container {
+        max-width: 100%;
+    }
+}
+
+
 @media (max-width: 900px) {
 
     .settings-page {
-        margin-left: 0;
-
-        padding: 30px 22px 50px;
+        padding: 80px 22px 50px;
     }
 
     .appearance-options {
         grid-template-columns: 1fr;
     }
-
 }
 
 
 @media (max-width: 600px) {
 
     .settings-page {
-        padding: 25px 15px 40px;
+        padding: 75px 15px 40px;
     }
 
     .settings-header h1 {
@@ -624,5 +651,4 @@ body.dark-mode .save-status {
     .reset-button {
         width: 100%;
     }
-
 }

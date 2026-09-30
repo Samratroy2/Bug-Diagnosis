@@ -1,48 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>BugAI — Settings</title>
 
+    <!-- Shared Sidebar CSS -->
     <link rel="stylesheet" href="../sidebar.css">
+
+    <!-- Settings Page CSS -->
     <link rel="stylesheet" href="settings.css">
 </head>
 
 <body>
 
-    <!-- SIDEBAR -->
-    <div id="sidebar-container"></div>
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside id="bugaiSidebar" class="bugai-sidebar">
+
+        <!-- BRAND -->
+        <div class="sidebar-brand">
+
+            <div class="brand-text">
+
+                <div class="brand-name">
+                    BugAI
+                </div>
+
+                <div class="brand-subtitle">
+                    Intelligent Bug Diagnosis
+                </div>
+
+            </div>
+
+        </div>
 
 
-    <!-- MAIN CONTENT -->
+        <!-- NAVIGATION -->
+        <nav class="sidebar-navigation">
+
+            <!-- MAIN -->
+            <div class="navigation-label">
+                MAIN
+            </div>
+
+
+            <!-- DASHBOARD -->
+            <a
+                href="../Dashboard/dashboard.html"
+                class="sidebar-link"
+                data-page="dashboard"
+            >
+                <span class="nav-icon">▦</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+
+
+            <!-- BUG SUBMISSION -->
+            <a
+                href="../Bug-Submission/bug-submission.html"
+                class="sidebar-link"
+                data-page="bug-submission"
+            >
+                <span class="nav-icon">+</span>
+                <span class="nav-text">Bug Submission</span>
+            </a>
+
+
+            <!-- WORKFLOW -->
+            <a
+                href="../Workflow/workflow.html"
+                class="sidebar-link"
+                data-page="workflow"
+            >
+                <span class="nav-icon">⇄</span>
+                <span class="nav-text">Workflow</span>
+            </a>
+
+
+            <!-- ARCHITECTURE -->
+            <a
+                href="../Architecture/architecture.html"
+                class="sidebar-link"
+                data-page="architecture"
+            >
+                <span class="nav-icon">⌘</span>
+                <span class="nav-text">Architecture</span>
+            </a>
+
+
+            <!-- =================================================
+                 INTELLIGENCE
+            ================================================== -->
+
+            <div class="navigation-label navigation-label-spaced">
+                INTELLIGENCE
+            </div>
+
+
+            <!-- KNOWLEDGE BASE -->
+            <a
+                href="../Knowledge-Base/knowledge-base.html"
+                class="sidebar-link"
+                data-page="knowledge-base"
+            >
+                <span class="nav-icon">▤</span>
+                <span class="nav-text">Knowledge Base</span>
+            </a>
+
+
+            <!-- SEMANTIC SIMILARITY -->
+            <a
+                href="../Semantic-Similarity/semantic-similarity.html"
+                class="sidebar-link"
+                data-page="semantic-similarity"
+            >
+                <span class="nav-icon">⌕</span>
+                <span class="nav-text">Semantic Similarity</span>
+            </a>
+
+
+            <!-- M2 / M3 VALIDATION -->
+            <a
+                href="../Validation/validation.html"
+                class="sidebar-link"
+                data-page="validation"
+            >
+                <span class="nav-icon">✓</span>
+                <span class="nav-text">M2 / M3 Validation</span>
+            </a>
+
+
+            <!-- DEFECT ANALYTICS -->
+            <a
+                href="../analytics/analytics.html"
+                class="sidebar-link"
+                data-page="analytics"
+            >
+                <span class="nav-icon">▥</span>
+                <span class="nav-text">Defect Analytics</span>
+            </a>
+
+
+            <!-- =================================================
+                 SYSTEM
+            ================================================== -->
+
+            <div class="navigation-label navigation-label-spaced">
+                SYSTEM
+            </div>
+
+
+            <!-- SETTINGS -->
+            <a
+                href="settings.html"
+                class="sidebar-link active"
+                data-page="settings"
+            >
+                <span class="nav-icon">⚙</span>
+                <span class="nav-text">Settings</span>
+            </a>
+
+        </nav>
+
+
+        <!-- =================================================
+             SIDEBAR FOOTER
+        ================================================== -->
+
+        <div class="sidebar-footer">
+
+            <div class="sidebar-status">
+
+                <span class="status-dot"></span>
+
+                <span class="status-text">
+                    <strong>System Online</strong>
+                </span>
+
+            </div>
+
+            <div class="sidebar-version">
+                BugAI v1.0
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MOBILE MENU BUTTON
+    ====================================================== -->
+
+    <button
+        id="sidebarMenuButton"
+        class="sidebar-menu-button"
+        type="button"
+        aria-label="Toggle navigation"
+    >
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+
+    <!-- =====================================================
+         MOBILE OVERLAY
+    ====================================================== -->
+
+    <div
+        id="sidebarOverlay"
+        class="sidebar-overlay"
+    ></div>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
     <main class="settings-page">
 
-        <!-- PAGE HEADER -->
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
+
         <section class="settings-header">
 
             <div>
-                <span class="page-label">BUGAI CONFIGURATION</span>
 
-                <h1>Settings</h1>
+                <span class="page-label">
+                    BUGAI CONFIGURATION
+                </span>
+
+                <h1>
+                    Settings
+                </h1>
 
                 <p>
                     Customize your BugAI experience, analysis preferences,
                     notifications, and appearance.
                 </p>
+
             </div>
 
         </section>
 
 
-        <!-- SETTINGS CONTENT -->
+        <!-- =================================================
+             SETTINGS CONTENT
+        ================================================== -->
+
         <section class="settings-container">
 
 
-            <!-- =========================================
+            <!-- =================================================
                  APPEARANCE
-            ========================================== -->
+            ================================================== -->
 
             <div class="settings-card">
 
@@ -53,11 +271,15 @@
                     </div>
 
                     <div>
-                        <h2>Appearance</h2>
+
+                        <h2>
+                            Appearance
+                        </h2>
 
                         <p>
                             Choose how the BugAI interface should look.
                         </p>
+
                     </div>
 
                 </div>
@@ -65,56 +287,96 @@
 
                 <div class="appearance-options">
 
+
+                    <!-- LIGHT -->
                     <button
                         class="appearance-option"
                         data-theme="light"
                         id="lightTheme"
+                        type="button"
                     >
 
-                        <span class="appearance-icon">☀️</span>
-
-                        <span>
-                            <strong>Light</strong>
-                            <small>Clean and bright interface</small>
+                        <span class="appearance-icon">
+                            ☀️
                         </span>
 
-                        <span class="theme-check">✓</span>
+                        <span>
+
+                            <strong>
+                                Light
+                            </strong>
+
+                            <small>
+                                Clean and bright interface
+                            </small>
+
+                        </span>
+
+                        <span class="theme-check">
+                            ✓
+                        </span>
 
                     </button>
 
 
+                    <!-- DARK -->
                     <button
                         class="appearance-option"
                         data-theme="dark"
                         id="darkTheme"
+                        type="button"
                     >
 
-                        <span class="appearance-icon">🌙</span>
-
-                        <span>
-                            <strong>Dark</strong>
-                            <small>Dark interface for low-light use</small>
+                        <span class="appearance-icon">
+                            🌙
                         </span>
 
-                        <span class="theme-check">✓</span>
+                        <span>
+
+                            <strong>
+                                Dark
+                            </strong>
+
+                            <small>
+                                Dark interface for low-light use
+                            </small>
+
+                        </span>
+
+                        <span class="theme-check">
+                            ✓
+                        </span>
 
                     </button>
 
 
+                    <!-- SYSTEM -->
                     <button
                         class="appearance-option"
                         data-theme="system"
                         id="systemTheme"
+                        type="button"
                     >
 
-                        <span class="appearance-icon">💻</span>
-
-                        <span>
-                            <strong>System</strong>
-                            <small>Follow your device preference</small>
+                        <span class="appearance-icon">
+                            💻
                         </span>
 
-                        <span class="theme-check">✓</span>
+                        <span>
+
+                            <strong>
+                                System
+                            </strong>
+
+                            <small>
+                                Follow your device preference
+                            </small>
+
+                        </span>
+
+                        <span class="theme-check">
+                            ✓
+                        </span>
 
                     </button>
 
@@ -123,10 +385,9 @@
             </div>
 
 
-
-            <!-- =========================================
+            <!-- =================================================
                  NOTIFICATIONS
-            ========================================== -->
+            ================================================== -->
 
             <div class="settings-card">
 
@@ -137,11 +398,15 @@
                     </div>
 
                     <div>
-                        <h2>Notifications</h2>
+
+                        <h2>
+                            Notifications
+                        </h2>
 
                         <p>
                             Control BugAI notifications and alerts.
                         </p>
+
                     </div>
 
                 </div>
@@ -151,7 +416,9 @@
 
                     <div class="setting-description">
 
-                        <strong>Enable Notifications</strong>
+                        <strong>
+                            Enable Notifications
+                        </strong>
 
                         <span>
                             Show notifications when analysis and system
@@ -177,10 +444,9 @@
             </div>
 
 
-
-            <!-- =========================================
+            <!-- =================================================
                  SOUND
-            ========================================== -->
+            ================================================== -->
 
             <div class="settings-card">
 
@@ -191,11 +457,15 @@
                     </div>
 
                     <div>
-                        <h2>Sound</h2>
+
+                        <h2>
+                            Sound
+                        </h2>
 
                         <p>
                             Manage notification and interface sounds.
                         </p>
+
                     </div>
 
                 </div>
@@ -205,7 +475,9 @@
 
                     <div class="setting-description">
 
-                        <strong>Sound Effects</strong>
+                        <strong>
+                            Sound Effects
+                        </strong>
 
                         <span>
                             Play a short sound when BugAI displays
@@ -231,10 +503,9 @@
             </div>
 
 
-
-            <!-- =========================================
+            <!-- =================================================
                  ANALYSIS PREFERENCES
-            ========================================== -->
+            ================================================== -->
 
             <div class="settings-card">
 
@@ -245,21 +516,29 @@
                     </div>
 
                     <div>
-                        <h2>Analysis Preferences</h2>
+
+                        <h2>
+                            Analysis Preferences
+                        </h2>
 
                         <p>
                             Configure how BugAI presents analysis results.
                         </p>
+
                     </div>
 
                 </div>
 
 
+                <!-- AUTO DISPLAY RESULTS -->
+
                 <div class="setting-row">
 
                     <div class="setting-description">
 
-                        <strong>Auto Display Results</strong>
+                        <strong>
+                            Auto Display Results
+                        </strong>
 
                         <span>
                             Automatically display the analysis result
@@ -286,11 +565,15 @@
                 <div class="setting-divider"></div>
 
 
+                <!-- ANALYSIS MODE -->
+
                 <div class="setting-row">
 
                     <div class="setting-description">
 
-                        <strong>Analysis Mode</strong>
+                        <strong>
+                            Analysis Mode
+                        </strong>
 
                         <span>
                             Select the level of detail shown in analysis results.
@@ -316,10 +599,9 @@
             </div>
 
 
-
-            <!-- =========================================
+            <!-- =================================================
                  SYSTEM INFORMATION
-            ========================================== -->
+            ================================================== -->
 
             <div class="settings-card">
 
@@ -330,21 +612,29 @@
                     </div>
 
                     <div>
-                        <h2>System Preferences</h2>
+
+                        <h2>
+                            System Preferences
+                        </h2>
 
                         <p>
                             Additional BugAI interface preferences.
                         </p>
+
                     </div>
 
                 </div>
 
 
+                <!-- SAVE ANALYSIS HISTORY -->
+
                 <div class="setting-row">
 
                     <div class="setting-description">
 
-                        <strong>Save Analysis History</strong>
+                        <strong>
+                            Save Analysis History
+                        </strong>
 
                         <span>
                             Keep recent analysis results in this browser.
@@ -370,11 +660,15 @@
                 <div class="setting-divider"></div>
 
 
+                <!-- CONFIRM BEFORE RESET -->
+
                 <div class="setting-row">
 
                     <div class="setting-description">
 
-                        <strong>Confirm Before Reset</strong>
+                        <strong>
+                            Confirm Before Reset
+                        </strong>
 
                         <span>
                             Ask for confirmation before resetting settings.
@@ -399,16 +693,17 @@
             </div>
 
 
-
-            <!-- =========================================
+            <!-- =================================================
                  RESET
-            ========================================== -->
+            ================================================== -->
 
             <div class="danger-card">
 
                 <div>
 
-                    <h2>Reset Settings</h2>
+                    <h2>
+                        Reset Settings
+                    </h2>
 
                     <p>
                         Restore all BugAI settings to their default values.
@@ -420,6 +715,7 @@
                 <button
                     id="resetSettings"
                     class="reset-button"
+                    type="button"
                 >
                     Reset to Default
                 </button>
@@ -427,7 +723,9 @@
             </div>
 
 
-            <!-- SAVE STATUS -->
+            <!-- =================================================
+                 SAVE STATUS
+            ================================================== -->
 
             <div
                 id="saveStatus"
@@ -436,13 +734,22 @@
                 ✓ Settings are automatically saved
             </div>
 
+
         </section>
 
     </main>
 
 
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <!-- Sidebar behavior only — does NOT load sidebar.html -->
     <script src="../sidebar.js"></script>
+
+    <!-- Settings functionality -->
     <script src="settings.js"></script>
 
 </body>
+
 </html>

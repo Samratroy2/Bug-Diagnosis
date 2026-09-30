@@ -2,4 +2,4 @@ __pycache__/
 *.pyc
 *.log
 logs/
-data/defects.csv
+data/defects.csvdata/analytics.db

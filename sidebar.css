@@ -1,93 +1,65 @@
 /* =========================================================
    BUGAI — SHARED SIDEBAR
-   Used by all BugAI pages
 ========================================================= */
 
 
 /* =========================================================
-   ROOT VARIABLES
+   GLOBAL BOX SIZING
 ========================================================= */
 
-:root {
-
-    --sidebar-width: 250px;
-
-    --sidebar-bg: #0f172a;
-
-    --sidebar-border: #1e293b;
-
-    --sidebar-text: #cbd5e1;
-
-    --sidebar-muted: #64748b;
-
-    --sidebar-hover: #172033;
-
-    --sidebar-active: #1d4ed8;
-
-    --sidebar-active-light: #2563eb;
-
-    --sidebar-white: #f8fafc;
-
-    --status-online: #22c55e;
-
-}
-
-
-/* =========================================================
-   RESET
-========================================================= */
-
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
-
-html {
-    margin: 0;
-    padding: 0;
-}
-
-
+html,
 body {
     margin: 0;
     padding: 0;
+    width: 100%;
 }
 
 
 /* =========================================================
-   SIDEBAR
+   SIDEBAR CONFIGURATION
+========================================================= */
+
+:root {
+    --bugai-sidebar-width: 250px;
+}
+
+
+/* =========================================================
+   SIDEBAR BASE
 ========================================================= */
 
 .bugai-sidebar {
-
     position: fixed;
 
     top: 0;
     left: 0;
     bottom: 0;
 
-    width: var(--sidebar-width);
+    width: var(--bugai-sidebar-width);
 
     display: flex;
-
     flex-direction: column;
 
-    background: var(--sidebar-bg);
+    background: #111827;
+    color: #ffffff;
 
-    border-right: 1px solid var(--sidebar-border);
+    padding: 24px 14px;
 
     z-index: 1000;
 
     overflow-y: auto;
-
     overflow-x: hidden;
 
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+
     scrollbar-width: thin;
-
-    scrollbar-color:
-        #334155
-        transparent;
-
+    scrollbar-color: #374151 transparent;
 }
 
 
@@ -96,25 +68,20 @@ body {
 ========================================================= */
 
 .bugai-sidebar::-webkit-scrollbar {
-
-    width: 5px;
-
+    width: 6px;
 }
-
 
 .bugai-sidebar::-webkit-scrollbar-track {
-
     background: transparent;
-
 }
 
-
 .bugai-sidebar::-webkit-scrollbar-thumb {
-
-    background: #334155;
-
+    background: #374151;
     border-radius: 10px;
+}
 
+.bugai-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #4b5563;
 }
 
 
@@ -123,107 +90,41 @@ body {
 ========================================================= */
 
 .sidebar-brand {
-
     display: flex;
-
     align-items: center;
 
-    gap: 12px;
+    min-height: 64px;
 
-    min-height: 78px;
+    padding: 0 12px 22px;
 
-    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
-    border-bottom: 1px solid var(--sidebar-border);
-
+    margin-bottom: 18px;
 }
-
-
-/* =========================================================
-   BRAND LOGO
-========================================================= */
-
-.brand-logo {
-
-    width: 42px;
-    height: 42px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    flex-shrink: 0;
-
-    border-radius: 12px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2563eb,
-            #1d4ed8
-        );
-
-    box-shadow:
-        0 6px 18px
-        rgba(37, 99, 235, 0.25);
-
-}
-
-
-.brand-logo-icon {
-
-    font-size: 22px;
-
-    line-height: 1;
-
-}
-
-
-/* =========================================================
-   BRAND TEXT
-========================================================= */
 
 .brand-text {
-
     min-width: 0;
-
 }
-
 
 .brand-name {
-
-    margin: 0;
-
-    color: var(--sidebar-white);
-
-    font-size: 19px;
-
-    line-height: 1.1;
-
+    font-size: 25px;
     font-weight: 800;
 
-    letter-spacing: -0.3px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
 
+    color: #ffffff;
 }
 
-
 .brand-subtitle {
-
     margin-top: 5px;
+
+    font-size: 11px;
+    line-height: 1.4;
 
     color: #94a3b8;
 
-    font-size: 9px;
-
-    line-height: 1.2;
-
-    font-weight: 600;
-
-    letter-spacing: 0.35px;
-
     white-space: nowrap;
-
 }
 
 
@@ -232,15 +133,12 @@ body {
 ========================================================= */
 
 .sidebar-navigation {
-
     display: flex;
-
     flex-direction: column;
 
-    padding: 20px 12px;
+    gap: 5px;
 
     flex: 1;
-
 }
 
 
@@ -249,131 +147,58 @@ body {
 ========================================================= */
 
 .navigation-label {
+    padding: 8px 12px 6px;
 
-    padding: 0 12px;
+    font-size: 10px;
+    font-weight: 800;
 
-    margin: 0 0 8px;
+    letter-spacing: 0.12em;
 
     color: #64748b;
 
-    font-size: 10px;
-
-    line-height: 1.2;
-
-    font-weight: 800;
-
-    letter-spacing: 1.3px;
-
+    text-transform: uppercase;
 }
 
-
 .navigation-label-spaced {
-
-    margin-top: 24px;
-
+    margin-top: 18px;
 }
 
 
 /* =========================================================
-   SIDEBAR LINK
+   SIDEBAR LINKS
 ========================================================= */
 
 .sidebar-link {
-
     position: relative;
 
     display: flex;
-
     align-items: center;
-
-    gap: 12px;
 
     min-height: 44px;
 
     width: 100%;
 
-    margin: 2px 0;
-
     padding: 10px 12px;
 
-    border-radius: 9px;
+    border-radius: 8px;
 
-    color: var(--sidebar-text);
+    color: #cbd5e1;
 
     text-decoration: none;
-
-    font-size: 13px;
-
-    font-weight: 600;
 
     transition:
         background 0.2s ease,
         color 0.2s ease,
-        transform 0.2s ease;
-
+        transform 0.15s ease;
 }
-
-
-/* =========================================================
-   NAV ICON
-========================================================= */
-
-.nav-icon {
-
-    width: 22px;
-
-    height: 22px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    flex-shrink: 0;
-
-    color: #94a3b8;
-
-    font-size: 17px;
-
-    line-height: 1;
-
-    transition:
-        color 0.2s ease,
-        transform 0.2s ease;
-
-}
-
-
-.nav-text {
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    white-space: nowrap;
-
-}
-
-
-/* =========================================================
-   HOVER
-========================================================= */
 
 .sidebar-link:hover {
-
-    color: #f8fafc;
-
-    background: var(--sidebar-hover);
-
+    background: #1f2937;
+    color: #ffffff;
 }
 
-
-.sidebar-link:hover .nav-icon {
-
-    color: #60a5fa;
-
-    transform: translateX(1px);
-
+.sidebar-link:active {
+    transform: translateY(1px);
 }
 
 
@@ -382,44 +207,82 @@ body {
 ========================================================= */
 
 .sidebar-link.active {
-
+    background: #2563eb;
     color: #ffffff;
+}
 
-    background:
-        linear-gradient(
-            90deg,
-            rgba(37, 99, 235, 0.28),
-            rgba(37, 99, 235, 0.12)
-        );
-
+.sidebar-link.active:hover {
+    background: #1d4ed8;
 }
 
 
-.sidebar-link.active::before {
+/* =========================================================
+   ACTIVE INDICATOR
+========================================================= */
 
+.sidebar-link.active::before {
     content: "";
 
     position: absolute;
 
     left: 0;
-
     top: 8px;
-
     bottom: 8px;
 
     width: 3px;
 
+    background: #ffffff;
+
     border-radius: 0 4px 4px 0;
-
-    background: #3b82f6;
-
 }
 
 
+/* =========================================================
+   NAVIGATION ICON
+========================================================= */
+
+.nav-icon {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    min-width: 28px;
+
+    margin-right: 10px;
+
+    font-size: 17px;
+    line-height: 1;
+
+    color: #94a3b8;
+
+    transition: color 0.2s ease;
+}
+
+.sidebar-link:hover .nav-icon {
+    color: #ffffff;
+}
+
 .sidebar-link.active .nav-icon {
+    color: #ffffff;
+}
 
-    color: #60a5fa;
 
+/* =========================================================
+   NAVIGATION TEXT
+========================================================= */
+
+.nav-text {
+    overflow: hidden;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 
@@ -428,11 +291,11 @@ body {
 ========================================================= */
 
 .sidebar-footer {
+    margin-top: 20px;
 
-    padding: 15px 16px 18px;
+    padding: 16px 12px 4px;
 
-    border-top: 1px solid var(--sidebar-border);
-
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 
@@ -441,118 +304,41 @@ body {
 ========================================================= */
 
 .sidebar-status {
-
     display: flex;
-
     align-items: center;
 
-    gap: 10px;
+    gap: 9px;
 
-    padding: 11px 10px;
-
-    border-radius: 10px;
-
-    background: rgba(
-        255,
-        255,
-        255,
-        0.025
-    );
-
+    margin-bottom: 10px;
 }
 
-
-/* =========================================================
-   STATUS DOT
-========================================================= */
-
 .status-dot {
-
     width: 8px;
-
     height: 8px;
 
-    flex-shrink: 0;
+    flex: 0 0 8px;
 
     border-radius: 50%;
 
-    background: var(--status-online);
+    background: #22c55e;
 
     box-shadow:
-        0 0 0 4px
-        rgba(34, 197, 94, 0.10);
-
+        0 0 0 3px rgba(34, 197, 94, 0.12);
 }
-
-
-.status-dot.online {
-
-    background: var(--status-online);
-
-    animation:
-        bugaiPulse 2.2s infinite;
-
-}
-
-
-@keyframes bugaiPulse {
-
-    0%,
-    100% {
-
-        box-shadow:
-            0 0 0 4px
-            rgba(34, 197, 94, 0.10);
-
-    }
-
-    50% {
-
-        box-shadow:
-            0 0 0 7px
-            rgba(34, 197, 94, 0.02);
-
-    }
-
-}
-
-
-/* =========================================================
-   STATUS TEXT
-========================================================= */
 
 .status-text {
-
-    display: flex;
-
-    flex-direction: column;
-
     min-width: 0;
 
-    gap: 3px;
-
-}
-
-
-.status-text strong {
-
-    color: #dbeafe;
+    color: #94a3b8;
 
     font-size: 11px;
-
-    font-weight: 700;
-
 }
 
+.status-text strong {
+    color: #cbd5e1;
 
-.status-text span {
-
-    color: #64748b;
-
-    font-size: 9px;
-
-    font-weight: 500;
-
+    font-size: 12px;
+    font-weight: 700;
 }
 
 
@@ -561,19 +347,11 @@ body {
 ========================================================= */
 
 .sidebar-version {
+    color: #64748b;
 
-    padding:
+    font-size: 10px;
 
-        10px
-        10px
-        0;
-
-    color: #475569;
-
-    font-size: 9px;
-
-    font-weight: 600;
-
+    letter-spacing: 0.04em;
 }
 
 
@@ -582,16 +360,15 @@ body {
 ========================================================= */
 
 .sidebar-menu-button {
-
-    display: none;
-
     position: fixed;
 
-    top: 15px;
-    left: 15px;
+    top: 16px;
+    left: 16px;
 
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
+
+    display: none;
 
     align-items: center;
     justify-content: center;
@@ -602,38 +379,50 @@ body {
 
     padding: 0;
 
-    border: 1px solid #cbd5e1;
+    border: 0;
+    border-radius: 8px;
 
-    border-radius: 10px;
-
-    background: #ffffff;
-
-    box-shadow:
-        0 5px 20px
-        rgba(15, 23, 42, 0.12);
+    background: #111827;
+    color: #ffffff;
 
     cursor: pointer;
 
     z-index: 1100;
 
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, 0.2);
 }
 
-
-/* Hamburger lines */
-
 .sidebar-menu-button span {
-
     display: block;
 
-    width: 18px;
+    width: 20px;
     height: 2px;
 
     border-radius: 2px;
 
-    background: #334155;
+    background: #ffffff;
 
-    transition: 0.2s;
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
 
+
+/* =========================================================
+   MOBILE MENU BUTTON — OPEN STATE
+========================================================= */
+
+.sidebar-menu-button.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.sidebar-menu-button.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.sidebar-menu-button.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
 }
 
 
@@ -642,108 +431,96 @@ body {
 ========================================================= */
 
 .sidebar-overlay {
-
-    display: none;
-
     position: fixed;
 
     inset: 0;
 
-    background:
-        rgba(
-            15,
-            23,
-            42,
-            0.55
-        );
+    background: rgba(15, 23, 42, 0.55);
 
-    backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
 
     z-index: 900;
 
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
 }
-
 
 .sidebar-overlay.active {
-
-    display: block;
-
+    opacity: 1;
+    visibility: visible;
 }
 
 
 /* =========================================================
-   PREVENT BODY SCROLL
+   MAIN CONTENT OFFSET
 ========================================================= */
 
-body.sidebar-open {
-
-    overflow: hidden;
-
+body:has(.bugai-sidebar) main {
+    margin-left: var(--bugai-sidebar-width);
 }
 
 
 /* =========================================================
-   DESKTOP CONTENT SUPPORT
+   TABLET
 ========================================================= */
 
-@media (min-width: 901px) {
+@media (max-width: 1100px) {
 
-    /*
-     * Your individual page CSS normally contains:
-     *
-     * margin-left: 250px;
-     *
-     * This sidebar does not force a layout so that
-     * each page can control its own content width.
-     */
+    :root {
+        --bugai-sidebar-width: 230px;
+    }
 
+    .brand-name {
+        font-size: 23px;
+    }
+
+    .nav-text {
+        font-size: 13px;
+    }
 }
 
 
 /* =========================================================
-   TABLET / MOBILE
+   MOBILE
 ========================================================= */
 
 @media (max-width: 900px) {
 
+    :root {
+        --bugai-sidebar-width: 0px;
+    }
+
     .bugai-sidebar {
+        position: fixed;
 
-        width: 270px;
+        top: 0;
+        left: 0;
+        bottom: 0;
 
-        transform:
-            translateX(-100%);
+        width: 250px;
+
+        transform: translateX(-100%);
 
         transition:
             transform 0.25s ease;
 
         box-shadow:
-            12px 0 30px
-            rgba(15, 23, 42, 0.20);
-
+            8px 0 30px rgba(15, 23, 42, 0.2);
     }
-
 
     .bugai-sidebar.open {
-
-        transform:
-            translateX(0);
-
+        transform: translateX(0);
     }
-
 
     .sidebar-menu-button {
-
         display: flex;
-
     }
 
-
-    .sidebar-brand {
-
-        padding-left: 22px;
-
+    body:has(.bugai-sidebar) main {
+        margin-left: 0;
     }
-
 }
 
 
@@ -751,27 +528,34 @@ body.sidebar-open {
    SMALL MOBILE
 ========================================================= */
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
 
     .bugai-sidebar {
+        width: 270px;
 
-        width: 285px;
-
+        padding: 20px 12px;
     }
-
 
     .sidebar-menu-button {
-
-        width: 40px;
-
-        height: 40px;
-
         top: 12px;
-
         left: 12px;
 
+        width: 42px;
+        height: 42px;
     }
 
+    .sidebar-brand {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .navigation-label {
+        padding-left: 10px;
+    }
+
+    .sidebar-link {
+        padding: 10px;
+    }
 }
 
 
@@ -779,21 +563,10 @@ body.sidebar-open {
    ACCESSIBILITY
 ========================================================= */
 
-.sidebar-link:focus-visible {
-
-    outline: 2px solid #60a5fa;
-
-    outline-offset: 2px;
-
-}
-
-
+.sidebar-link:focus-visible,
 .sidebar-menu-button:focus-visible {
-
-    outline: 2px solid #2563eb;
-
+    outline: 3px solid rgba(96, 165, 250, 0.6);
     outline-offset: 2px;
-
 }
 
 
@@ -805,18 +578,9 @@ body.sidebar-open {
 
     .bugai-sidebar,
     .sidebar-link,
-    .nav-icon,
-    .sidebar-menu-button span {
-
+    .sidebar-menu-button,
+    .sidebar-menu-button span,
+    .sidebar-overlay {
         transition: none;
-
     }
-
-
-    .status-dot.online {
-
-        animation: none;
-
-    }
-
 }

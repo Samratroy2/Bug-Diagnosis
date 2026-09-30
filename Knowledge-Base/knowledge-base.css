@@ -15,7 +15,6 @@ body {
 }
 
 main {
-    margin-left: 250px;
     padding: 48px 56px;
     max-width: 1650px;
 }
@@ -653,7 +652,6 @@ button:disabled {
 @media (max-width: 900px) {
 
     main {
-        margin-left: 0;
         padding: 80px 22px 30px;
     }
 

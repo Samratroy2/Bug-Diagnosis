@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>BugAI - Defect Analytics</title>
+
+    <link
+        rel="stylesheet"
+        href="../sidebar.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="analytics.css"
+    >
+
+</head>
+
+<body>
+
+
+    <!-- =========================================================
+         BUGAI SIDEBAR
+    ========================================================== -->
+
+    <aside
+        id="bugaiSidebar"
+        class="bugai-sidebar"
+    >
+
+        <!-- =====================================================
+             LOGO / BRAND
+        ====================================================== -->
+
+        <div class="sidebar-brand">
+
+            <div class="brand-text">
+
+                <div class="brand-name">
+                    BugAI
+                </div>
+
+                <div class="brand-subtitle">
+                    Intelligent Bug Diagnosis
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             NAVIGATION
+        ====================================================== -->
+
+        <nav class="sidebar-navigation">
+
+
+            <!-- =================================================
+                 MAIN
+            ================================================== -->
+
+            <div class="navigation-label">
+                MAIN
+            </div>
+
+
+            <!-- Dashboard -->
+
+            <a
+                href="../Dashboard/dashboard.html"
+                class="sidebar-link"
+                data-page="dashboard"
+            >
+
+                <span class="nav-icon">
+                    ▦
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- Bug Submission -->
+
+            <a
+                href="../Bug-Submission/bug-submission.html"
+                class="sidebar-link"
+                data-page="bug-submission"
+            >
+
+                <span class="nav-icon">
+                    ＋
+                </span>
+
+                <span class="nav-text">
+                    Bug Submission
+                </span>
+
+            </a>
+
+
+            <!-- Workflow -->
+
+            <a
+                href="../Workflow/workflow.html"
+                class="sidebar-link"
+                data-page="workflow"
+            >
+
+                <span class="nav-icon">
+                    ⇄
+                </span>
+
+                <span class="nav-text">
+                    Workflow
+                </span>
+
+            </a>
+
+
+            <!-- Architecture -->
+
+            <a
+                href="../Architecture/architecture.html"
+                class="sidebar-link"
+                data-page="architecture"
+            >
+
+                <span class="nav-icon">
+                    ⌘
+                </span>
+
+                <span class="nav-text">
+                    Architecture
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 INTELLIGENCE
+            ================================================== -->
+
+            <div class="navigation-label navigation-label-spaced">
+                INTELLIGENCE
+            </div>
+
+
+            <!-- Knowledge Base -->
+
+            <a
+                href="../Knowledge-Base/knowledge-base.html"
+                class="sidebar-link"
+                data-page="knowledge-base"
+            >
+
+                <span class="nav-icon">
+                    ▤
+                </span>
+
+                <span class="nav-text">
+                    Knowledge Base
+                </span>
+
+            </a>
+
+
+            <!-- Semantic Similarity -->
+
+            <a
+                href="../Semantic-Similarity/similarity.html"
+                class="sidebar-link"
+                data-page="similarity"
+            >
+
+                <span class="nav-icon">
+                    ⌕
+                </span>
+
+                <span class="nav-text">
+                    Semantic Similarity
+                </span>
+
+            </a>
+
+
+            <!-- Validation -->
+
+            <a
+                href="../Validation/validation.html"
+                class="sidebar-link"
+                data-page="validation"
+            >
+
+                <span class="nav-icon">
+                    ✓
+                </span>
+
+                <span class="nav-text">
+                    M2 / M3 Validation
+                </span>
+
+            </a>
+
+
+            <!-- Defect Analytics -->
+
+            <a
+                href="analytics.html"
+                class="sidebar-link active"
+                data-page="analytics"
+            >
+
+                <span class="nav-icon">
+                    ▥
+                </span>
+
+                <span class="nav-text">
+                    Defect Analytics
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 SYSTEM
+            ================================================== -->
+
+            <div class="navigation-label navigation-label-spaced">
+                SYSTEM
+            </div>
+
+
+            <!-- Settings -->
+
+            <a
+                href="../Settings/settings.html"
+                class="sidebar-link"
+                data-page="settings"
+            >
+
+                <span class="nav-icon">
+                    ⚙
+                </span>
+
+                <span class="nav-text">
+                    Settings
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- =====================================================
+             SIDEBAR FOOTER
+        ====================================================== -->
+
+        <div class="sidebar-footer">
+
+            <div class="sidebar-status">
+
+                <span class="status-dot"></span>
+
+                <div class="status-text">
+
+                    <strong>
+                        System Online
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="sidebar-version">
+                BugAI v1.0
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MOBILE MENU BUTTON
+    ========================================================== -->
+
+    <button
+        id="sidebarMenuButton"
+        class="sidebar-menu-button"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-controls="bugaiSidebar"
+        aria-expanded="false"
+    >
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+    </button>
+
+
+    <!-- =========================================================
+         MOBILE OVERLAY
+    ========================================================== -->
+
+    <div
+        id="sidebarOverlay"
+        class="sidebar-overlay"
+    ></div>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+
+    <main>
+
+
+        <!-- =====================================================
+             PAGE HEADER
+        ====================================================== -->
+
+        <header class="page-header">
+
+            <div class="eyebrow">
+                MILESTONE 4
+            </div>
+
+            <h1>
+                Defect Pattern Analytics
+            </h1>
+
+            <p>
+                Recurring themes, components, severity,
+                exceptions, sources and time-based patterns
+                across historical and submitted bugs.
+            </p>
+
+        </header>
+
+
+        <!-- =====================================================
+             ANALYTICS FILTERS
+        ====================================================== -->
+
+        <section class="card">
+
+            <h2>
+                Analytics Filters
+            </h2>
+
+            <div class="filters">
+
+
+                <select id="project">
+
+                    <option value="">
+                        All projects
+                    </option>
+
+                </select>
+
+
+                <select id="severity">
+
+                    <option value="">
+                        All severities
+                    </option>
+
+                </select>
+
+
+                <select id="priority">
+
+                    <option value="">
+                        All priorities
+                    </option>
+
+                </select>
+
+
+                <input
+                    id="component"
+                    type="text"
+                    placeholder="Component"
+                >
+
+
+                <input
+                    id="exception_type"
+                    type="text"
+                    placeholder="Exception type"
+                >
+
+
+                <select id="source">
+
+                    <option value="">
+                        All sources
+                    </option>
+
+                </select>
+
+
+                <input
+                    id="start_date"
+                    type="date"
+                    title="Start date"
+                >
+
+
+                <input
+                    id="end_date"
+                    type="date"
+                    title="End date"
+                >
+
+
+                <button
+                    id="apply"
+                    class="primary"
+                    type="button"
+                >
+                    Apply Filters
+                </button>
+
+
+                <button
+                    id="reset"
+                    class="secondary"
+                    type="button"
+                >
+                    Reset
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             SUMMARY STATISTICS
+        ====================================================== -->
+
+        <section class="stats">
+
+
+            <div class="stat">
+
+                <span>
+                    Total analysed
+                </span>
+
+                <strong id="total">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    Top component
+                </span>
+
+                <strong id="topComponent">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    Top exception
+                </span>
+
+                <strong id="topException">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    Top severity
+                </span>
+
+                <strong id="topSeverity">
+                    —
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             ANALYTICS DISTRIBUTIONS
+        ====================================================== -->
+
+        <section class="grid">
+
+
+            <!-- Severity -->
+
+            <div class="card">
+
+                <h2>
+                    Severity Distribution
+                </h2>
+
+                <div
+                    id="severityChart"
+                    class="bars"
+                ></div>
+
+            </div>
+
+
+            <!-- Component -->
+
+            <div class="card">
+
+                <h2>
+                    Component Distribution
+                </h2>
+
+                <div
+                    id="componentChart"
+                    class="bars"
+                ></div>
+
+            </div>
+
+
+            <!-- Exceptions -->
+
+            <div class="card">
+
+                <h2>
+                    Recurring Exceptions
+                </h2>
+
+                <div
+                    id="exceptionChart"
+                    class="bars"
+                ></div>
+
+            </div>
+
+
+            <!-- Errors -->
+
+            <div class="card">
+
+                <h2>
+                    Recurring Error Patterns
+                </h2>
+
+                <div
+                    id="errorChart"
+                    class="bars"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             TIME-BASED ACTIVITY
+        ====================================================== -->
+
+        <section class="card">
+
+            <h2>
+                Time-Based Activity
+            </h2>
+
+            <div
+                id="timeChart"
+                class="bars"
+            ></div>
+
+        </section>
+
+
+        <!-- =====================================================
+             KNOWLEDGE BASE GROWTH
+        ====================================================== -->
+
+        <section class="card">
+
+            <h2>
+                Knowledge Base Growth — Confirmed Fix
+            </h2>
+
+            <p class="muted">
+                Only approved, resolved bugs with a confirmed
+                fix are eligible for incremental indexing.
+            </p>
+
+
+            <div class="growth-grid">
+
+
+                <!-- Bug ID -->
+
+                <label>
+
+                    Bug ID *
+
+                    <input
+                        id="gBugId"
+                        type="text"
+                        placeholder="e.g. BUG-1001"
+                    >
+
+                </label>
+
+
+                <!-- Project -->
+
+                <label>
+
+                    Project
+
+                    <input
+                        id="gProject"
+                        type="text"
+                        placeholder="e.g. Apache"
+                    >
+
+                </label>
+
+
+                <!-- Title -->
+
+                <label>
+
+                    Title *
+
+                    <input
+                        id="gTitle"
+                        type="text"
+                        placeholder="Bug title"
+                    >
+
+                </label>
+
+
+                <!-- Component -->
+
+                <label>
+
+                    Affected Component *
+
+                    <input
+                        id="gComponent"
+                        type="text"
+                        placeholder="e.g. Database"
+                    >
+
+                </label>
+
+
+                <!-- Description -->
+
+                <label>
+
+                    Description *
+
+                    <textarea
+                        id="gDescription"
+                        placeholder="Describe the confirmed bug..."
+                    ></textarea>
+
+                </label>
+
+
+                <!-- Stack Trace -->
+
+                <label>
+
+                    Error Information / Stack Trace *
+
+                    <textarea
+                        id="gStack"
+                        placeholder="Paste error information or stack trace..."
+                    ></textarea>
+
+                </label>
+
+
+                <!-- Root Cause -->
+
+                <label>
+
+                    Confirmed Root Cause *
+
+                    <textarea
+                        id="gRoot"
+                        placeholder="Describe the confirmed root cause..."
+                    ></textarea>
+
+                </label>
+
+
+                <!-- Resolution -->
+
+                <label>
+
+                    Confirmed Resolution / Fix *
+
+                    <textarea
+                        id="gResolution"
+                        placeholder="Describe the confirmed resolution or fix..."
+                    ></textarea>
+
+                </label>
+
+
+                <!-- Severity -->
+
+                <label>
+
+                    Severity
+
+                    <select id="gSeverity">
+
+                        <option value="">
+                            Select severity
+                        </option>
+
+                        <option value="Critical">
+                            Critical
+                        </option>
+
+                        <option value="High">
+                            High
+                        </option>
+
+                        <option value="Medium">
+                            Medium
+                        </option>
+
+                        <option value="Low">
+                            Low
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <!-- Priority -->
+
+                <label>
+
+                    Priority
+
+                    <select id="gPriority">
+
+                        <option value="">
+                            Select priority
+                        </option>
+
+                        <option value="P1">
+                            P1
+                        </option>
+
+                        <option value="P2">
+                            P2
+                        </option>
+
+                        <option value="P3">
+                            P3
+                        </option>
+
+                        <option value="P4">
+                            P4
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <!-- Confirmed Fix -->
+
+                <label class="checkbox-label">
+
+                    <input
+                        type="checkbox"
+                        id="confirmedFix"
+                    >
+
+                    Confirmed fix
+
+                </label>
+
+
+                <!-- Approved -->
+
+                <label class="checkbox-label">
+
+                    <input
+                        type="checkbox"
+                        id="approved"
+                    >
+
+                    Approved for KB
+
+                </label>
+
+            </div>
+
+
+            <button
+                id="addGrowth"
+                class="primary"
+                type="button"
+            >
+                Validate &amp; Add to Knowledge Base
+            </button>
+
+
+            <pre id="growthResult"></pre>
+
+        </section>
+
+
+        <!-- =====================================================
+             END-TO-END TEST
+        ====================================================== -->
+
+        <section class="card">
+
+            <h2>
+                End-to-End Test
+            </h2>
+
+            <p class="muted">
+                Runs five distinct cases through
+                Triage → Log Analysis → RAG → Root Cause
+                → Duplicate Detection → Remediation.
+            </p>
+
+
+            <button
+                id="runE2E"
+                class="primary"
+                type="button"
+            >
+                Run Milestone 4 E2E Test
+            </button>
+
+
+            <pre id="e2eResult"></pre>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script src="../sidebar.js"></script>
+
+    <script src="analytics.js"></script>
+
+</body>
+
+</html>
