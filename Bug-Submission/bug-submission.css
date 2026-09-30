@@ -1,23 +1,48 @@
 /* =========================================================
    BUGAI — BUG SUBMISSION
-   Page-specific styles only
-   Sidebar is controlled by sidebar.css
+   Self-contained page styling
    ========================================================= */
 
 * {
     box-sizing: border-box;
 }
 
-body {
-    margin: 0;
-    background: #f5f7fb;
-    color: #172033;
-    font-family: Inter, "Segoe UI", Arial, sans-serif;
-    line-height: 1.55;
+html {
+    scroll-behavior: smooth;
 }
 
+body {
+    margin: 0;
+
+    background: #f5f7fb;
+
+    color: #172033;
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    line-height: 1.55;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
 main {
-    padding: 48px 56px;
+    margin-left: 250px;
+
+    min-height: 100vh;
+
+    padding: 42px 56px 60px;
+
     max-width: 1650px;
 }
 
@@ -32,13 +57,19 @@ header {
 
 header h1 {
     margin: 5px 0 8px;
+
+    color: #0f2747;
+
     font-size: 36px;
+
     line-height: 1.15;
 }
 
 header p {
     margin: 0;
+
     color: #64748b;
+
     font-size: 16px;
 }
 
@@ -53,10 +84,22 @@ header p {
 .note,
 .explanation {
     background: #ffffff;
+
     border: 1px solid #e2e8f0;
+
     border-radius: 14px;
+
     padding: 28px;
-    box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+
+    box-shadow:
+        0 5px 18px
+        rgba(15, 23, 42, 0.04);
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 
@@ -67,23 +110,53 @@ header p {
 button,
 .primary-btn {
     border: 0;
+
     border-radius: 8px;
+
     padding: 11px 16px;
+
+    font: inherit;
+
     font-weight: 600;
+
     cursor: pointer;
+
     text-decoration: none;
+
     display: inline-block;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+button:hover,
+.primary-btn:hover {
+    transform: translateY(-1px);
 }
 
 .primary,
 .primary-btn {
     background: #2563eb;
+
     color: #ffffff;
+}
+
+.primary:hover,
+.primary-btn:hover {
+    background: #1d4ed8;
 }
 
 .secondary {
     background: #e2e8f0;
+
     color: #172033;
+}
+
+.secondary:hover {
+    background: #cbd5e1;
 }
 
 
@@ -95,19 +168,47 @@ input,
 select,
 textarea {
     width: 100%;
+
     font: inherit;
+
     border: 1px solid #cbd5e1;
+
     border-radius: 8px;
+
     padding: 11px 13px;
+
     outline: none;
+
     background: #ffffff;
+
+    color: #172033;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.25s ease,
+        color 0.25s ease;
+}
+
+textarea {
+    resize: vertical;
+
+    min-height: 120px;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #94a3b8;
 }
 
 
@@ -121,27 +222,61 @@ textarea:focus {
 
 .form-group label {
     display: block;
-    font-weight: 700;
+
     margin-bottom: 8px;
+
+    color: #172b4d;
+
+    font-weight: 700;
+
+    font-size: 14px;
 }
 
 .two-column {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+
+    grid-template-columns:
+        1fr 1fr;
+
     gap: 22px;
 }
 
+
+/* =========================================================
+   UPLOAD ZONE
+   ========================================================= */
+
 .upload-zone {
     border: 2px dashed #cbd5e1;
+
     border-radius: 10px;
+
     padding: 28px;
+
     text-align: center;
+
     cursor: pointer;
+
     background: #f8fafc;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.upload-zone:hover {
+    background: #eff6ff;
+
+    border-color: #93c5fd;
+}
+
+.upload-zone strong {
+    color: #172b4d;
 }
 
 .upload-zone p {
     margin: 6px 0;
+
     color: #64748b;
 }
 
@@ -151,15 +286,44 @@ textarea:focus {
 
 .upload-zone input {
     margin-top: 12px;
+
     border: 0;
+
     padding: 0;
+
     background: transparent;
+
+    cursor: pointer;
 }
+
+
+/* =========================================================
+   FILE INFO
+   ========================================================= */
+
+#fileInfo {
+    margin-top: 8px;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
 
 .actions {
     display: flex;
+
     justify-content: flex-end;
+
+    align-items: center;
+
     gap: 10px;
+
+    margin-top: 10px;
 }
 
 
@@ -177,27 +341,41 @@ textarea:focus {
 
 .result h2 {
     margin-top: 0;
+
+    color: #0f2747;
 }
 
 .result-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
     gap: 16px;
 }
 
 .result-box {
     background: #f8fafc;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 10px;
+
     padding: 16px;
 }
 
 .result-box h3 {
     margin: 0 0 7px;
+
+    color: #172b4d;
+
     font-size: 14px;
 }
 
 .result-box p {
     margin: 8px 0;
+
     color: #475569;
 }
 
@@ -207,18 +385,21 @@ textarea:focus {
    ========================================================= */
 
 .match {
-    border-top: 1px solid #e2e8f0;
+    border-top:
+        1px solid #e2e8f0;
+
     padding: 12px 0;
 }
 
 .score {
     font-weight: 700;
+
     color: #2563eb;
 }
 
 
 /* =========================================================
-   MILESTONE 2 — AGENT RESULT STYLING
+   MILESTONE 2 — AGENT RESULT
    ========================================================= */
 
 .agent-card {
@@ -227,23 +408,35 @@ textarea:focus {
 
 .agent-heading {
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
     gap: 12px;
 }
 
 .agent-heading h3 {
     margin: 0;
+
+    color: #172b4d;
 }
 
 .agent-status {
     font-size: 11px;
+
     font-weight: 700;
+
     letter-spacing: 0.05em;
+
     text-transform: uppercase;
+
     padding: 5px 8px;
+
     border-radius: 999px;
+
     background: #dcfce7;
+
     color: #166534;
 }
 
@@ -257,47 +450,70 @@ textarea:focus {
 .primary-cause,
 .duplicate-row {
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
+
     gap: 16px;
 }
 
 .findings-header h2 {
     margin: 0 0 5px;
+
+    color: #0f2747;
 }
 
 .m3-section {
     margin-top: 18px;
+
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 12px;
+
     padding: 20px;
 }
 
 .section-title h3 {
     margin: 0;
+
+    color: #172b4d;
 }
 
 .status-pill {
     padding: 5px 9px;
+
     border-radius: 999px;
+
     background: #e0e7ff;
+
     color: #3730a3;
+
     font-size: 12px;
+
     font-weight: 700;
 }
 
 .primary-cause {
     margin: 15px 0;
+
     padding: 16px;
+
     background: #ffffff;
-    border-left: 4px solid #2563eb;
+
+    border-left:
+        4px solid #2563eb;
+
     border-radius: 8px;
 }
 
 .primary-cause span,
 .recommendation h4 span {
     font-weight: 700;
+
     color: #2563eb;
 }
 
@@ -305,7 +521,9 @@ textarea:focus {
 .duplicate-row,
 .recommendation {
     padding: 13px 0;
-    border-top: 1px solid #e2e8f0;
+
+    border-top:
+        1px solid #e2e8f0;
 }
 
 .evidence:first-child {
@@ -315,14 +533,10 @@ textarea:focus {
 .evidence p,
 .evidence small {
     display: block;
-    margin: 5px 0;
-    color: #475569;
-}
 
-.score {
-    color: #2563eb;
-    font-weight: 700;
-    margin-left: 8px;
+    margin: 5px 0;
+
+    color: #475569;
 }
 
 .duplicate-row b {
@@ -331,6 +545,8 @@ textarea:focus {
 
 .recommendation h4 {
     margin: 0 0 7px;
+
+    color: #172b4d;
 }
 
 .recommendation p {
@@ -347,26 +563,741 @@ textarea:focus {
 
 
 /* =========================================================
+   LOCAL BUGAI SIDEBAR
+   ========================================================= */
+
+.bugai-sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    z-index: 1000;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border-right:
+        1px solid #1e293b;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SIDEBAR BRAND
+   ========================================================= */
+
+.sidebar-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 22px 18px;
+
+    border-bottom:
+        1px solid #1e293b;
+
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 20px;
+
+    font-weight: 800;
+}
+
+.brand-name {
+    color: #ffffff;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   SIDEBAR NAVIGATION
+   ========================================================= */
+
+.sidebar-navigation {
+    flex: 1;
+
+    padding: 16px 12px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+}
+
+.navigation-label {
+    margin: 14px 10px 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.12em;
+}
+
+.sidebar-link {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    width: 100%;
+
+    min-height: 42px;
+
+    box-sizing: border-box;
+
+    margin-bottom: 4px;
+
+    padding: 10px 12px;
+
+    border-radius: 8px;
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sidebar-link:hover {
+    background: #1e293b;
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+}
+
+.sidebar-link.active {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+.nav-icon {
+    width: 20px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 17px;
+}
+
+.nav-text {
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+   ========================================================= */
+
+.sidebar-footer {
+    padding: 16px;
+
+    border-top:
+        1px solid #1e293b;
+
+    flex-shrink: 0;
+}
+
+.sidebar-status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #cbd5e1;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(34, 197, 94, 0.12);
+}
+
+.status-text {
+    white-space: nowrap;
+}
+
+.sidebar-version {
+    margin-top: 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+.sidebar-menu-button {
+    display: none;
+
+    position: fixed;
+
+    top: 16px;
+    left: 16px;
+
+    z-index: 1100;
+
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+
+    border-radius: 10px;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border:
+        1px solid #1e293b;
+
+    font-size: 21px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 16px
+        rgba(15, 23, 42, 0.2);
+}
+
+.sidebar-menu-button:hover {
+    background: #1e293b;
+
+    transform: none;
+}
+
+
+/* =========================================================
+   MOBILE OVERLAY
+   ========================================================= */
+
+.sidebar-overlay {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 900;
+
+    background:
+        rgba(
+            15,
+            23,
+            42,
+            0.55
+        );
+
+    backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.show {
+    display: block;
+}
+
+
+/* =========================================================
+   DARK MODE — PAGE
+   ========================================================= */
+
+html.dark-mode body,
+html.dark body,
+body.dark-mode,
+body.dark {
+    background: #0f172a;
+
+    color: #e2e8f0;
+}
+
+
+/* Header */
+
+html.dark-mode header h1,
+html.dark header h1,
+body.dark-mode header h1,
+body.dark header h1 {
+    color: #f8fafc;
+}
+
+html.dark-mode header p,
+html.dark header p,
+body.dark-mode header p,
+body.dark header p {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DARK MODE — CARDS
+   ========================================================= */
+
+html.dark-mode .card,
+html.dark .card,
+body.dark-mode .card,
+body.dark .card {
+    background: #111827;
+
+    border-color: #243244;
+
+    color: #e2e8f0;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   DARK MODE — FORM
+   ========================================================= */
+
+html.dark-mode .form-group label,
+html.dark .form-group label,
+body.dark-mode .form-group label,
+body.dark .form-group label {
+    color: #f1f5f9;
+}
+
+html.dark-mode input,
+html.dark-mode select,
+html.dark-mode textarea,
+html.dark input,
+html.dark select,
+html.dark textarea,
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea,
+body.dark input,
+body.dark select,
+body.dark textarea {
+    background: #111827;
+
+    color: #e2e8f0;
+
+    border-color: #334155;
+}
+
+html.dark-mode input::placeholder,
+html.dark-mode textarea::placeholder,
+html.dark input::placeholder,
+html.dark textarea::placeholder,
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder,
+body.dark input::placeholder,
+body.dark textarea::placeholder {
+    color: #64748b;
+}
+
+html.dark-mode option,
+html.dark option,
+body.dark-mode option,
+body.dark option {
+    background: #111827;
+
+    color: #e2e8f0;
+}
+
+
+/* =========================================================
+   DARK MODE — BUTTONS
+   ========================================================= */
+
+html.dark-mode .secondary,
+html.dark .secondary,
+body.dark-mode .secondary,
+body.dark .secondary {
+    background: #334155;
+
+    color: #e2e8f0;
+}
+
+html.dark-mode .secondary:hover,
+html.dark .secondary:hover,
+body.dark-mode .secondary:hover,
+body.dark .secondary:hover {
+    background: #475569;
+}
+
+
+/* =========================================================
+   DARK MODE — UPLOAD
+   ========================================================= */
+
+html.dark-mode .upload-zone,
+html.dark .upload-zone,
+body.dark-mode .upload-zone,
+body.dark .upload-zone {
+    background: #0f172a;
+
+    border-color: #475569;
+}
+
+html.dark-mode .upload-zone:hover,
+html.dark .upload-zone:hover,
+body.dark-mode .upload-zone:hover,
+body.dark .upload-zone:hover {
+    background: #172033;
+
+    border-color: #60a5fa;
+}
+
+html.dark-mode .upload-zone strong,
+html.dark .upload-zone strong,
+body.dark-mode .upload-zone strong,
+body.dark .upload-zone strong {
+    color: #f1f5f9;
+}
+
+html.dark-mode .upload-zone p,
+html.dark .upload-zone p,
+body.dark-mode .upload-zone p,
+body.dark .upload-zone p {
+    color: #94a3b8;
+}
+
+html.dark-mode .upload-zone small,
+html.dark .upload-zone small,
+body.dark-mode .upload-zone small,
+body.dark .upload-zone small {
+    color: #64748b;
+}
+
+html.dark-mode #fileInfo,
+html.dark #fileInfo,
+body.dark-mode #fileInfo,
+body.dark #fileInfo {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DARK MODE — RESULTS
+   ========================================================= */
+
+html.dark-mode .result h2,
+html.dark .result h2,
+body.dark-mode .result h2,
+body.dark .result h2 {
+    color: #f8fafc;
+}
+
+html.dark-mode .result-box,
+html.dark .result-box,
+body.dark-mode .result-box,
+body.dark .result-box {
+    background: #0f172a;
+
+    border-color: #243244;
+}
+
+html.dark-mode .result-box h3,
+html.dark .result-box h3,
+body.dark-mode .result-box h3,
+body.dark .result-box h3 {
+    color: #f1f5f9;
+}
+
+html.dark-mode .result-box p,
+html.dark .result-box p,
+body.dark-mode .result-box p,
+body.dark .result-box p {
+    color: #cbd5e1;
+}
+
+
+/* =========================================================
+   DARK MODE — MATCHES
+   ========================================================= */
+
+html.dark-mode .match,
+html.dark .match,
+body.dark-mode .match,
+body.dark .match {
+    border-color: #334155;
+}
+
+html.dark-mode .score,
+html.dark .score,
+body.dark-mode .score,
+body.dark .score {
+    color: #60a5fa;
+}
+
+
+/* =========================================================
+   DARK MODE — AGENT RESULTS
+   ========================================================= */
+
+html.dark-mode .agent-heading h3,
+html.dark .agent-heading h3,
+body.dark-mode .agent-heading h3,
+body.dark .agent-heading h3 {
+    color: #f8fafc;
+}
+
+html.dark-mode .agent-status,
+html.dark .agent-status,
+body.dark-mode .agent-status,
+body.dark .agent-status {
+    background: #14532d;
+
+    color: #bbf7d0;
+}
+
+
+/* =========================================================
+   DARK MODE — MILESTONE 3
+   ========================================================= */
+
+html.dark-mode .findings-header h2,
+html.dark .findings-header h2,
+body.dark-mode .findings-header h2,
+body.dark .findings-header h2 {
+    color: #f8fafc;
+}
+
+html.dark-mode .m3-section,
+html.dark .m3-section,
+body.dark-mode .m3-section,
+body.dark .m3-section {
+    background: #0f172a;
+
+    border-color: #243244;
+}
+
+html.dark-mode .section-title h3,
+html.dark .section-title h3,
+body.dark-mode .section-title h3,
+body.dark .section-title h3 {
+    color: #f1f5f9;
+}
+
+html.dark-mode .status-pill,
+html.dark .status-pill,
+body.dark-mode .status-pill,
+body.dark .status-pill {
+    background: #312e81;
+
+    color: #c7d2fe;
+}
+
+html.dark-mode .primary-cause,
+html.dark .primary-cause,
+body.dark-mode .primary-cause,
+body.dark .primary-cause {
+    background: #111827;
+
+    border-color: #2563eb;
+}
+
+html.dark-mode .primary-cause span,
+html.dark .primary-cause span,
+body.dark-mode .primary-cause span,
+body.dark .primary-cause span {
+    color: #60a5fa;
+}
+
+html.dark-mode .evidence,
+html.dark .evidence,
+body.dark-mode .evidence,
+body.dark .evidence,
+html.dark-mode .duplicate-row,
+html.dark .duplicate-row,
+body.dark-mode .duplicate-row,
+body.dark .duplicate-row,
+html.dark-mode .recommendation,
+html.dark .recommendation,
+body.dark-mode .recommendation,
+body.dark .recommendation {
+    border-color: #334155;
+}
+
+html.dark-mode .evidence p,
+html.dark-mode .evidence small,
+html.dark .evidence p,
+html.dark .evidence small,
+body.dark-mode .evidence p,
+body.dark-mode .evidence small,
+body.dark .evidence p,
+body.dark .evidence small {
+    color: #cbd5e1;
+}
+
+html.dark-mode .duplicate-row b,
+html.dark .duplicate-row b,
+body.dark-mode .duplicate-row b,
+body.dark .duplicate-row b {
+    color: #60a5fa;
+}
+
+html.dark-mode .recommendation h4,
+html.dark .recommendation h4,
+body.dark-mode .recommendation h4,
+body.dark .recommendation h4 {
+    color: #f1f5f9;
+}
+
+html.dark-mode .recommendation h4 span,
+html.dark .recommendation h4 span,
+body.dark-mode .recommendation h4 span,
+body.dark .recommendation h4 span {
+    color: #60a5fa;
+}
+
+html.dark-mode .muted,
+html.dark .muted,
+body.dark-mode .muted,
+body.dark .muted {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DARK MODE — GENERAL TEXT VISIBILITY
+   ========================================================= */
+
+html.dark-mode .card *,
+html.dark .card *,
+body.dark-mode .card *,
+body.dark .card * {
+    opacity: 1;
+}
+
+
+/* =========================================================
    RESPONSIVE — TABLET
    ========================================================= */
 
 @media (max-width: 1200px) {
 
     main {
-        padding: 42px 38px;
+        margin-left: 250px;
+
+        padding:
+            42px
+            38px
+            55px;
     }
+
 }
 
 
 /* =========================================================
-   RESPONSIVE — MOBILE
+   RESPONSIVE — MOBILE SIDEBAR
    ========================================================= */
 
 @media (max-width: 900px) {
 
-    main {
-        padding: 80px 22px 30px;
+    .bugai-sidebar {
+        transform:
+            translateX(-100%);
+
+        transition:
+            transform 0.25s ease;
+
+        box-shadow:
+            10px 0 30px
+            rgba(0, 0, 0, 0.2);
     }
+
+    .bugai-sidebar.open {
+        transform:
+            translateX(0);
+    }
+
+    .sidebar-menu-button {
+        display: flex;
+    }
+
+    main {
+        margin-left: 0;
+
+        padding:
+            80px
+            22px
+            30px;
+    }
+
 }
 
 
@@ -375,6 +1306,23 @@ textarea:focus {
    ========================================================= */
 
 @media (max-width: 700px) {
+
+    main {
+        margin-left: 0;
+
+        padding:
+            75px
+            16px
+            25px;
+    }
+
+    header h1 {
+        font-size: 30px;
+    }
+
+    header p {
+        font-size: 14px;
+    }
 
     .two-column,
     .result-grid {
@@ -386,6 +1334,56 @@ textarea:focus {
     .primary-cause,
     .duplicate-row {
         flex-direction: column;
+
         align-items: flex-start;
     }
+
+    .actions {
+        flex-direction: column;
+
+        width: 100%;
+    }
+
+    .actions button {
+        width: 100%;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .sidebar-menu-button {
+        top: 14px;
+        left: 14px;
+
+        width: 40px;
+        height: 40px;
+    }
+
+    main {
+        padding:
+            70px
+            14px
+            35px;
+    }
+
+    header h1 {
+        font-size: 27px;
+    }
+
+    .upload-zone {
+        padding:
+            22px
+            14px;
+    }
+
 }

@@ -7,348 +7,839 @@
 
     <title>BugAI - Bug Submission</title>
 
-    <link rel="stylesheet" href="../sidebar.css">
     <link rel="stylesheet" href="bug-submission.css">
 </head>
 
 <body>
 
-<div id="sidebar-container"></div>
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
-<main>
+    <aside id="bugaiSidebar" class="bugai-sidebar">
 
-    <header>
-        <h1>Bug Submission</h1>
-        <p>Submit a software defect for intelligent diagnosis.</p>
-    </header>
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                B
+            </div>
+
+            <div>
+                <div class="brand-name">
+                    BugAI
+                </div>
+
+                <div class="brand-subtitle">
+                    Intelligent Bug Diagnosis
+                </div>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-navigation">
+
+            <div class="navigation-label">
+                MAIN
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Dashboard/dashboard.html"
+            >
+                <span class="nav-icon">⌂</span>
+                <span class="nav-text">
+                    Dashboard
+                </span>
+            </a>
+
+
+            <a
+                class="sidebar-link active"
+                href="../Bug-Submission/bug-submission.html"
+                aria-current="page"
+            >
+                <span class="nav-icon">＋</span>
+                <span class="nav-text">
+                    Bug Submission
+                </span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Workflow/workflow.html"
+            >
+                <span class="nav-icon">↝</span>
+                <span class="nav-text">
+                    Workflow
+                </span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Architecture/architecture.html"
+            >
+                <span class="nav-icon">◈</span>
+                <span class="nav-text">
+                    Architecture
+                </span>
+            </a>
+
+
+            <div class="navigation-label">
+                INTELLIGENCE
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Knowledge-Base/knowledge-base.html"
+            >
+                <span class="nav-icon">▣</span>
+                <span class="nav-text">
+                    Knowledge Base
+                </span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Semantic-Similarity/similarity.html"
+            >
+                <span class="nav-icon">⌕</span>
+                <span class="nav-text">
+                    Semantic Similarity
+                </span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Validation/validation.html"
+            >
+                <span class="nav-icon">✓</span>
+                <span class="nav-text">
+                    Validation
+                </span>
+            </a>
+
+
+            <div class="navigation-label">
+                SYSTEM
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../analytics/analytics.html"
+            >
+                <span class="nav-icon">▥</span>
+                <span class="nav-text">
+                    Analytics
+                </span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Settings/settings.html"
+            >
+                <span class="nav-icon">⚙</span>
+                <span class="nav-text">
+                    Settings
+                </span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <div class="sidebar-status">
+                <span class="status-dot"></span>
+
+                <span class="status-text">
+                    Backend Connected
+                </span>
+            </div>
+
+            <div class="sidebar-version">
+                BugAI · Milestone 4
+            </div>
+
+        </div>
+
+    </aside>
 
 
     <!-- =====================================================
-         BUG SUBMISSION FORM
-         ===================================================== -->
+         MOBILE MENU
+    ====================================================== -->
 
-    <section class="card">
+    <button
+        id="sidebarMenuButton"
+        class="sidebar-menu-button"
+        type="button"
+        aria-label="Open navigation"
+        aria-controls="bugaiSidebar"
+        aria-expanded="false"
+    >
+        ☰
+    </button>
 
-        <form id="bugForm">
 
-            <!-- =================================================
-                 BUG TITLE
-                 ================================================= -->
+    <div
+        id="sidebarOverlay"
+        class="sidebar-overlay"
+        aria-hidden="true"
+    ></div>
 
-            <div class="form-group">
 
-                <label for="bugTitle">
-                    Bug Title *
-                </label>
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
 
-                <input
-                    id="bugTitle"
-                    type="text"
-                    required
-                    placeholder="Example: Application crashes during login"
-                >
+    <main>
 
-            </div>
+        <!-- =================================================
+             HEADER
+        ================================================== -->
 
+        <header>
 
-            <!-- =================================================
-                 PROJECT
-                 ================================================= -->
+            <h1>
+                Bug Submission
+            </h1>
 
-            <div class="form-group">
+            <p>
+                Submit a software defect for intelligent diagnosis.
+            </p>
 
-                <label for="project">
-                    Project
-                </label>
+        </header>
 
-                <select id="project">
 
-                    <option value="Mozilla">
-                        Mozilla
-                    </option>
+        <!-- =====================================================
+             BUG SUBMISSION FORM
+        ====================================================== -->
 
-                    <option value="Apache">
-                        Apache
-                    </option>
+        <section class="card">
 
-                    <option value="Eclipse">
-                        Eclipse
-                    </option>
+            <form id="bugForm">
 
-                    <option value="Custom Project" selected>
-                        Custom Project
-                    </option>
+                <!-- =============================================
+                     BUG TITLE
+                ============================================== -->
 
-                </select>
+                <div class="form-group">
 
-            </div>
-
-
-            <!-- =================================================
-                 SEVERITY
-                 ================================================= -->
-
-            <div class="form-group">
-
-                <label for="severity">
-                    Severity
-                </label>
-
-                <select id="severity">
-
-                    <option value="">
-                        Select Severity
-                    </option>
-
-                    <option value="Critical">
-                        Critical
-                    </option>
-
-                    <option value="High">
-                        High
-                    </option>
-
-                    <option value="Medium">
-                        Medium
-                    </option>
-
-                    <option value="Low">
-                        Low
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- =================================================
-                 PRIORITY
-                 ================================================= -->
-
-            <div class="form-group">
-
-                <label for="priority">
-                    Priority
-                </label>
-
-                <select id="priority">
-
-                    <option value="">
-                        Select Priority
-                    </option>
-
-                    <option value="P1">
-                        P1 - Critical
-                    </option>
-
-                    <option value="P2">
-                        P2 - High
-                    </option>
-
-                    <option value="P3">
-                        P3 - Medium
-                    </option>
-
-                    <option value="P4">
-                        P4 - Low
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- =================================================
-                 COMPONENT
-                 ================================================= -->
-
-            <div class="form-group">
-
-                <label for="component">
-                    Affected Component
-                </label>
-
-                <select id="component">
-
-                    <option value="">
-                        Select Component
-                    </option>
-
-                    <option value="Authentication">
-                        Authentication
-                    </option>
-
-                    <option value="Database">
-                        Database
-                    </option>
-
-                    <option value="UI / Frontend">
-                        UI / Frontend
-                    </option>
-
-                    <option value="Backend / API">
-                        Backend / API
-                    </option>
-
-                    <option value="Networking">
-                        Networking
-                    </option>
-
-                    <option value="Payment">
-                        Payment
-                    </option>
-
-                    <option value="Reporting">
-                        Reporting
-                    </option>
-
-                    <option value="Image Processing">
-                        Image Processing
-                    </option>
-
-                    <option value="Memory Management">
-                        Memory Management
-                    </option>
-
-                    <option value="Indexing / Search">
-                        Indexing / Search
-                    </option>
-
-                    <option value="Other">
-                        Other
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- =================================================
-                 BUG DESCRIPTION
-                 ================================================= -->
-
-            <div class="form-group">
-
-                <label for="description">
-                    Bug Description *
-                </label>
-
-                <textarea
-                    id="description"
-                    rows="6"
-                    required
-                    placeholder="Describe the problem, expected behaviour and actual behaviour..."
-                ></textarea>
-
-            </div>
-
-
-            <!-- =================================================
-                 STACK TRACE
-                 ================================================= -->
-
-            <div class="form-group">
-
-                <label for="stackTrace">
-                    Stack Trace / Error Logs
-                </label>
-
-                <textarea
-                    id="stackTrace"
-                    rows="8"
-                    placeholder="Paste stack trace or application error logs here..."
-                ></textarea>
-
-            </div>
-
-
-            <!-- =================================================
-                 LOG FILE UPLOAD
-                 ================================================= -->
-
-            <div class="form-group">
-
-                <label for="logFile">
-                    Attach Log File
-                </label>
-
-                <div
-                    id="dropZone"
-                    class="upload-zone"
-                >
-
-                    <strong>
-                        Drop your file here
-                    </strong>
-
-                    <p>
-                        or click to browse
-                    </p>
-
-                    <small>
-                        TXT, LOG, JSON or CSV — Maximum 10 MB
-                    </small>
+                    <label for="bugTitle">
+                        Bug Title *
+                    </label>
 
                     <input
-                        id="logFile"
-                        type="file"
-                        accept=".txt,.log,.json,.csv"
+                        id="bugTitle"
+                        type="text"
+                        required
+                        placeholder="Example: Application crashes during login"
                     >
 
                 </div>
 
-                <div id="fileInfo"></div>
 
-            </div>
+                <!-- =============================================
+                     PROJECT
+                ============================================== -->
+
+                <div class="form-group">
+
+                    <label for="project">
+                        Project
+                    </label>
+
+                    <select id="project">
+
+                        <option value="Mozilla">
+                            Mozilla
+                        </option>
+
+                        <option value="Apache">
+                            Apache
+                        </option>
+
+                        <option value="Eclipse">
+                            Eclipse
+                        </option>
+
+                        <option value="Custom Project" selected>
+                            Custom Project
+                        </option>
+
+                    </select>
+
+                </div>
 
 
-            <!-- =================================================
-                 ACTIONS
-                 ================================================= -->
+                <!-- =============================================
+                     SEVERITY
+                ============================================== -->
 
-            <div class="actions">
+                <div class="form-group">
 
-                <button
-                    type="button"
-                    class="secondary"
-                    id="resetBtn"
-                >
-                    Reset
-                </button>
+                    <label for="severity">
+                        Severity
+                    </label>
 
-                <button
-                    type="submit"
-                    class="primary"
-                >
-                    Analyze Bug
-                </button>
+                    <select id="severity">
 
-            </div>
+                        <option value="">
+                            Select Severity
+                        </option>
 
-        </form>
+                        <option value="Critical">
+                            Critical
+                        </option>
 
-    </section>
+                        <option value="High">
+                            High
+                        </option>
+
+                        <option value="Medium">
+                            Medium
+                        </option>
+
+                        <option value="Low">
+                            Low
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =============================================
+                     PRIORITY
+                ============================================== -->
+
+                <div class="form-group">
+
+                    <label for="priority">
+                        Priority
+                    </label>
+
+                    <select id="priority">
+
+                        <option value="">
+                            Select Priority
+                        </option>
+
+                        <option value="P1">
+                            P1 - Critical
+                        </option>
+
+                        <option value="P2">
+                            P2 - High
+                        </option>
+
+                        <option value="P3">
+                            P3 - Medium
+                        </option>
+
+                        <option value="P4">
+                            P4 - Low
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =============================================
+                     COMPONENT
+                ============================================== -->
+
+                <div class="form-group">
+
+                    <label for="component">
+                        Affected Component
+                    </label>
+
+                    <select id="component">
+
+                        <option value="">
+                            Select Component
+                        </option>
+
+                        <option value="Authentication">
+                            Authentication
+                        </option>
+
+                        <option value="Database">
+                            Database
+                        </option>
+
+                        <option value="UI / Frontend">
+                            UI / Frontend
+                        </option>
+
+                        <option value="Backend / API">
+                            Backend / API
+                        </option>
+
+                        <option value="Networking">
+                            Networking
+                        </option>
+
+                        <option value="Payment">
+                            Payment
+                        </option>
+
+                        <option value="Reporting">
+                            Reporting
+                        </option>
+
+                        <option value="Image Processing">
+                            Image Processing
+                        </option>
+
+                        <option value="Memory Management">
+                            Memory Management
+                        </option>
+
+                        <option value="Indexing / Search">
+                            Indexing / Search
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- =============================================
+                     BUG DESCRIPTION
+                ============================================== -->
+
+                <div class="form-group">
+
+                    <label for="description">
+                        Bug Description *
+                    </label>
+
+                    <textarea
+                        id="description"
+                        rows="6"
+                        required
+                        placeholder="Describe the problem, expected behaviour and actual behaviour..."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- =============================================
+                     STACK TRACE
+                ============================================== -->
+
+                <div class="form-group">
+
+                    <label for="stackTrace">
+                        Stack Trace / Error Logs
+                    </label>
+
+                    <textarea
+                        id="stackTrace"
+                        rows="8"
+                        placeholder="Paste stack trace or application error logs here..."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- =============================================
+                     LOG FILE UPLOAD
+                ============================================== -->
+
+                <div class="form-group">
+
+                    <label for="logFile">
+                        Attach Log File
+                    </label>
+
+
+                    <div
+                        id="dropZone"
+                        class="upload-zone"
+                    >
+
+                        <strong>
+                            Drop your file here
+                        </strong>
+
+                        <p>
+                            or click to browse
+                        </p>
+
+                        <small>
+                            TXT, LOG, JSON or CSV — Maximum 10 MB
+                        </small>
+
+                        <input
+                            id="logFile"
+                            type="file"
+                            accept=".txt,.log,.json,.csv"
+                        >
+
+                    </div>
+
+
+                    <div id="fileInfo"></div>
+
+                </div>
+
+
+                <!-- =============================================
+                     ACTIONS
+                ============================================== -->
+
+                <div class="actions">
+
+                    <button
+                        type="button"
+                        class="secondary"
+                        id="resetBtn"
+                    >
+                        Reset
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="primary"
+                    >
+                        Analyze Bug
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- =====================================================
+             ANALYSIS RESULT
+        ====================================================== -->
+
+        <section
+            id="result"
+            class="card result hidden"
+        ></section>
+
+    </main>
 
 
     <!-- =====================================================
-         ANALYSIS RESULT
-         ===================================================== -->
+         BUG SUBMISSION JAVASCRIPT
+    ====================================================== -->
 
-    <section
-        id="result"
-        class="card result hidden"
-    ></section>
-
-</main>
+    <script src="bug-submission.js"></script>
 
 
-<!-- =========================================================
-     SCRIPTS
-     ========================================================= -->
+    <!-- =====================================================
+         LOCAL THEME + SIDEBAR JAVASCRIPT
+    ====================================================== -->
 
-<script src="../sidebar.js"></script>
+    <script>
 
-<script src="bug-submission.js"></script>
+        (function () {
+
+            "use strict";
+
+
+            /* =================================================
+               STORAGE KEYS
+            ================================================= */
+
+            const SETTINGS_KEY = "bugai-settings";
+            const LEGACY_KEY = "bugai-theme";
+
+
+            /* =================================================
+               GET SAVED THEME
+            ================================================= */
+
+            function getTheme() {
+
+                try {
+
+                    const settings =
+                        JSON.parse(
+                            localStorage.getItem(
+                                SETTINGS_KEY
+                            ) || "{}"
+                        );
+
+                    if (
+                        settings &&
+                        settings.theme
+                    ) {
+                        return settings.theme;
+                    }
+
+                } catch (error) {
+
+                    console.warn(
+                        "BugAI: Unable to read saved theme.",
+                        error
+                    );
+
+                }
+
+
+                return (
+                    localStorage.getItem(
+                        LEGACY_KEY
+                    ) || "system"
+                );
+
+            }
+
+
+            /* =================================================
+               APPLY THEME
+            ================================================= */
+
+            function applyTheme() {
+
+                const theme = getTheme();
+
+
+                const dark =
+                    theme === "dark" ||
+                    (
+                        theme === "system" &&
+                        window.matchMedia &&
+                        window.matchMedia(
+                            "(prefers-color-scheme: dark)"
+                        ).matches
+                    );
+
+
+                document.documentElement.classList.toggle(
+                    "dark-mode",
+                    dark
+                );
+
+                document.documentElement.classList.toggle(
+                    "dark",
+                    dark
+                );
+
+
+                document.body.classList.toggle(
+                    "dark-mode",
+                    dark
+                );
+
+                document.body.classList.toggle(
+                    "dark",
+                    dark
+                );
+
+            }
+
+
+            /* =================================================
+               MOBILE SIDEBAR
+            ================================================== */
+
+            function initMenu() {
+
+                const sidebar =
+                    document.getElementById(
+                        "bugaiSidebar"
+                    );
+
+                const button =
+                    document.getElementById(
+                        "sidebarMenuButton"
+                    );
+
+                const overlay =
+                    document.getElementById(
+                        "sidebarOverlay"
+                    );
+
+
+                if (
+                    !sidebar ||
+                    !button ||
+                    !overlay
+                ) {
+                    return;
+                }
+
+
+                function closeSidebar() {
+
+                    sidebar.classList.remove(
+                        "open"
+                    );
+
+                    overlay.classList.remove(
+                        "show"
+                    );
+
+                    button.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                    overlay.setAttribute(
+                        "aria-hidden",
+                        "true"
+                    );
+
+                }
+
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const isOpen =
+                            sidebar.classList.toggle(
+                                "open"
+                            );
+
+
+                        overlay.classList.toggle(
+                            "show",
+                            isOpen
+                        );
+
+
+                        button.setAttribute(
+                            "aria-expanded",
+                            String(isOpen)
+                        );
+
+
+                        overlay.setAttribute(
+                            "aria-hidden",
+                            String(!isOpen)
+                        );
+
+                    }
+                );
+
+
+                overlay.addEventListener(
+                    "click",
+                    closeSidebar
+                );
+
+
+                document.addEventListener(
+                    "keydown",
+                    function (event) {
+
+                        if (
+                            event.key === "Escape"
+                        ) {
+                            closeSidebar();
+                        }
+
+                    }
+                );
+
+
+                window.addEventListener(
+                    "resize",
+                    function () {
+
+                        if (
+                            window.innerWidth > 900
+                        ) {
+                            closeSidebar();
+                        }
+
+                    }
+                );
+
+            }
+
+
+            /* =================================================
+               INITIALIZE
+            ================================================== */
+
+            document.addEventListener(
+                "DOMContentLoaded",
+                function () {
+
+                    applyTheme();
+
+                    initMenu();
+
+                }
+            );
+
+
+            /* =================================================
+               SYNC THEME WHEN SETTINGS CHANGE
+            ================================================= */
+
+            window.addEventListener(
+                "storage",
+                function (event) {
+
+                    if (
+                        event.key === SETTINGS_KEY ||
+                        event.key === LEGACY_KEY
+                    ) {
+
+                        applyTheme();
+
+                    }
+
+                }
+            );
+
+
+            /* =================================================
+               SYSTEM THEME CHANGE
+            ================================================= */
+
+            if (window.matchMedia) {
+
+                const mediaQuery =
+                    window.matchMedia(
+                        "(prefers-color-scheme: dark)"
+                    );
+
+
+                if (
+                    mediaQuery.addEventListener
+                ) {
+
+                    mediaQuery.addEventListener(
+                        "change",
+                        applyTheme
+                    );
+
+                }
+
+            }
+
+        })();
+
+    </script>
 
 </body>
 

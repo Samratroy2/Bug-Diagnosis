@@ -1,12 +1,15 @@
 /* =========================================================
    BUGAI — SEMANTIC SIMILARITY
-   Page-specific styles
-========================================================= */
+   Self-contained page styles
+   ========================================================= */
 
 * {
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
 
 body {
     margin: 0;
@@ -14,234 +17,354 @@ body {
     color: #172033;
     font-family: Inter, "Segoe UI", Arial, sans-serif;
     line-height: 1.55;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
 }
 
 
+/* =========================================================
+   MAIN
+   ========================================================= */
+
 main {
+    margin-left: 250px;
+
+    min-height: 100vh;
+
     padding: 48px 56px;
+
     max-width: 1650px;
 }
 
 
 /* =========================================================
    HEADER
-========================================================= */
+   ========================================================= */
 
 header {
     margin-bottom: 28px;
 }
 
-
 header h1 {
     margin: 5px 0 8px;
+
+    color: #172033;
+
     font-size: 36px;
+
     line-height: 1.15;
 }
 
-
 header p {
     margin: 0;
+
     color: #64748b;
+
     font-size: 16px;
 }
 
-
 header > span,
 .section-label {
+    display: inline-block;
+
     font-size: 12px;
+
     color: #2563eb;
+
     font-weight: 800;
+
     letter-spacing: 0.1em;
 }
 
 
 /* =========================================================
    COMMON CARDS
-========================================================= */
+   ========================================================= */
 
 .card,
 .explanation {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 14px;
+
     padding: 28px;
+
     box-shadow:
-        0 5px 18px rgba(15, 23, 42, 0.04);
+        0 5px 18px
+        rgba(15, 23, 42, 0.04);
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 
 /* =========================================================
    SEARCH CARD
-========================================================= */
+   ========================================================= */
 
 .search-card {
     padding: 30px;
 }
 
-
 .form-heading {
     margin-bottom: 20px;
 }
 
-
 .form-heading h2 {
     margin: 0 0 4px;
+
+    color: #172033;
+
     font-size: 21px;
 }
 
-
 .form-heading p {
     margin: 0;
+
     color: #64748b;
 }
 
-
 label {
     display: block;
+
     margin-bottom: 7px;
+
+    color: #172033;
+
     font-size: 14px;
+
     font-weight: 700;
 }
 
 
+/* =========================================================
+   FORM ELEMENTS
+   ========================================================= */
+
 textarea,
 select {
     width: 100%;
-    font: inherit;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 11px 13px;
-    outline: none;
-    background: #ffffff;
-}
 
+    font: inherit;
+
+    border:
+        1px solid #cbd5e1;
+
+    border-radius: 8px;
+
+    padding: 11px 13px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #172033;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
 
 textarea {
     resize: vertical;
+
     min-height: 150px;
 }
-
 
 textarea:focus,
 select:focus {
     border-color: #2563eb;
+
     box-shadow:
-        0 0 0 3px rgba(37, 99, 235, 0.1);
+        0 0 0 3px
+        rgba(37, 99, 235, 0.1);
+}
+
+textarea::placeholder {
+    color: #94a3b8;
 }
 
 
 /* =========================================================
    CONTROLS
-========================================================= */
+   ========================================================= */
 
 .controls {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 150px auto;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        150px
+        auto;
+
     gap: 14px;
+
     margin-top: 20px;
 }
-
 
 .control-group {
     min-width: 0;
 }
-
 
 .button-group {
     min-width: 220px;
 }
 
 
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
 button {
     border: 0;
+
     border-radius: 8px;
+
     padding: 12px 18px;
+
+    font: inherit;
+
     font-weight: 700;
+
     cursor: pointer;
+
     font-size: 14px;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
+button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
 
 .primary {
     width: 100%;
+
     background: #2563eb;
+
     color: #ffffff;
 }
-
 
 .primary:hover {
     background: #1d4ed8;
 }
 
-
 .primary:disabled {
     opacity: 0.65;
+
     cursor: wait;
 }
 
-
 .keyboard-hint {
     margin-top: 13px;
+
     color: #64748b;
+
     font-size: 13px;
 }
 
-
 .keyboard-hint span {
     font-weight: 700;
+
     color: #334155;
 }
 
-
 kbd {
     background: #eef2f7;
-    border: 1px solid #d5dce6;
+
+    border:
+        1px solid #d5dce6;
+
     border-bottom-width: 2px;
+
     border-radius: 5px;
+
     padding: 2px 6px;
+
+    color: #334155;
+
     font-size: 11px;
 }
 
 
 /* =========================================================
    PIPELINE
-========================================================= */
+   ========================================================= */
 
 .pipeline {
     display: flex;
+
     align-items: center;
+
     gap: 10px;
+
     flex-wrap: wrap;
+
     margin: 24px 0;
 }
 
-
 .pipeline-step {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #ffffff;
-    border: 1px solid #dbe4ef;
-    border-radius: 9px;
-    padding: 9px 13px;
-    font-weight: 600;
-    font-size: 14px;
-}
 
+    align-items: center;
+
+    gap: 8px;
+
+    background: #ffffff;
+
+    border:
+        1px solid #dbe4ef;
+
+    border-radius: 9px;
+
+    padding: 9px 13px;
+
+    color: #172033;
+
+    font-weight: 600;
+
+    font-size: 14px;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
+}
 
 .step-number {
     display: inline-flex;
+
     width: 22px;
     height: 22px;
+
     align-items: center;
+
     justify-content: center;
+
     border-radius: 50%;
+
     background: #eff6ff;
+
     color: #2563eb;
+
     font-size: 11px;
+
     font-weight: 800;
 }
-
 
 .pipeline b {
     color: #2563eb;
@@ -250,118 +373,157 @@ kbd {
 
 /* =========================================================
    RESULTS HEADER
-========================================================= */
+   ========================================================= */
 
 .results-header {
     margin: 28px 0 15px;
 }
 
-
 .results-header h2 {
     margin: 4px 0 2px;
+
+    color: #172033;
+
     font-size: 25px;
 }
 
-
 .results-header p {
     margin: 0;
+
     color: #64748b;
 }
 
 
 /* =========================================================
    SIMILARITY SUMMARY
-========================================================= */
+   ========================================================= */
 
 .similarity-summary {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 22px;
-    margin-bottom: 14px;
-}
 
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    background: #ffffff;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius: 14px;
+
+    padding: 22px;
+
+    margin-bottom: 14px;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
+}
 
 .summary-label {
     color: #64748b;
+
     font-size: 13px;
+
     font-weight: 700;
 }
 
-
 .summary-score {
     margin-top: 3px;
+
+    color: #172033;
+
     font-size: 34px;
+
     line-height: 1.1;
+
     font-weight: 850;
 }
 
-
 .summary-description {
     margin-top: 6px;
+
     color: #64748b;
+
     font-size: 14px;
 }
 
-
 .summary-status {
     display: inline-flex;
+
     align-items: center;
+
     gap: 8px;
+
     padding: 9px 13px;
+
     border-radius: 999px;
+
     font-size: 13px;
+
     font-weight: 800;
+
     white-space: nowrap;
 }
-
 
 .status-dot {
     width: 8px;
     height: 8px;
+
     border-radius: 50%;
+
     background: currentColor;
 }
 
 
 /* =========================================================
    THRESHOLD LEGEND
-========================================================= */
+   ========================================================= */
 
 .threshold-legend {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 12px;
+
     padding: 16px 18px;
+
     margin-bottom: 16px;
 }
 
-
 .legend-title {
+    color: #172033;
+
     font-size: 13px;
+
     font-weight: 800;
+
     margin-bottom: 10px;
 }
 
-
 .legend-items {
     display: flex;
+
     gap: 20px;
+
     flex-wrap: wrap;
 }
 
-
 .legend-item {
     display: flex;
+
     gap: 6px;
+
     align-items: center;
+
     font-size: 13px;
 }
-
 
 .legend-item b {
     font-weight: 800;
@@ -370,234 +532,296 @@ kbd {
 
 /* =========================================================
    RESULT CARD
-========================================================= */
+   ========================================================= */
 
 .result-card {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 14px;
+
     padding: 22px;
+
     margin-bottom: 14px;
+
     box-shadow:
-        0 3px 12px rgba(15, 23, 42, 0.03);
+        0 3px 12px
+        rgba(15, 23, 42, 0.03);
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
 
+.result-card:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 24px
+        rgba(15, 23, 42, 0.07);
+}
 
 .result-top {
     display: flex;
+
     align-items: flex-start;
+
     justify-content: space-between;
+
     gap: 20px;
 }
 
-
 .result-title-area {
     display: flex;
+
     align-items: flex-start;
+
     gap: 12px;
+
     min-width: 0;
 }
 
-
 .result-rank {
     flex-shrink: 0;
+
     width: 34px;
     height: 34px;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     border-radius: 8px;
+
     background: #eff6ff;
+
     color: #2563eb;
+
     font-size: 13px;
+
     font-weight: 800;
 }
 
-
 .result-card h3 {
     margin: 0;
+
+    color: #172033;
+
     font-size: 17px;
+
     line-height: 1.4;
 }
 
-
 .meta {
     margin-top: 5px;
+
     color: #64748b;
+
     font-size: 13px;
 }
-
 
 .meta-separator {
     margin: 0 4px;
 }
 
-
 .score-area {
     flex-shrink: 0;
+
     text-align: right;
 }
 
-
 .score {
+    color: #172033;
+
     font-size: 22px;
+
     font-weight: 850;
 }
 
-
 .classification-badge {
     display: inline-block;
+
     margin-top: 4px;
+
     padding: 4px 9px;
+
     border-radius: 999px;
+
     font-size: 11px;
+
     font-weight: 800;
 }
 
 
 /* =========================================================
    SCORE BAR
-========================================================= */
+   ========================================================= */
 
 .score-bar-container {
     margin: 16px 0 18px;
 }
 
-
 .score-bar-background {
     width: 100%;
+
     height: 7px;
+
     background: #e8edf4;
+
     border-radius: 99px;
+
     overflow: hidden;
 }
 
-
 .score-bar {
     height: 100%;
+
     border-radius: inherit;
-    transition: width 0.4s ease;
+
+    transition:
+        width 0.4s ease;
 }
 
 
 /* =========================================================
    RESULT SECTIONS
-========================================================= */
+   ========================================================= */
 
 .result-section h4 {
     margin: 0 0 6px;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #475569;
-}
 
+    color: #475569;
+
+    font-size: 13px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+}
 
 .result-section p {
     margin: 0;
+
     color: #334155;
+
     white-space: pre-wrap;
 }
 
 
 /* =========================================================
    RESOLUTION
-========================================================= */
+   ========================================================= */
 
 .resolution-box {
     display: flex;
+
     flex-direction: column;
+
     gap: 3px;
+
     margin-top: 17px;
+
     padding: 14px 16px;
+
     background: #f8fafc;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 9px;
 }
 
-
 .resolution-box strong {
+    color: #334155;
+
     font-size: 13px;
 }
 
-
 .resolution-box span {
     color: #475569;
+
     font-size: 14px;
 }
 
 
 /* =========================================================
    INTERPRETATION
-========================================================= */
+   ========================================================= */
 
 .match-interpretation {
     margin-top: 13px;
+
     padding-top: 12px;
-    border-top: 1px solid #edf1f5;
+
+    border-top:
+        1px solid #edf1f5;
+
     color: #64748b;
+
     font-size: 13px;
 }
 
-
 .interpretation-label {
     font-weight: 800;
+
     color: #334155;
 }
 
 
 /* =========================================================
    CLASSIFICATION STATES
-========================================================= */
+   ========================================================= */
 
 .duplicate {
     color: #15803d;
 }
 
-
 .related {
     color: #b45309;
 }
-
 
 .unmatched {
     color: #64748b;
 }
 
-
 .classification-badge.duplicate,
 .summary-status.duplicate,
 .legend-item.duplicate {
     background: #dcfce7;
+
     color: #15803d;
 }
-
 
 .classification-badge.related,
 .summary-status.related,
 .legend-item.related {
     background: #fef3c7;
+
     color: #b45309;
 }
-
 
 .classification-badge.unmatched,
 .summary-status.unmatched,
 .legend-item.unmatched {
     background: #f1f5f9;
+
     color: #64748b;
 }
-
 
 .score-bar.duplicate {
     background: #16a34a;
 }
 
-
 .score-bar.related {
     background: #d97706;
 }
-
 
 .score-bar.unmatched {
     background: #94a3b8;
@@ -606,68 +830,82 @@ kbd {
 
 /* =========================================================
    EXPLANATION
-========================================================= */
+   ========================================================= */
 
 .explanation {
     margin-top: 24px;
+
     display: grid;
-    grid-template-columns: 1fr 360px;
+
+    grid-template-columns:
+        1fr
+        360px;
+
     gap: 35px;
 }
 
-
 .explanation h2 {
     margin: 5px 0 10px;
-}
 
+    color: #172033;
+}
 
 .explanation p {
     color: #64748b;
+
     margin: 7px 0;
 }
 
-
 .threshold-info {
-    border-left: 1px solid #e2e8f0;
+    border-left:
+        1px solid #e2e8f0;
+
     padding-left: 28px;
 }
 
-
 .threshold-info h3 {
     margin-top: 0;
+
+    color: #172033;
+
     font-size: 16px;
 }
 
-
 .threshold-row {
     display: flex;
+
     align-items: center;
+
     gap: 10px;
+
     margin: 11px 0;
+
     font-size: 13px;
+
     color: #475569;
 }
 
-
 .threshold-badge {
     min-width: 70px;
+
     text-align: center;
+
     padding: 5px 7px;
+
     border-radius: 6px;
+
     font-size: 11px;
+
     font-weight: 800;
 }
-
 
 .threshold-badge.duplicate {
     background: #dcfce7;
 }
 
-
 .threshold-badge.related {
     background: #fef3c7;
 }
-
 
 .threshold-badge.unmatched {
     background: #f1f5f9;
@@ -676,111 +914,141 @@ kbd {
 
 /* =========================================================
    LOADING
-========================================================= */
+   ========================================================= */
 
 .loading-card {
     text-align: center;
+
     padding: 45px 25px;
 }
-
 
 .loading-spinner {
     width: 34px;
     height: 34px;
-    margin: 0 auto 15px;
-    border: 3px solid #dbeafe;
+
+    margin:
+        0 auto 15px;
+
+    border:
+        3px solid #dbeafe;
+
     border-top-color: #2563eb;
+
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+
+    animation:
+        spin 0.8s linear infinite;
 }
 
-
 @keyframes spin {
-
     to {
         transform: rotate(360deg);
     }
-
 }
-
 
 .search-stage {
     display: flex;
+
     justify-content: center;
+
     align-items: center;
+
     gap: 9px;
+
     flex-wrap: wrap;
+
     margin-top: 20px;
+
     color: #94a3b8;
+
     font-size: 12px;
 }
 
-
 .stage-active {
     color: #2563eb;
+
     font-weight: 700;
 }
 
 
 /* =========================================================
    ERROR / WARNING
-========================================================= */
+   ========================================================= */
 
 .error-card,
 .warning-card,
 .no-results {
     text-align: center;
+
     margin-top: 20px;
 }
-
 
 .error-icon,
 .status-icon {
     width: 44px;
     height: 44px;
-    margin: 0 auto 12px;
+
+    margin:
+        0 auto 12px;
+
     border-radius: 50%;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     font-weight: 900;
+
     background: #fee2e2;
+
     color: #b91c1c;
 }
 
-
 .no-results .status-icon {
     background: #f1f5f9;
+
     color: #64748b;
 }
 
-
 .error-card code {
     display: inline-block;
-    margin: 8px 0;
-    padding: 8px 12px;
-    border-radius: 6px;
-    background: #f1f5f9;
-}
 
+    margin: 8px 0;
+
+    padding: 8px 12px;
+
+    border-radius: 6px;
+
+    background: #f1f5f9;
+
+    color: #334155;
+}
 
 .retry-button {
     display: block;
+
     margin: 18px auto 0;
+
     background: #2563eb;
+
     color: #ffffff;
 }
 
-
 .suggestion {
     max-width: 550px;
+
     margin: 20px auto 0;
+
     padding: 15px;
+
     text-align: left;
+
     background: #f8fafc;
+
     border-radius: 8px;
 }
-
 
 .suggestion ul {
     margin-bottom: 0;
@@ -788,8 +1056,963 @@ kbd {
 
 
 /* =========================================================
-   TABLET
-========================================================= */
+   DARK MODE — BASE
+   ========================================================= */
+
+html.dark-mode,
+html.dark,
+body.dark-mode,
+body.dark {
+    color-scheme: dark;
+}
+
+html.dark-mode body,
+html.dark body,
+body.dark-mode,
+body.dark {
+    background: #0b1120;
+
+    color: #e2e8f0;
+}
+
+
+/* =========================================================
+   DARK MODE — HEADER
+   ========================================================= */
+
+html.dark-mode header h1,
+html.dark header h1,
+body.dark-mode header h1,
+body.dark header h1 {
+    color: #f8fafc;
+}
+
+html.dark-mode header p,
+html.dark header p,
+body.dark-mode header p,
+body.dark header p {
+    color: #94a3b8;
+}
+
+html.dark-mode header > span,
+html.dark header > span,
+body.dark-mode header > span,
+body.dark header > span,
+html.dark-mode .section-label,
+html.dark .section-label,
+body.dark-mode .section-label,
+body.dark .section-label {
+    color: #60a5fa;
+}
+
+
+/* =========================================================
+   DARK MODE — CARDS
+   ========================================================= */
+
+html.dark-mode .card,
+html.dark .card,
+body.dark-mode .card,
+body.dark .card,
+html.dark-mode .explanation,
+html.dark .explanation,
+body.dark-mode .explanation,
+body.dark .explanation,
+html.dark-mode .search-card,
+html.dark .search-card,
+body.dark-mode .search-card,
+body.dark .search-card,
+html.dark-mode .similarity-summary,
+html.dark .similarity-summary,
+body.dark-mode .similarity-summary,
+body.dark .similarity-summary,
+html.dark-mode .threshold-legend,
+html.dark .threshold-legend,
+body.dark-mode .threshold-legend,
+body.dark .threshold-legend,
+html.dark-mode .result-card,
+html.dark .result-card,
+body.dark-mode .result-card,
+body.dark .result-card {
+    background: #111827;
+
+    border-color: #334155;
+
+    color: #e2e8f0;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   DARK MODE — FORM
+   ========================================================= */
+
+html.dark-mode label,
+html.dark label,
+body.dark-mode label,
+body.dark label {
+    color: #f1f5f9;
+}
+
+html.dark-mode .form-heading h2,
+html.dark .form-heading h2,
+body.dark-mode .form-heading h2,
+body.dark .form-heading h2 {
+    color: #f8fafc;
+}
+
+html.dark-mode .form-heading p,
+html.dark .form-heading p,
+body.dark-mode .form-heading p,
+body.dark .form-heading p {
+    color: #94a3b8;
+}
+
+html.dark-mode textarea,
+html.dark-mode select,
+html.dark textarea,
+html.dark select,
+body.dark-mode textarea,
+body.dark-mode select,
+body.dark textarea,
+body.dark select {
+    background: #0f172a;
+
+    color: #e2e8f0;
+
+    border-color: #334155;
+}
+
+html.dark-mode textarea::placeholder,
+html.dark textarea::placeholder,
+body.dark-mode textarea::placeholder,
+body.dark textarea::placeholder {
+    color: #64748b;
+}
+
+html.dark-mode option,
+html.dark option,
+body.dark-mode option,
+body.dark option {
+    background: #111827;
+
+    color: #e2e8f0;
+}
+
+
+/* =========================================================
+   DARK MODE — BUTTON
+   ========================================================= */
+
+html.dark-mode .primary,
+html.dark .primary,
+body.dark-mode .primary,
+body.dark .primary {
+    background: #ffffff !important;
+
+    background-color: #ffffff !important;
+
+    color: #000000 !important;
+
+    border-color: #ffffff !important;
+}
+
+html.dark-mode .primary:hover,
+html.dark .primary:hover,
+body.dark-mode .primary:hover,
+body.dark .primary:hover {
+    background: #e5e7eb !important;
+
+    background-color: #e5e7eb !important;
+
+    color: #000000 !important;
+}
+
+
+/* =========================================================
+   DARK MODE — KEYBOARD
+   ========================================================= */
+
+html.dark-mode .keyboard-hint,
+html.dark .keyboard-hint,
+body.dark-mode .keyboard-hint,
+body.dark .keyboard-hint {
+    color: #94a3b8;
+}
+
+html.dark-mode .keyboard-hint span,
+html.dark .keyboard-hint span,
+body.dark-mode .keyboard-hint span,
+body.dark .keyboard-hint span {
+    color: #cbd5e1;
+}
+
+html.dark-mode kbd,
+html.dark kbd,
+body.dark-mode kbd,
+body.dark kbd {
+    background: #1e293b;
+
+    border-color: #475569;
+
+    color: #e2e8f0;
+}
+
+
+/* =========================================================
+   DARK MODE — PIPELINE
+   ========================================================= */
+
+html.dark-mode .pipeline-step,
+html.dark .pipeline-step,
+body.dark-mode .pipeline-step,
+body.dark .pipeline-step {
+    background: #111827;
+
+    border-color: #334155;
+
+    color: #e2e8f0;
+}
+
+html.dark-mode .step-number,
+html.dark .step-number,
+body.dark-mode .step-number,
+body.dark .step-number {
+    background: #172f52;
+
+    color: #60a5fa;
+}
+
+html.dark-mode .pipeline b,
+html.dark .pipeline b,
+body.dark-mode .pipeline b,
+body.dark .pipeline b {
+    color: #60a5fa;
+}
+
+
+/* =========================================================
+   DARK MODE — RESULTS
+   ========================================================= */
+
+html.dark-mode .results-header h2,
+html.dark .results-header h2,
+body.dark-mode .results-header h2,
+body.dark .results-header h2 {
+    color: #f8fafc;
+}
+
+html.dark-mode .results-header p,
+html.dark .results-header p,
+body.dark-mode .results-header p,
+body.dark .results-header p {
+    color: #94a3b8;
+}
+
+html.dark-mode .summary-label,
+html.dark .summary-label,
+body.dark-mode .summary-label,
+body.dark .summary-label {
+    color: #94a3b8;
+}
+
+html.dark-mode .summary-score,
+html.dark .summary-score,
+body.dark-mode .summary-score,
+body.dark .summary-score {
+    color: #f8fafc;
+}
+
+html.dark-mode .summary-description,
+html.dark .summary-description,
+body.dark-mode .summary-description,
+body.dark .summary-description {
+    color: #94a3b8;
+}
+
+html.dark-mode .legend-title,
+html.dark .legend-title,
+body.dark-mode .legend-title,
+body.dark .legend-title {
+    color: #f1f5f9;
+}
+
+
+/* =========================================================
+   DARK MODE — RESULT CARD
+   ========================================================= */
+
+html.dark-mode .result-card:hover,
+html.dark .result-card:hover,
+body.dark-mode .result-card:hover,
+body.dark .result-card:hover {
+    background: #172033;
+
+    border-color: #475569;
+
+    box-shadow:
+        0 8px 24px
+        rgba(0, 0, 0, 0.18);
+}
+
+html.dark-mode .result-rank,
+html.dark .result-rank,
+body.dark-mode .result-rank,
+body.dark .result-rank {
+    background: #172f52;
+
+    color: #60a5fa;
+}
+
+html.dark-mode .result-card h3,
+html.dark .result-card h3,
+body.dark-mode .result-card h3,
+body.dark .result-card h3 {
+    color: #f8fafc;
+}
+
+html.dark-mode .meta,
+html.dark .meta,
+body.dark-mode .meta,
+body.dark .meta {
+    color: #94a3b8;
+}
+
+html.dark-mode .score,
+html.dark .score,
+body.dark-mode .score,
+body.dark .score {
+    color: #f8fafc;
+}
+
+
+/* =========================================================
+   DARK MODE — SCORE BAR
+   ========================================================= */
+
+html.dark-mode .score-bar-background,
+html.dark .score-bar-background,
+body.dark-mode .score-bar-background,
+body.dark .score-bar-background {
+    background: #334155;
+}
+
+
+/* =========================================================
+   DARK MODE — RESULT SECTIONS
+   ========================================================= */
+
+html.dark-mode .result-section h4,
+html.dark .result-section h4,
+body.dark-mode .result-section h4,
+body.dark .result-section h4 {
+    color: #94a3b8;
+}
+
+html.dark-mode .result-section p,
+html.dark .result-section p,
+body.dark-mode .result-section p,
+body.dark .result-section p {
+    color: #cbd5e1;
+}
+
+
+/* =========================================================
+   DARK MODE — RESOLUTION
+   ========================================================= */
+
+html.dark-mode .resolution-box,
+html.dark .resolution-box,
+body.dark-mode .resolution-box,
+body.dark .resolution-box {
+    background: #1e293b;
+
+    border-color: #334155;
+}
+
+html.dark-mode .resolution-box strong,
+html.dark .resolution-box strong,
+body.dark-mode .resolution-box strong,
+body.dark .resolution-box strong {
+    color: #f1f5f9;
+}
+
+html.dark-mode .resolution-box span,
+html.dark .resolution-box span,
+body.dark-mode .resolution-box span,
+body.dark .resolution-box span {
+    color: #cbd5e1;
+}
+
+
+/* =========================================================
+   DARK MODE — INTERPRETATION
+   ========================================================= */
+
+html.dark-mode .match-interpretation,
+html.dark .match-interpretation,
+body.dark-mode .match-interpretation,
+body.dark .match-interpretation {
+    border-color: #334155;
+
+    color: #94a3b8;
+}
+
+html.dark-mode .interpretation-label,
+html.dark .interpretation-label,
+body.dark-mode .interpretation-label,
+body.dark .interpretation-label {
+    color: #e2e8f0;
+}
+
+
+/* =========================================================
+   DARK MODE — CLASSIFICATION
+   ========================================================= */
+
+html.dark-mode .classification-badge.duplicate,
+html.dark .classification-badge.duplicate,
+body.dark-mode .classification-badge.duplicate,
+body.dark .classification-badge.duplicate,
+html.dark-mode .summary-status.duplicate,
+html.dark .summary-status.duplicate,
+body.dark-mode .summary-status.duplicate,
+body.dark .summary-status.duplicate {
+    background: #123522;
+
+    color: #4ade80;
+}
+
+html.dark-mode .classification-badge.related,
+html.dark .classification-badge.related,
+body.dark-mode .classification-badge.related,
+body.dark .classification-badge.related,
+html.dark-mode .summary-status.related,
+html.dark .summary-status.related,
+body.dark-mode .summary-status.related,
+body.dark .summary-status.related {
+    background: #3a2a0e;
+
+    color: #fbbf24;
+}
+
+html.dark-mode .classification-badge.unmatched,
+html.dark .classification-badge.unmatched,
+body.dark-mode .classification-badge.unmatched,
+body.dark .classification-badge.unmatched {
+    background: #1e293b;
+
+    color: #94a3b8;
+}
+
+html.dark-mode .summary-status.unmatched,
+html.dark .summary-status.unmatched,
+body.dark-mode .summary-status.unmatched,
+body.dark .summary-status.unmatched {
+    background: #1e293b;
+
+    color: #94a3b8;
+}
+
+html.dark-mode .legend-item.duplicate,
+html.dark .legend-item.duplicate,
+body.dark-mode .legend-item.duplicate,
+body.dark .legend-item.duplicate {
+    background: #123522;
+
+    color: #4ade80;
+}
+
+html.dark-mode .legend-item.related,
+html.dark .legend-item.related,
+body.dark-mode .legend-item.related,
+body.dark .legend-item.related {
+    background: #3a2a0e;
+
+    color: #fbbf24;
+}
+
+html.dark-mode .legend-item.unmatched,
+html.dark .legend-item.unmatched,
+body.dark-mode .legend-item.unmatched,
+body.dark .legend-item.unmatched {
+    background: #1e293b;
+
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DARK MODE — EXPLANATION
+   ========================================================= */
+
+html.dark-mode .explanation h2,
+html.dark .explanation h2,
+body.dark-mode .explanation h2,
+body.dark .explanation h2 {
+    color: #f8fafc;
+}
+
+html.dark-mode .explanation p,
+html.dark .explanation p,
+body.dark-mode .explanation p,
+body.dark .explanation p {
+    color: #94a3b8;
+}
+
+html.dark-mode .threshold-info,
+html.dark .threshold-info,
+body.dark-mode .threshold-info,
+body.dark .threshold-info {
+    border-color: #334155;
+}
+
+html.dark-mode .threshold-info h3,
+html.dark .threshold-info h3,
+body.dark-mode .threshold-info h3,
+body.dark .threshold-info h3 {
+    color: #f1f5f9;
+}
+
+html.dark-mode .threshold-row,
+html.dark .threshold-row,
+body.dark-mode .threshold-row,
+body.dark .threshold-row {
+    color: #cbd5e1;
+}
+
+html.dark-mode .threshold-badge.duplicate,
+html.dark .threshold-badge.duplicate,
+body.dark-mode .threshold-badge.duplicate,
+body.dark .threshold-badge.duplicate {
+    background: #123522;
+
+    color: #4ade80;
+}
+
+html.dark-mode .threshold-badge.related,
+html.dark .threshold-badge.related,
+body.dark-mode .threshold-badge.related,
+body.dark .threshold-badge.related {
+    background: #3a2a0e;
+
+    color: #fbbf24;
+}
+
+html.dark-mode .threshold-badge.unmatched,
+html.dark .threshold-badge.unmatched,
+body.dark-mode .threshold-badge.unmatched,
+body.dark .threshold-badge.unmatched {
+    background: #1e293b;
+
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DARK MODE — LOADING
+   ========================================================= */
+
+html.dark-mode .loading-spinner,
+html.dark .loading-spinner,
+body.dark-mode .loading-spinner,
+body.dark .loading-spinner {
+    border-color: #1e3a5f;
+
+    border-top-color: #60a5fa;
+}
+
+html.dark-mode .search-stage,
+html.dark .search-stage,
+body.dark-mode .search-stage,
+body.dark .search-stage {
+    color: #64748b;
+}
+
+html.dark-mode .stage-active,
+html.dark .stage-active,
+body.dark-mode .stage-active,
+body.dark .stage-active {
+    color: #60a5fa;
+}
+
+
+/* =========================================================
+   DARK MODE — ERROR / WARNING
+   ========================================================= */
+
+html.dark-mode .error-icon,
+html.dark .error-icon,
+body.dark-mode .error-icon,
+body.dark .error-icon {
+    background: #3a1c22;
+
+    color: #fca5a5;
+}
+
+html.dark-mode .status-icon,
+html.dark .status-icon,
+body.dark-mode .status-icon,
+body.dark .status-icon {
+    background: #1e293b;
+
+    color: #94a3b8;
+}
+
+html.dark-mode .error-card code,
+html.dark .error-card code,
+body.dark-mode .error-card code,
+body.dark .error-card code {
+    background: #1e293b;
+
+    color: #cbd5e1;
+}
+
+html.dark-mode .suggestion,
+html.dark .suggestion,
+body.dark-mode .suggestion,
+body.dark .suggestion {
+    background: #1e293b;
+
+    color: #cbd5e1;
+}
+
+
+/* =========================================================
+   SELF-CONTAINED SIDEBAR
+   ========================================================= */
+
+.bugai-sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    z-index: 1000;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border-right:
+        1px solid #1e293b;
+
+    overflow: hidden;
+}
+
+.sidebar-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 22px 18px;
+
+    border-bottom:
+        1px solid #1e293b;
+
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 20px;
+
+    font-weight: 800;
+}
+
+.brand-name {
+    color: #ffffff;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    line-height: 1.3;
+}
+
+.sidebar-navigation {
+    flex: 1;
+
+    padding: 16px 12px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+}
+
+.navigation-label {
+    margin: 14px 10px 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.12em;
+}
+
+.sidebar-link {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    width: 100%;
+
+    min-height: 42px;
+
+    margin-bottom: 4px;
+
+    padding: 10px 12px;
+
+    border-radius: 8px;
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sidebar-link:hover {
+    background: #1e293b;
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+}
+
+.sidebar-link.active {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+.nav-icon {
+    width: 20px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 16px;
+}
+
+.nav-text {
+    white-space: nowrap;
+}
+
+.sidebar-footer {
+    padding: 16px;
+
+    border-top:
+        1px solid #1e293b;
+
+    flex-shrink: 0;
+}
+
+.sidebar-status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #cbd5e1;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+.sidebar-version {
+    margin-top: 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(34, 197, 94, 0.12);
+
+    flex-shrink: 0;
+}
+
+.status-text {
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   MOBILE SIDEBAR
+   ========================================================= */
+
+.sidebar-menu-button {
+    display: none;
+
+    position: fixed;
+
+    top: 16px;
+    left: 16px;
+
+    z-index: 1100;
+
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+
+    border-radius: 10px;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border:
+        1px solid #1e293b;
+
+    font-size: 21px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 16px
+        rgba(15, 23, 42, 0.2);
+}
+
+.sidebar-menu-button:hover {
+    background: #1e293b;
+
+    transform: none;
+}
+
+.sidebar-overlay {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 900;
+
+    background:
+        rgba(15, 23, 42, 0.55);
+
+    backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.show {
+    display: block;
+}
+
+
+/* =========================================================
+   DARK MODE — SIDEBAR
+   ========================================================= */
+
+html.dark-mode .bugai-sidebar,
+html.dark .bugai-sidebar,
+body.dark-mode .bugai-sidebar,
+body.dark .bugai-sidebar {
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border-color: #1e293b;
+}
+
+html.dark-mode .sidebar-link,
+html.dark .sidebar-link,
+body.dark-mode .sidebar-link,
+body.dark .sidebar-link {
+    color: #cbd5e1;
+}
+
+html.dark-mode .sidebar-link:hover,
+html.dark .sidebar-link:hover,
+body.dark-mode .sidebar-link:hover,
+body.dark .sidebar-link:hover {
+    background: #1e293b;
+
+    color: #ffffff;
+}
+
+html.dark-mode .sidebar-link.active,
+html.dark .sidebar-link.active,
+body.dark-mode .sidebar-link.active,
+body.dark .sidebar-link.active {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+   ========================================================= */
 
 @media (max-width: 1200px) {
 
@@ -797,66 +2020,91 @@ kbd {
         padding: 42px 38px;
     }
 
-
     .explanation {
         grid-template-columns: 1fr;
     }
 
-
     .threshold-info {
         border-left: 0;
-        border-top: 1px solid #e2e8f0;
+
+        border-top:
+            1px solid #e2e8f0;
+
         padding-left: 0;
+
         padding-top: 20px;
     }
-
 }
 
 
 /* =========================================================
-   MOBILE
-========================================================= */
+   RESPONSIVE — MOBILE
+   ========================================================= */
 
 @media (max-width: 900px) {
 
-    main {
-        padding: 80px 22px 30px;
+    .bugai-sidebar {
+        transform:
+            translateX(-100%);
+
+        transition:
+            transform 0.25s ease;
+
+        box-shadow:
+            10px 0 30px
+            rgba(0, 0, 0, 0.2);
     }
 
+    .bugai-sidebar.open {
+        transform:
+            translateX(0);
+    }
+
+    .sidebar-menu-button {
+        display: flex;
+    }
+
+    main {
+        margin-left: 0;
+
+        padding:
+            80px
+            22px
+            30px;
+    }
 
     .controls {
         grid-template-columns: 1fr;
     }
 
-
     .button-group {
         min-width: 0;
     }
 
-
     .similarity-summary {
         align-items: flex-start;
+
         flex-direction: column;
     }
-
 }
 
 
 /* =========================================================
    SMALL MOBILE
-========================================================= */
+   ========================================================= */
 
 @media (max-width: 600px) {
 
     main {
-        padding: 75px 15px 25px;
+        padding:
+            75px
+            15px
+            25px;
     }
-
 
     header h1 {
         font-size: 29px;
     }
-
 
     .search-card,
     .card,
@@ -865,46 +2113,48 @@ kbd {
         padding: 18px;
     }
 
-
     .pipeline {
         gap: 6px;
     }
-
 
     .pipeline b {
         display: none;
     }
 
-
     .pipeline-step {
-        flex: 1 1 45%;
+        flex:
+            1 1 45%;
+
         justify-content: center;
     }
-
 
     .result-top {
         flex-direction: column;
     }
 
-
     .score-area {
         text-align: left;
     }
-
 
     .result-title-area {
         width: 100%;
     }
 
-
     .legend-items {
         flex-direction: column;
+
         gap: 8px;
     }
-
 
     .summary-score {
         font-size: 29px;
     }
 
+    .sidebar-menu-button {
+        top: 14px;
+        left: 14px;
+
+        width: 40px;
+        height: 40px;
+    }
 }

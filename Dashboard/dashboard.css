@@ -1,23 +1,47 @@
 /* =========================================================
    BUGAI — DASHBOARD
-   Page-specific styles only
-   Sidebar is controlled by sidebar.css
+   Self-contained page styling
    ========================================================= */
 
 * {
     box-sizing: border-box;
 }
 
-body {
-    margin: 0;
-    background: #f5f7fb;
-    color: #172033;
-    font-family: Inter, "Segoe UI", Arial, sans-serif;
-    line-height: 1.55;
+html {
+    scroll-behavior: smooth;
 }
 
+body {
+    margin: 0;
+
+    background: #f5f7fb;
+    color: #172033;
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    line-height: 1.55;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
 main {
-    padding: 48px 56px;
+    margin-left: 250px;
+
+    min-height: 100vh;
+
+    padding: 48px 56px 60px;
+
     max-width: 1650px;
 }
 
@@ -32,13 +56,19 @@ header {
 
 header h1 {
     margin: 5px 0 8px;
+
+    color: #0f2747;
+
     font-size: 36px;
+
     line-height: 1.15;
 }
 
 header p {
     margin: 0;
+
     color: #64748b;
+
     font-size: 16px;
 }
 
@@ -53,10 +83,22 @@ header p {
 .note,
 .explanation {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 14px;
+
     padding: 28px;
-    box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+
+    box-shadow:
+        0 5px 18px
+        rgba(15, 23, 42, 0.04);
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
 }
 
 
@@ -67,23 +109,52 @@ header p {
 button,
 .primary-btn {
     border: 0;
+
     border-radius: 8px;
+
     padding: 11px 16px;
+
+    font: inherit;
+
     font-weight: 600;
+
     cursor: pointer;
+
     text-decoration: none;
+
     display: inline-block;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+button:hover,
+.primary-btn:hover {
+    transform: translateY(-1px);
 }
 
 .primary,
 .primary-btn {
     background: #2563eb;
+
     color: #ffffff;
+}
+
+.primary:hover,
+.primary-btn:hover {
+    background: #1d4ed8;
 }
 
 .secondary {
     background: #e2e8f0;
+
     color: #172033;
+}
+
+.secondary:hover {
+    background: #cbd5e1;
 }
 
 
@@ -95,19 +166,42 @@ input,
 select,
 textarea {
     width: 100%;
+
     font: inherit;
-    border: 1px solid #cbd5e1;
+
+    border:
+        1px solid #cbd5e1;
+
     border-radius: 8px;
+
     padding: 11px 13px;
+
     outline: none;
+
     background: #ffffff;
+
+    color: #172033;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.25s ease,
+        color 0.25s ease;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #94a3b8;
 }
 
 
@@ -117,8 +211,11 @@ textarea:focus {
 
 .topbar {
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
+
     gap: 20px;
 }
 
@@ -129,26 +226,43 @@ textarea:focus {
 
 .hero {
     background: #0f172a;
+
     color: #ffffff;
+
     border-radius: 16px;
+
     padding: 38px;
+
     margin-bottom: 26px;
+
+    border:
+        1px solid #172033;
 }
 
 .hero h2 {
+    color: #ffffff;
+
     font-size: 31px;
+
     margin: 12px 0;
 }
 
 .hero p {
     max-width: 850px;
+
     color: #cbd5e1;
+
+    margin: 0;
 }
 
 .badge {
     font-size: 11px;
+
     letter-spacing: 0.12em;
+
     color: #93c5fd;
+
+    font-weight: 700;
 }
 
 
@@ -158,28 +272,48 @@ textarea:focus {
 
 .stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
     gap: 16px;
+
     margin-bottom: 32px;
 }
 
 .stat-card {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 12px;
+
     padding: 22px;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease;
 }
 
 .stat-card span {
     display: block;
+
     color: #64748b;
+
     font-size: 13px;
 }
 
 .stat-card strong {
     display: block;
+
     margin-top: 8px;
+
+    color: #172033;
+
     font-size: 30px;
+
+    line-height: 1.2;
 }
 
 
@@ -194,10 +328,13 @@ textarea:focus {
 .section-heading h2,
 .recent h2 {
     margin: 0 0 5px;
+
+    color: #172033;
 }
 
 .section-heading p {
     margin: 0;
+
     color: #64748b;
 }
 
@@ -208,30 +345,54 @@ textarea:focus {
 
 .feature-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
     gap: 16px;
 }
 
 .feature {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 12px;
+
     padding: 22px;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.2s ease;
 }
 
-.feature span {
+.feature:hover {
+    transform: translateY(-2px);
+}
+
+.feature > span {
     font-size: 12px;
+
     color: #2563eb;
+
     font-weight: 700;
 }
 
 .feature h3 {
     margin: 12px 0 7px;
+
+    color: #172033;
+
+    font-size: 18px;
 }
 
 .feature p {
     margin: 0;
+
     color: #64748b;
+
     font-size: 14px;
 }
 
@@ -246,10 +407,17 @@ textarea:focus {
 
 .analysis-row {
     padding: 14px 0;
-    border-bottom: 1px solid #e2e8f0;
+
+    border-bottom:
+        1px solid #e2e8f0;
+
     display: flex;
+
     justify-content: space-between;
+
     gap: 15px;
+
+    color: #172033;
 }
 
 .analysis-row:last-child {
@@ -262,34 +430,857 @@ textarea:focus {
 
 
 /* =========================================================
-   TABLET
+   LOCAL BUGAI SIDEBAR
+   ========================================================= */
+
+.bugai-sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    z-index: 1000;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border-right:
+        1px solid #1e293b;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SIDEBAR BRAND
+   ========================================================= */
+
+.sidebar-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 22px 18px;
+
+    border-bottom:
+        1px solid #1e293b;
+
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 20px;
+
+    font-weight: 800;
+}
+
+.brand-name {
+    color: #ffffff;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   SIDEBAR NAVIGATION
+   ========================================================= */
+
+.sidebar-navigation {
+    flex: 1;
+
+    padding: 16px 12px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+}
+
+.navigation-label {
+    margin: 14px 10px 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.12em;
+}
+
+.sidebar-link {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    width: 100%;
+
+    min-height: 42px;
+
+    margin-bottom: 4px;
+
+    padding: 10px 12px;
+
+    border-radius: 8px;
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sidebar-link:hover {
+    background: #1e293b;
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+}
+
+.sidebar-link.active {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+.nav-icon {
+    width: 20px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 16px;
+}
+
+.nav-text {
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+   ========================================================= */
+
+.sidebar-footer {
+    padding: 16px;
+
+    border-top:
+        1px solid #1e293b;
+
+    flex-shrink: 0;
+}
+
+.sidebar-status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #cbd5e1;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(34, 197, 94, 0.12);
+}
+
+.status-text {
+    white-space: nowrap;
+}
+
+.sidebar-version {
+    margin-top: 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+.sidebar-menu-button {
+    display: none;
+
+    position: fixed;
+
+    top: 16px;
+    left: 16px;
+
+    z-index: 1100;
+
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+
+    border-radius: 10px;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border:
+        1px solid #1e293b;
+
+    font-size: 21px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 16px
+        rgba(15, 23, 42, 0.2);
+}
+
+.sidebar-menu-button:hover {
+    background: #1e293b;
+
+    transform: none;
+}
+
+
+/* =========================================================
+   MOBILE OVERLAY
+   ========================================================= */
+
+.sidebar-overlay {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 900;
+
+    background:
+        rgba(
+            15,
+            23,
+            42,
+            0.55
+        );
+
+    backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.show {
+    display: block;
+}
+
+
+/* =========================================================
+   DARK MODE — BASE
+   ========================================================= */
+
+html.dark-mode body,
+html.dark body,
+body.dark-mode,
+body.dark {
+    background: #0b1120;
+
+    color: #e2e8f0;
+}
+
+
+/* =========================================================
+   DARK MODE — HEADINGS
+   ========================================================= */
+
+html.dark-mode h1,
+html.dark-mode h2,
+html.dark-mode h3,
+html.dark-mode h4,
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4 {
+    color: #f8fafc;
+}
+
+
+/* =========================================================
+   DARK MODE — HEADER
+   ========================================================= */
+
+html.dark-mode header h1,
+html.dark header h1,
+body.dark-mode header h1,
+body.dark header h1 {
+    color: #f8fafc;
+}
+
+html.dark-mode header p,
+html.dark header p,
+body.dark-mode header p,
+body.dark header p {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DARK MODE — CARDS
+   ========================================================= */
+
+html.dark-mode .card,
+html.dark .card,
+body.dark-mode .card,
+body.dark .card,
+html.dark-mode .information,
+html.dark .information,
+body.dark-mode .information,
+body.dark .information,
+html.dark-mode .recent,
+html.dark .recent,
+body.dark-mode .recent,
+body.dark .recent,
+html.dark-mode .note,
+html.dark .note,
+body.dark-mode .note,
+body.dark .note,
+html.dark-mode .explanation,
+html.dark .explanation,
+body.dark-mode .explanation,
+body.dark .explanation {
+    background: #111827;
+
+    border-color: #243244;
+
+    color: #e2e8f0;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   DARK MODE — HERO
+   ========================================================= */
+
+html.dark-mode .hero,
+html.dark .hero,
+body.dark-mode .hero,
+body.dark .hero {
+    background: #111827;
+
+    border-color: #243244;
+
+    color: #f8fafc;
+}
+
+html.dark-mode .hero h2,
+html.dark .hero h2,
+body.dark-mode .hero h2,
+body.dark .hero h2 {
+    color: #f8fafc;
+}
+
+html.dark-mode .hero p,
+html.dark .hero p,
+body.dark-mode .hero p,
+body.dark .hero p {
+    color: #cbd5e1;
+}
+
+html.dark-mode .badge,
+html.dark .badge,
+body.dark-mode .badge,
+body.dark .badge {
+    color: #93c5fd;
+}
+
+
+/* =========================================================
+   DARK MODE — STATS
+   ========================================================= */
+
+html.dark-mode .stat-card,
+html.dark .stat-card,
+body.dark-mode .stat-card,
+body.dark .stat-card {
+    background: #111827;
+
+    border-color: #243244;
+
+    color: #e2e8f0;
+}
+
+html.dark-mode .stat-card span,
+html.dark .stat-card span,
+body.dark-mode .stat-card span,
+body.dark .stat-card span {
+    color: #94a3b8;
+}
+
+html.dark-mode .stat-card strong,
+html.dark .stat-card strong,
+body.dark-mode .stat-card strong,
+body.dark .stat-card strong {
+    color: #f1f5f9;
+}
+
+
+/* =========================================================
+   DARK MODE — SECTION HEADING
+   ========================================================= */
+
+html.dark-mode .section-heading h2,
+html.dark .section-heading h2,
+body.dark-mode .section-heading h2,
+body.dark .section-heading h2,
+html.dark-mode .recent h2,
+html.dark .recent h2,
+body.dark-mode .recent h2,
+body.dark .recent h2 {
+    color: #f8fafc;
+}
+
+html.dark-mode .section-heading p,
+html.dark .section-heading p,
+body.dark-mode .section-heading p,
+body.dark .section-heading p {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DARK MODE — FEATURES
+   ========================================================= */
+
+html.dark-mode .feature,
+html.dark .feature,
+body.dark-mode .feature,
+body.dark .feature {
+    background: #111827;
+
+    border-color: #243244;
+
+    color: #e2e8f0;
+}
+
+html.dark-mode .feature > span,
+html.dark .feature > span,
+body.dark-mode .feature > span,
+body.dark .feature > span {
+    color: #60a5fa;
+}
+
+html.dark-mode .feature h3,
+html.dark .feature h3,
+body.dark-mode .feature h3,
+body.dark .feature h3 {
+    color: #f1f5f9 !important;
+}
+
+html.dark-mode .feature p,
+html.dark .feature p,
+body.dark-mode .feature p,
+body.dark .feature p {
+    color: #94a3b8 !important;
+}
+
+
+/* =========================================================
+   DARK MODE — RECENT ANALYSES
+   ========================================================= */
+
+html.dark-mode .recent,
+html.dark .recent,
+body.dark-mode .recent,
+body.dark .recent {
+    background: #111827;
+
+    border-color: #243244;
+
+    color: #e2e8f0;
+}
+
+html.dark-mode .recent h2,
+html.dark .recent h2,
+body.dark-mode .recent h2,
+body.dark .recent h2 {
+    color: #f8fafc;
+}
+
+html.dark-mode .analysis-row,
+html.dark .analysis-row,
+body.dark-mode .analysis-row,
+body.dark .analysis-row {
+    color: #e2e8f0;
+
+    border-color: #243244;
+}
+
+html.dark-mode .muted,
+html.dark .muted,
+body.dark-mode .muted,
+body.dark .muted {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DARK MODE — LINKS
+   ========================================================= */
+
+html.dark-mode a:not(.sidebar-link),
+html.dark a:not(.sidebar-link),
+body.dark-mode a:not(.sidebar-link),
+body.dark a:not(.sidebar-link) {
+    color: #60a5fa;
+}
+
+
+/* =========================================================
+   DARK MODE — BUTTONS
+   ========================================================= */
+
+html.dark-mode .primary,
+html.dark .primary,
+body.dark-mode .primary,
+body.dark .primary,
+html.dark-mode .primary-btn,
+html.dark .primary-btn,
+body.dark-mode .primary-btn,
+body.dark .primary-btn {
+    background-color: whitesmoke;
+    color: black;
+}
+
+html.dark-mode .secondary,
+html.dark .secondary,
+body.dark-mode .secondary,
+body.dark .secondary {
+    background: #334155;
+
+    color: #e2e8f0;
+}
+
+html.dark-mode .secondary:hover,
+html.dark .secondary:hover,
+body.dark-mode .secondary:hover,
+body.dark .secondary:hover {
+    background: #475569;
+}
+
+
+/* =========================================================
+   DARK MODE — FORM ELEMENTS
+   ========================================================= */
+
+html.dark-mode input,
+html.dark-mode textarea,
+html.dark-mode select,
+html.dark input,
+html.dark textarea,
+html.dark select,
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select,
+body.dark input,
+body.dark textarea,
+body.dark select {
+    background: #111827;
+
+    color: #e2e8f0;
+
+    border-color: #334155;
+}
+
+html.dark-mode input::placeholder,
+html.dark-mode textarea::placeholder,
+html.dark input::placeholder,
+html.dark textarea::placeholder,
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder,
+body.dark input::placeholder,
+body.dark textarea::placeholder {
+    color: #64748b;
+}
+
+html.dark-mode option,
+html.dark option,
+body.dark-mode option,
+body.dark option {
+    background: #111827;
+
+    color: #e2e8f0;
+}
+
+
+/* =========================================================
+   DARK MODE — TABLE
+   ========================================================= */
+
+html.dark-mode th,
+html.dark-mode td,
+html.dark th,
+html.dark td,
+body.dark-mode th,
+body.dark-mode td,
+body.dark th,
+body.dark td {
+    border-color: #243244;
+}
+
+html.dark-mode th,
+html.dark th,
+body.dark-mode th,
+body.dark th {
+    color: #f8fafc;
+}
+
+html.dark-mode td,
+html.dark td,
+body.dark-mode td,
+body.dark td {
+    color: #cbd5e1;
+}
+
+
+/* =========================================================
+   DARK MODE — SIDEBAR
+   ========================================================= */
+
+html.dark-mode .bugai-sidebar,
+html.dark .bugai-sidebar,
+body.dark-mode .bugai-sidebar,
+body.dark .bugai-sidebar {
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border-color: #1e293b;
+}
+
+html.dark-mode .sidebar-brand,
+html.dark .sidebar-brand,
+body.dark-mode .sidebar-brand,
+body.dark .sidebar-brand {
+    border-color: #1e293b;
+}
+
+html.dark-mode .sidebar-link,
+html.dark .sidebar-link,
+body.dark-mode .sidebar-link,
+body.dark .sidebar-link {
+    color: #cbd5e1;
+}
+
+html.dark-mode .sidebar-link:hover,
+html.dark .sidebar-link:hover,
+body.dark-mode .sidebar-link:hover,
+body.dark .sidebar-link:hover {
+    background: #1e293b;
+
+    color: #ffffff;
+}
+
+html.dark-mode .sidebar-link.active,
+html.dark .sidebar-link.active,
+body.dark-mode .sidebar-link.active,
+body.dark .sidebar-link.active {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+html.dark-mode .sidebar-footer,
+html.dark .sidebar-footer,
+body.dark-mode .sidebar-footer,
+body.dark .sidebar-footer {
+    border-color: #1e293b;
+}
+
+html.dark-mode .sidebar-status,
+html.dark .sidebar-status,
+body.dark-mode .sidebar-status,
+body.dark .sidebar-status {
+    color: #cbd5e1;
+}
+
+
+/* =========================================================
+   DARK MODE — PRIMARY BUTTON
+   ========================================================= */
+
+html.dark-mode .primary,
+html.dark .primary,
+body.dark-mode .primary,
+body.dark .primary,
+html.dark-mode .primary-btn,
+html.dark .primary-btn,
+body.dark-mode .primary-btn,
+body.dark .primary-btn {
+    background: whitesmoke !important;
+    background-color: whitesmoke !important;
+
+    color: #000000 !important;
+
+    border-color: whitesmoke !important;
+}
+
+html.dark-mode .primary:hover,
+html.dark .primary:hover,
+body.dark-mode .primary:hover,
+body.dark .primary:hover,
+html.dark-mode .primary-btn:hover,
+html.dark .primary-btn:hover,
+body.dark-mode .primary-btn:hover,
+body.dark .primary-btn:hover {
+    background: #e5e7eb !important;
+    background-color: #e5e7eb !important;
+
+    color: #000000 !important;
+}
+
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
    ========================================================= */
 
 @media (max-width: 1200px) {
 
     main {
-        padding: 42px 38px;
+        margin-left: 250px;
+
+        padding:
+            42px
+            38px
+            55px;
     }
 
     .feature-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:
+            repeat(2, 1fr);
     }
 
     .stats {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:
+            repeat(2, 1fr);
     }
+
 }
 
 
 /* =========================================================
-   MOBILE
+   RESPONSIVE — MOBILE
    ========================================================= */
 
 @media (max-width: 900px) {
 
-    main {
-        padding: 80px 22px 30px;
+    .bugai-sidebar {
+        transform:
+            translateX(-100%);
+
+        transition:
+            transform 0.25s ease;
+
+        box-shadow:
+            10px 0 30px
+            rgba(0, 0, 0, 0.2);
     }
+
+    .bugai-sidebar.open {
+        transform:
+            translateX(0);
+    }
+
+    .sidebar-menu-button {
+        display: flex;
+    }
+
+    main {
+        margin-left: 0;
+
+        padding:
+            80px
+            22px
+            30px;
+    }
+
 }
 
 
@@ -301,6 +1292,7 @@ textarea:focus {
 
     .topbar {
         align-items: flex-start;
+
         flex-direction: column;
     }
 
@@ -308,4 +1300,57 @@ textarea:focus {
     .stats {
         grid-template-columns: 1fr;
     }
+
+    .hero {
+        padding: 26px;
+    }
+
+    .hero h2 {
+        font-size: 26px;
+    }
+
+    .stat-card strong {
+        font-size: 26px;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .sidebar-menu-button {
+        top: 14px;
+        left: 14px;
+
+        width: 40px;
+        height: 40px;
+    }
+
+    main {
+        padding:
+            70px
+            14px
+            35px;
+    }
+
+    header h1 {
+        font-size: 28px;
+    }
+
+    .hero {
+        padding: 22px;
+    }
+
+    .card,
+    .recent,
+    .information,
+    .note,
+    .explanation {
+        padding: 20px;
+    }
+
 }

@@ -1,29 +1,921 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BugAI - Dashboard</title>
-<link rel="stylesheet" href="../sidebar.css"><link rel="stylesheet" href="dashboard.css">
-</head><body>
-<div id="sidebar-container"></div>
-<main>
-<header class="topbar"><div><h1>Dashboard</h1><p>Intelligent Bug Diagnosis Platform</p></div><a class="primary-btn" href="../Bug-Submission/bug-submission.html">+ New Analysis</a></header>
-<section class="hero"><span class="badge">BUGAI PLATFORM</span><h2>Diagnose software defects intelligently</h2>
-<p>Analyze bug reports, stack traces and error logs, retrieve related historical defects and generate probable root-cause and fix recommendations.</p>
-<a class="primary-btn" href="../Bug-Submission/bug-submission.html">Start Bug Analysis</a></section>
-<section class="stats">
-<div class="stat-card"><span>Total Analyses</span><strong id="totalAnalyses">0</strong></div>
-<div class="stat-card"><span>Historical Defects</span><strong id="historicalDefects">0</strong></div>
-<div class="stat-card"><span>AI Agents</span><strong>5</strong></div>
-<div class="stat-card"><span>Projects</span><strong>3</strong></div>
-</section>
-<section><div class="section-heading"><div><h2>Milestone 3 Coverage</h2><p>Implemented M2 triage/log analysis plus M3 root-cause, duplicate detection, remediation and structured findings.</p></div></div>
-<div class="feature-grid">
-<article class="feature"><span>01</span><h3>Defect Analysis Workflow</h3><p>Bug-report structure, triage, diagnosis, duplicate detection and remediation workflow.</p></article>
-<article class="feature"><span>02</span><h3>Multi-Agent Architecture</h3><p>Five specialized agents, orchestration flow and responsibilities.</p></article>
-<article class="feature"><span>03</span><h3>Bug Submission</h3><p>Structured defect entry, stack traces, error logs and TXT/LOG/JSON/CSV uploads.</p></article>
-<article class="feature"><span>04</span><h3>RAG Knowledge Base</h3><p>Dataset preparation, chunking, embeddings, FAISS vector indexing and similarity retrieval prototype.</p></article>
-</div></section>
-<section class="recent"><h2>Recent Analyses</h2><div id="recentAnalyses"></div></section>
-</main>
-<script src="../sidebar.js"></script><script src="dashboard.js"></script>
-</body></html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>BugAI - Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="dashboard.css"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        id="bugaiSidebar"
+        class="bugai-sidebar"
+    >
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                B
+            </div>
+
+            <div>
+
+                <div class="brand-name">
+                    BugAI
+                </div>
+
+                <div class="brand-subtitle">
+                    Intelligent Bug Diagnosis
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-navigation">
+
+            <!-- MAIN -->
+
+            <div class="navigation-label">
+                MAIN
+            </div>
+
+
+            <a
+                class="sidebar-link active"
+                href="../Dashboard/dashboard.html"
+                aria-current="page"
+            >
+
+                <span class="nav-icon">
+                    ⌂
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Bug-Submission/bug-submission.html"
+            >
+
+                <span class="nav-icon">
+                    ＋
+                </span>
+
+                <span class="nav-text">
+                    Bug Submission
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Workflow/workflow.html"
+            >
+
+                <span class="nav-icon">
+                    ↝
+                </span>
+
+                <span class="nav-text">
+                    Workflow
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Architecture/architecture.html"
+            >
+
+                <span class="nav-icon">
+                    ◈
+                </span>
+
+                <span class="nav-text">
+                    Architecture
+                </span>
+
+            </a>
+
+
+            <!-- INTELLIGENCE -->
+
+            <div class="navigation-label">
+                INTELLIGENCE
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Knowledge-Base/knowledge-base.html"
+            >
+
+                <span class="nav-icon">
+                    ▣
+                </span>
+
+                <span class="nav-text">
+                    Knowledge Base
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Semantic-Similarity/similarity.html"
+            >
+
+                <span class="nav-icon">
+                    ⌕
+                </span>
+
+                <span class="nav-text">
+                    Semantic Similarity
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Validation/validation.html"
+            >
+
+                <span class="nav-icon">
+                    ✓
+                </span>
+
+                <span class="nav-text">
+                    Validation
+                </span>
+
+            </a>
+
+
+            <!-- SYSTEM -->
+
+            <div class="navigation-label">
+                SYSTEM
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../analytics/analytics.html"
+            >
+
+                <span class="nav-icon">
+                    ▥
+                </span>
+
+                <span class="nav-text">
+                    Analytics
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Settings/settings.html"
+            >
+
+                <span class="nav-icon">
+                    ⚙
+                </span>
+
+                <span class="nav-text">
+                    Settings
+                </span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+
+            <div class="sidebar-status">
+
+                <span class="status-dot"></span>
+
+                <span class="status-text">
+                    Backend Connected
+                </span>
+
+            </div>
+
+
+            <div class="sidebar-version">
+                BugAI · Milestone 4
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MOBILE MENU BUTTON
+    ====================================================== -->
+
+    <button
+        id="sidebarMenuButton"
+        class="sidebar-menu-button"
+        type="button"
+        aria-label="Open navigation"
+        aria-controls="bugaiSidebar"
+        aria-expanded="false"
+    >
+
+        ☰
+
+    </button>
+
+
+    <!-- =====================================================
+         MOBILE SIDEBAR OVERLAY
+    ====================================================== -->
+
+    <div
+        id="sidebarOverlay"
+        class="sidebar-overlay"
+    ></div>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Dashboard
+                </h1>
+
+                <p>
+                    Intelligent Bug Diagnosis Platform
+                </p>
+
+            </div>
+
+
+            <a
+                class="primary-btn"
+                href="../Bug-Submission/bug-submission.html"
+            >
+
+                + New Analysis
+
+            </a>
+
+        </header>
+
+
+        <!-- =================================================
+             HERO
+        ================================================== -->
+
+        <section class="hero">
+
+            <span class="badge">
+                BUGAI PLATFORM
+            </span>
+
+
+            <h2>
+                Diagnose software defects intelligently
+            </h2>
+
+
+            <p>
+                Analyze bug reports, stack traces and error
+                logs, retrieve related historical defects and
+                generate probable root-cause and fix
+                recommendations.
+            </p>
+
+
+            <a
+                class="primary-btn"
+                href="../Bug-Submission/bug-submission.html"
+            >
+
+                Start Bug Analysis
+
+            </a>
+
+        </section>
+
+
+        <!-- =================================================
+             STATISTICS
+        ================================================== -->
+
+        <section class="stats">
+
+
+            <!-- TOTAL ANALYSES -->
+
+            <div class="stat-card">
+
+                <span>
+                    Total Analyses
+                </span>
+
+                <strong id="totalAnalyses">
+                    0
+                </strong>
+
+            </div>
+
+
+            <!-- HISTORICAL DEFECTS -->
+
+            <div class="stat-card">
+
+                <span>
+                    Historical Defects
+                </span>
+
+                <strong id="historicalDefects">
+                    0
+                </strong>
+
+            </div>
+
+
+            <!-- AI AGENTS -->
+
+            <div class="stat-card">
+
+                <span>
+                    AI Agents
+                </span>
+
+                <strong>
+                    5
+                </strong>
+
+            </div>
+
+
+            <!-- PROJECTS -->
+
+            <div class="stat-card">
+
+                <span>
+                    Projects
+                </span>
+
+                <strong>
+                    3
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MILESTONE 3 COVERAGE
+        ================================================== -->
+
+        <section>
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Milestone 3 Coverage
+                    </h2>
+
+                    <p>
+                        Implemented M2 triage/log analysis plus
+                        M3 root-cause, duplicate detection,
+                        remediation and structured findings.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+
+                <!-- FEATURE 01 -->
+
+                <article class="feature">
+
+                    <span>
+                        01
+                    </span>
+
+                    <h3>
+                        Defect Analysis Workflow
+                    </h3>
+
+                    <p>
+                        Bug-report structure, triage, diagnosis,
+                        duplicate detection and remediation
+                        workflow.
+                    </p>
+
+                </article>
+
+
+                <!-- FEATURE 02 -->
+
+                <article class="feature">
+
+                    <span>
+                        02
+                    </span>
+
+                    <h3>
+                        Multi-Agent Architecture
+                    </h3>
+
+                    <p>
+                        Five specialized agents, orchestration
+                        flow and responsibilities.
+                    </p>
+
+                </article>
+
+
+                <!-- FEATURE 03 -->
+
+                <article class="feature">
+
+                    <span>
+                        03
+                    </span>
+
+                    <h3>
+                        Bug Submission
+                    </h3>
+
+                    <p>
+                        Structured defect entry, stack traces,
+                        error logs and TXT/LOG/JSON/CSV uploads.
+                    </p>
+
+                </article>
+
+
+                <!-- FEATURE 04 -->
+
+                <article class="feature">
+
+                    <span>
+                        04
+                    </span>
+
+                    <h3>
+                        RAG Knowledge Base
+                    </h3>
+
+                    <p>
+                        Dataset preparation, chunking, embeddings,
+                        FAISS vector indexing and similarity
+                        retrieval prototype.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             RECENT ANALYSES
+        ================================================== -->
+
+        <section class="recent">
+
+            <h2>
+                Recent Analyses
+            </h2>
+
+
+            <div id="recentAnalyses"></div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         DASHBOARD LOGIC
+    ====================================================== -->
+
+    <script src="dashboard.js"></script>
+
+
+    <!-- =====================================================
+         LOCAL THEME + MOBILE SIDEBAR
+    ====================================================== -->
+
+    <script>
+
+        (function () {
+
+            const SETTINGS_KEY =
+                "bugai-settings";
+
+            const LEGACY_KEY =
+                "bugai-theme";
+
+
+            /* =================================================
+               GET SAVED THEME
+            ================================================= */
+
+            function getTheme() {
+
+                try {
+
+                    const settings =
+                        JSON.parse(
+                            localStorage.getItem(
+                                SETTINGS_KEY
+                            ) || "{}"
+                        );
+
+
+                    if (
+                        settings.theme
+                    ) {
+
+                        return settings.theme;
+
+                    }
+
+                } catch (error) {
+
+                    console.warn(
+                        "Unable to read BugAI settings:",
+                        error
+                    );
+
+                }
+
+
+                return (
+                    localStorage.getItem(
+                        LEGACY_KEY
+                    ) || "system"
+                );
+
+            }
+
+
+            /* =================================================
+               APPLY THEME
+            ================================================= */
+
+            function applyTheme() {
+
+                const theme =
+                    getTheme();
+
+
+                const dark =
+                    theme === "dark" ||
+                    (
+                        theme === "system" &&
+                        window.matchMedia &&
+                        window.matchMedia(
+                            "(prefers-color-scheme: dark)"
+                        ).matches
+                    );
+
+
+                document.documentElement
+                    .classList
+                    .toggle(
+                        "dark-mode",
+                        dark
+                    );
+
+
+                document.documentElement
+                    .classList
+                    .toggle(
+                        "dark",
+                        dark
+                    );
+
+
+                if (document.body) {
+
+                    document.body
+                        .classList
+                        .toggle(
+                            "dark-mode",
+                            dark
+                        );
+
+
+                    document.body
+                        .classList
+                        .toggle(
+                            "dark",
+                            dark
+                        );
+
+                }
+
+            }
+
+
+            /* =================================================
+               MOBILE SIDEBAR
+            ================================================= */
+
+            function initMenu() {
+
+                const sidebar =
+                    document.getElementById(
+                        "bugaiSidebar"
+                    );
+
+
+                const menuButton =
+                    document.getElementById(
+                        "sidebarMenuButton"
+                    );
+
+
+                const overlay =
+                    document.getElementById(
+                        "sidebarOverlay"
+                    );
+
+
+                if (
+                    !sidebar ||
+                    !menuButton ||
+                    !overlay
+                ) {
+
+                    return;
+
+                }
+
+
+                function closeMenu() {
+
+                    sidebar.classList.remove(
+                        "open"
+                    );
+
+
+                    overlay.classList.remove(
+                        "show"
+                    );
+
+
+                    menuButton.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                }
+
+
+                function toggleMenu() {
+
+                    const isOpen =
+                        sidebar.classList.toggle(
+                            "open"
+                        );
+
+
+                    overlay.classList.toggle(
+                        "show",
+                        isOpen
+                    );
+
+
+                    menuButton.setAttribute(
+                        "aria-expanded",
+                        String(isOpen)
+                    );
+
+                }
+
+
+                menuButton.addEventListener(
+                    "click",
+                    toggleMenu
+                );
+
+
+                overlay.addEventListener(
+                    "click",
+                    closeMenu
+                );
+
+
+                document.addEventListener(
+                    "keydown",
+                    function (event) {
+
+                        if (
+                            event.key ===
+                            "Escape"
+                        ) {
+
+                            closeMenu();
+
+                        }
+
+                    }
+                );
+
+
+                window.addEventListener(
+                    "resize",
+                    function () {
+
+                        if (
+                            window.innerWidth >
+                            900
+                        ) {
+
+                            closeMenu();
+
+                        }
+
+                    }
+                );
+
+
+                /* ---------------------------------------------
+                   CLOSE MENU AFTER NAVIGATION
+                --------------------------------------------- */
+
+                sidebar
+                    .querySelectorAll(
+                        ".sidebar-link"
+                    )
+                    .forEach(
+                        function (link) {
+
+                            link.addEventListener(
+                                "click",
+                                closeMenu
+                            );
+
+                        }
+                    );
+
+            }
+
+
+            /* =================================================
+               INITIALIZE
+            ================================================= */
+
+            function initializeDashboardUI() {
+
+                applyTheme();
+
+                initMenu();
+
+            }
+
+
+            if (
+                document.readyState ===
+                "loading"
+            ) {
+
+                document.addEventListener(
+                    "DOMContentLoaded",
+                    initializeDashboardUI
+                );
+
+            } else {
+
+                initializeDashboardUI();
+
+            }
+
+
+            /* =================================================
+               SYNC THEME BETWEEN PAGES
+            ================================================= */
+
+            window.addEventListener(
+                "storage",
+                function (event) {
+
+                    if (
+                        event.key ===
+                        SETTINGS_KEY ||
+                        event.key ===
+                        LEGACY_KEY
+                    ) {
+
+                        applyTheme();
+
+                    }
+
+                }
+            );
+
+
+            /* =================================================
+               SYSTEM THEME CHANGE
+            ================================================= */
+
+            if (
+                window.matchMedia
+            ) {
+
+                const mediaQuery =
+                    window.matchMedia(
+                        "(prefers-color-scheme: dark)"
+                    );
+
+
+                if (
+                    mediaQuery.addEventListener
+                ) {
+
+                    mediaQuery.addEventListener(
+                        "change",
+                        applyTheme
+                    );
+
+                } else if (
+                    mediaQuery.addListener
+                ) {
+
+                    mediaQuery.addListener(
+                        applyTheme
+                    );
+
+                }
+
+            }
+
+        })();
+
+    </script>
+
+
+</body>
+
+</html>

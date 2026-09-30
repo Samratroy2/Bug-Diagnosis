@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>BugAI - Milestone 2 / 3 Validation</title>
-<link rel="stylesheet" href="../sidebar.css">
 <link rel="stylesheet" href="validation.css">
 </head>
 <body>
-<div id="sidebar-container"></div>
+<aside id="bugaiSidebar" class="bugai-sidebar">
+  <div class="sidebar-brand"><div class="brand-logo">B</div><div><div class="brand-name">BugAI</div><div class="brand-subtitle">Intelligent Bug Diagnosis</div></div></div>
+  <nav class="sidebar-navigation"><div class="navigation-label">MAIN</div><a class="sidebar-link" href="../Dashboard/dashboard.html"><span class="nav-icon">⌂</span><span class="nav-text">Dashboard</span></a><a class="sidebar-link" href="../Bug-Submission/bug-submission.html"><span class="nav-icon">＋</span><span class="nav-text">Bug Submission</span></a><a class="sidebar-link" href="../Workflow/workflow.html"><span class="nav-icon">↝</span><span class="nav-text">Workflow</span></a><a class="sidebar-link" href="../Architecture/architecture.html"><span class="nav-icon">◈</span><span class="nav-text">Architecture</span></a><div class="navigation-label">INTELLIGENCE</div><a class="sidebar-link" href="../Knowledge-Base/knowledge-base.html"><span class="nav-icon">▣</span><span class="nav-text">Knowledge Base</span></a><a class="sidebar-link" href="../Semantic-Similarity/similarity.html"><span class="nav-icon">⌕</span><span class="nav-text">Semantic Similarity</span></a><a class="sidebar-link active" href="../Validation/validation.html" aria-current="page"><span class="nav-icon">✓</span><span class="nav-text">Validation</span></a><div class="navigation-label">SYSTEM</div><a class="sidebar-link" href="../analytics/analytics.html"><span class="nav-icon">▥</span><span class="nav-text">Analytics</span></a><a class="sidebar-link" href="../Settings/settings.html"><span class="nav-icon">⚙</span><span class="nav-text">Settings</span></a></nav><div class="sidebar-footer"><div class="sidebar-status"><span class="status-dot"></span><span class="status-text">Backend Connected</span></div><div class="sidebar-version">BugAI · Milestone 4</div></div></aside><button id="sidebarMenuButton" class="sidebar-menu-button" type="button" aria-label="Open navigation" aria-controls="bugaiSidebar" aria-expanded="false">☰</button><div id="sidebarOverlay" class="sidebar-overlay"></div><button id="sidebarMenuButton" class="sidebar-menu-button" type="button" aria-label="Open navigation" aria-controls="bugaiSidebar" aria-expanded="false">☰</button><div id="sidebarOverlay" class="sidebar-overlay"></div>
 <main>
 <header>
 <span>Milestone 3.5</span>
@@ -33,7 +34,34 @@
 </div>
 </section>
 </main>
-<script src="../sidebar.js"></script>
 <script src="validation.js"></script>
+
+<script>
+(function(){
+  const SETTINGS_KEY='bugai-settings', LEGACY_KEY='bugai-theme';
+  function getTheme(){
+    try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}'); if(s.theme) return s.theme;}catch(e){}
+    return localStorage.getItem(LEGACY_KEY)||'system';
+  }
+  function applyTheme(){
+    const t=getTheme(), dark=t==='dark'||(t==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.classList.toggle('dark-mode',dark);
+    document.documentElement.classList.toggle('dark',dark);
+    document.body.classList.toggle('dark-mode',dark);
+    document.body.classList.toggle('dark',dark);
+  }
+  function initMenu(){
+    const s=document.getElementById('bugaiSidebar'), b=document.getElementById('sidebarMenuButton'), o=document.getElementById('sidebarOverlay');
+    if(!s||!b||!o)return;
+    const close=()=>{s.classList.remove('open');o.classList.remove('show');b.setAttribute('aria-expanded','false');};
+    b.addEventListener('click',()=>{const open=s.classList.toggle('open');o.classList.toggle('show',open);b.setAttribute('aria-expanded',String(open));});
+    o.addEventListener('click',close); document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+    window.addEventListener('resize',()=>{if(window.innerWidth>900)close();});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{applyTheme();initMenu();});
+  window.addEventListener('storage',e=>{if(e.key===SETTINGS_KEY||e.key===LEGACY_KEY)applyTheme();});
+  if(window.matchMedia)window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',applyTheme);
+})();
+</script>
 </body>
 </html>

@@ -1,11 +1,14 @@
 /* =========================================================
    BUGAI — AI SYSTEM ARCHITECTURE
-   Page-specific styles only
-   Sidebar is controlled by sidebar.css
+   Self-contained page styles
    ========================================================= */
 
 * {
     box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -14,12 +17,31 @@ body {
     color: #172033;
     font-family: Inter, "Segoe UI", Arial, sans-serif;
     line-height: 1.55;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
 }
 
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
 main {
+    margin-left: 250px;
+
+    min-height: 100vh;
+
     padding: 48px 56px;
+
     max-width: 1650px;
 }
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 header {
     margin-bottom: 28px;
@@ -27,20 +49,31 @@ header {
 
 header h1 {
     margin: 5px 0 8px;
+
+    color: #172033;
+
     font-size: 36px;
+
     line-height: 1.15;
 }
 
 header p {
     margin: 0;
+
     color: #64748b;
+
     font-size: 16px;
 }
 
 header > span {
+    display: inline-block;
+
     font-size: 12px;
+
     font-weight: 700;
+
     color: #2563eb;
+
     letter-spacing: 0.08em;
 }
 
@@ -55,10 +88,22 @@ header > span {
 .note,
 .explanation {
     background: #ffffff;
+
     border: 1px solid #e2e8f0;
+
     border-radius: 14px;
+
     padding: 28px;
-    box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+
+    box-shadow:
+        0 5px 18px
+        rgba(15, 23, 42, 0.04);
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 
@@ -69,23 +114,53 @@ header > span {
 button,
 .primary-btn {
     border: 0;
+
     border-radius: 8px;
+
     padding: 11px 16px;
+
+    font: inherit;
+
     font-weight: 600;
+
     cursor: pointer;
+
     text-decoration: none;
+
     display: inline-block;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+button:hover,
+.primary-btn:hover {
+    transform: translateY(-1px);
 }
 
 .primary,
 .primary-btn {
     background: #2563eb;
+
     color: #ffffff;
+}
+
+.primary:hover,
+.primary-btn:hover {
+    background: #1d4ed8;
 }
 
 .secondary {
     background: #e2e8f0;
+
     color: #172033;
+}
+
+.secondary:hover {
+    background: #cbd5e1;
 }
 
 
@@ -97,19 +172,41 @@ input,
 select,
 textarea {
     width: 100%;
+
     font: inherit;
+
     border: 1px solid #cbd5e1;
+
     border-radius: 8px;
+
     padding: 11px 13px;
+
     outline: none;
+
     background: #ffffff;
+
+    color: #172033;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37, 99, 235, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #94a3b8;
 }
 
 
@@ -120,19 +217,45 @@ textarea:focus {
 .flow,
 .rag-flow {
     display: flex;
+
     align-items: center;
+
     gap: 10px;
+
     flex-wrap: wrap;
+
     margin-bottom: 30px;
 }
 
 .flow div,
 .rag-flow div {
     background: #ffffff;
-    border: 1px solid #dbe4ef;
+
+    border:
+        1px solid #dbe4ef;
+
     border-radius: 10px;
+
     padding: 14px 16px;
+
     font-weight: 600;
+
+    color: #172033;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.2s ease;
+}
+
+.flow div:hover,
+.rag-flow div:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 15px
+        rgba(15, 23, 42, 0.06);
 }
 
 .flow b,
@@ -147,30 +270,62 @@ textarea:focus {
 
 .agent-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
     gap: 14px;
 }
 
 .agent-card {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 12px;
+
     padding: 20px;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.agent-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 18px
+        rgba(15, 23, 42, 0.06);
 }
 
 .agent-number {
+    display: inline-block;
+
     font-size: 11px;
+
     color: #2563eb;
+
     font-weight: 800;
 }
 
 .agent-card h3 {
     margin: 8px 0;
+
+    color: #172033;
+
+    line-height: 1.35;
 }
 
 .agent-card p {
     color: #64748b;
+
     font-size: 14px;
+
     margin: 0;
 }
 
@@ -181,9 +336,27 @@ textarea:focus {
 
 .rag {
     margin-top: 30px;
+
     background: #eef6ff;
+
+    border:
+        1px solid #dbeafe;
+
     border-radius: 14px;
+
     padding: 25px;
+
+    color: #172033;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
+}
+
+.rag h2,
+.rag h3 {
+    color: #172033;
 }
 
 
@@ -202,21 +375,41 @@ textarea:focus {
 
 .table-wrap {
     overflow: auto;
+
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 12px;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease;
 }
 
 .table-wrap table {
     width: 100%;
+
     border-collapse: collapse;
 }
 
 .table-wrap th,
 .table-wrap td {
     text-align: left;
+
     padding: 13px;
-    border-bottom: 1px solid #e2e8f0;
+
+    border-bottom:
+        1px solid #e2e8f0;
+
+    color: #172033;
+}
+
+.table-wrap th {
+    font-weight: 700;
+
+    background: #f8fafc;
 }
 
 
@@ -226,14 +419,764 @@ textarea:focus {
 
 .status {
     margin-top: 30px;
+
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+
+    border:
+        1px solid #e2e8f0;
+
     border-radius: 12px;
+
     padding: 25px;
+
+    color: #172033;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
+}
+
+.status h2,
+.status h3 {
+    color: #172033;
 }
 
 .status li {
     margin: 9px 0;
+}
+
+
+/* =========================================================
+   SELF-CONTAINED SIDEBAR
+   ========================================================= */
+
+.bugai-sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    z-index: 1000;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border-right:
+        1px solid #1e293b;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SIDEBAR BRAND
+   ========================================================= */
+
+.sidebar-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 22px 18px;
+
+    border-bottom:
+        1px solid #1e293b;
+
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 20px;
+
+    font-weight: 800;
+}
+
+.brand-name {
+    color: #ffffff;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   SIDEBAR NAVIGATION
+   ========================================================= */
+
+.sidebar-navigation {
+    flex: 1;
+
+    padding: 16px 12px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+}
+
+.navigation-label {
+    margin: 14px 10px 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.12em;
+}
+
+.sidebar-link {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    width: 100%;
+
+    min-height: 42px;
+
+    margin-bottom: 4px;
+
+    padding: 10px 12px;
+
+    border-radius: 8px;
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sidebar-link:hover {
+    background: #1e293b;
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+}
+
+.sidebar-link.active {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+.nav-icon {
+    width: 20px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 16px;
+}
+
+.nav-text {
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+   ========================================================= */
+
+.sidebar-footer {
+    padding: 16px;
+
+    border-top:
+        1px solid #1e293b;
+
+    flex-shrink: 0;
+}
+
+.sidebar-status {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #cbd5e1;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(34, 197, 94, 0.12);
+
+    flex-shrink: 0;
+}
+
+.status-text {
+    white-space: nowrap;
+}
+
+.sidebar-version {
+    margin-top: 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   MOBILE SIDEBAR
+   ========================================================= */
+
+.sidebar-menu-button {
+    display: none;
+
+    position: fixed;
+
+    top: 16px;
+    left: 16px;
+
+    z-index: 1100;
+
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+
+    border-radius: 10px;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border:
+        1px solid #1e293b;
+
+    font-size: 21px;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 16px
+        rgba(15, 23, 42, 0.2);
+}
+
+.sidebar-menu-button:hover {
+    background: #1e293b;
+
+    transform: none;
+}
+
+.sidebar-overlay {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 900;
+
+    background:
+        rgba(15, 23, 42, 0.55);
+
+    backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.show {
+    display: block;
+}
+
+
+/* =========================================================
+   DARK MODE — BASE
+   ========================================================= */
+
+html.dark-mode,
+html.dark,
+body.dark-mode,
+body.dark {
+    color-scheme: dark;
+}
+
+html.dark-mode body,
+html.dark body,
+body.dark-mode,
+body.dark {
+    background: #0b1120;
+
+    color: #e2e8f0;
+}
+
+
+/* =========================================================
+   DARK MODE — HEADER
+   ========================================================= */
+
+html.dark-mode header h1,
+html.dark header h1,
+body.dark-mode header h1,
+body.dark header h1 {
+    color: #f8fafc;
+}
+
+html.dark-mode header p,
+html.dark header p,
+body.dark-mode header p,
+body.dark header p {
+    color: #94a3b8;
+}
+
+html.dark-mode header > span,
+html.dark header > span,
+body.dark-mode header > span,
+body.dark header > span {
+    color: #60a5fa;
+}
+
+
+/* =========================================================
+   DARK MODE — COMMON CARDS
+   ========================================================= */
+
+html.dark-mode .card,
+html.dark .card,
+body.dark-mode .card,
+body.dark .card,
+html.dark-mode .information,
+html.dark .information,
+body.dark-mode .information,
+body.dark .information,
+html.dark-mode .recent,
+html.dark .recent,
+body.dark-mode .recent,
+body.dark .recent,
+html.dark-mode .note,
+html.dark .note,
+body.dark-mode .note,
+body.dark .note,
+html.dark-mode .explanation,
+html.dark .explanation,
+body.dark-mode .explanation,
+body.dark .explanation {
+    background: #111827;
+
+    border-color: #243244;
+
+    color: #e2e8f0;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   DARK MODE — SYSTEM FLOW
+   ========================================================= */
+
+html.dark-mode .flow div,
+html.dark .flow div,
+body.dark-mode .flow div,
+body.dark .flow div,
+html.dark-mode .rag-flow div,
+html.dark .rag-flow div,
+body.dark-mode .rag-flow div,
+body.dark .rag-flow div {
+    background: #111827;
+
+    border-color: #334155;
+
+    color: #f1f5f9;
+
+    box-shadow: none;
+}
+
+html.dark-mode .flow b,
+html.dark .flow b,
+body.dark-mode .flow b,
+body.dark .flow b,
+html.dark-mode .rag-flow b,
+html.dark .rag-flow b,
+body.dark-mode .rag-flow b,
+body.dark .rag-flow b {
+    color: #60a5fa;
+}
+
+
+/* =========================================================
+   DARK MODE — AGENT CARDS
+   ========================================================= */
+
+html.dark-mode .agent-card,
+html.dark .agent-card,
+body.dark-mode .agent-card,
+body.dark .agent-card {
+    background: #111827;
+
+    border-color: #334155;
+
+    color: #e2e8f0;
+
+    box-shadow: none;
+}
+
+html.dark-mode .agent-card:hover,
+html.dark .agent-card:hover,
+body.dark-mode .agent-card:hover,
+body.dark .agent-card:hover {
+    background: #172033;
+
+    border-color: #475569;
+
+    box-shadow:
+        0 6px 18px
+        rgba(0, 0, 0, 0.18);
+}
+
+html.dark-mode .agent-number,
+html.dark .agent-number,
+body.dark-mode .agent-number,
+body.dark .agent-number {
+    color: #60a5fa;
+}
+
+html.dark-mode .agent-card h3,
+html.dark .agent-card h3,
+body.dark-mode .agent-card h3,
+body.dark .agent-card h3 {
+    color: #f8fafc !important;
+}
+
+html.dark-mode .agent-card p,
+html.dark .agent-card p,
+body.dark-mode .agent-card p,
+body.dark .agent-card p {
+    color: #94a3b8 !important;
+}
+
+
+/* =========================================================
+   DARK MODE — RAG
+   ========================================================= */
+
+html.dark-mode .rag,
+html.dark .rag,
+body.dark-mode .rag,
+body.dark .rag {
+    background: #13243a;
+
+    border-color: #1e3a5f;
+
+    color: #e2e8f0;
+}
+
+html.dark-mode .rag h2,
+html.dark .rag h2,
+body.dark-mode .rag h2,
+body.dark .rag h2,
+html.dark-mode .rag h3,
+html.dark .rag h3,
+body.dark-mode .rag h3,
+body.dark .rag h3 {
+    color: #f8fafc;
+}
+
+
+/* =========================================================
+   DARK MODE — TEXT
+   ========================================================= */
+
+html.dark-mode .note-text,
+html.dark .note-text,
+body.dark-mode .note-text,
+body.dark .note-text {
+    color: #cbd5e1;
+}
+
+
+/* =========================================================
+   DARK MODE — TABLE
+   ========================================================= */
+
+html.dark-mode .table-wrap,
+html.dark .table-wrap,
+body.dark-mode .table-wrap,
+body.dark .table-wrap {
+    background: #111827;
+
+    border-color: #334155;
+}
+
+html.dark-mode .table-wrap th,
+html.dark .table-wrap th,
+body.dark-mode .table-wrap th,
+body.dark .table-wrap th {
+    background: #1e293b;
+
+    color: #f8fafc;
+
+    border-color: #334155;
+}
+
+html.dark-mode .table-wrap td,
+html.dark .table-wrap td,
+body.dark-mode .table-wrap td,
+body.dark .table-wrap td {
+    color: #cbd5e1;
+
+    border-color: #334155;
+}
+
+html.dark-mode .table-wrap tr:hover td,
+html.dark .table-wrap tr:hover td,
+body.dark-mode .table-wrap tr:hover td,
+body.dark .table-wrap tr:hover td {
+    background: #172033;
+}
+
+
+/* =========================================================
+   DARK MODE — STATUS
+   ========================================================= */
+
+html.dark-mode .status,
+html.dark .status,
+body.dark-mode .status,
+body.dark .status {
+    background: #111827;
+
+    border-color: #334155;
+
+    color: #e2e8f0;
+
+    box-shadow: none;
+}
+
+html.dark-mode .status h2,
+html.dark .status h2,
+body.dark-mode .status h2,
+body.dark .status h2,
+html.dark-mode .status h3,
+html.dark .status h3,
+body.dark-mode .status h3,
+body.dark .status h3 {
+    color: #f8fafc;
+}
+
+
+/* =========================================================
+   DARK MODE — BUTTONS
+   ========================================================= */
+
+/*
+   PRIMARY BUTTON
+   Dark mode:
+   WHITE BACKGROUND
+   BLACK TEXT
+*/
+
+html.dark-mode .primary,
+html.dark .primary,
+body.dark-mode .primary,
+body.dark .primary,
+html.dark-mode .primary-btn,
+html.dark .primary-btn,
+body.dark-mode .primary-btn,
+body.dark .primary-btn {
+    background: #ffffff !important;
+
+    background-color: #ffffff !important;
+
+    color: #000000 !important;
+
+    border-color: #ffffff !important;
+}
+
+html.dark-mode .primary:hover,
+html.dark .primary:hover,
+body.dark-mode .primary:hover,
+body.dark .primary:hover,
+html.dark-mode .primary-btn:hover,
+html.dark .primary-btn:hover,
+body.dark-mode .primary-btn:hover,
+body.dark .primary-btn:hover {
+    background: #e5e7eb !important;
+
+    background-color: #e5e7eb !important;
+
+    color: #000000 !important;
+}
+
+
+/* =========================================================
+   DARK MODE — SECONDARY BUTTON
+   ========================================================= */
+
+html.dark-mode .secondary,
+html.dark .secondary,
+body.dark-mode .secondary,
+body.dark .secondary {
+    background: #334155;
+
+    color: #e2e8f0;
+
+    border-color: #475569;
+}
+
+html.dark-mode .secondary:hover,
+html.dark .secondary:hover,
+body.dark-mode .secondary:hover,
+body.dark .secondary:hover {
+    background: #475569;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   DARK MODE — FORM ELEMENTS
+   ========================================================= */
+
+html.dark-mode input,
+html.dark-mode select,
+html.dark-mode textarea,
+html.dark input,
+html.dark select,
+html.dark textarea,
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea,
+body.dark input,
+body.dark select,
+body.dark textarea {
+    background: #111827;
+
+    color: #e2e8f0;
+
+    border-color: #334155;
+}
+
+html.dark-mode input::placeholder,
+html.dark-mode textarea::placeholder,
+html.dark input::placeholder,
+html.dark textarea::placeholder,
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder,
+body.dark input::placeholder,
+body.dark textarea::placeholder {
+    color: #64748b;
+}
+
+html.dark-mode option,
+html.dark option,
+body.dark-mode option,
+body.dark option {
+    background: #111827;
+
+    color: #e2e8f0;
+}
+
+
+/* =========================================================
+   DARK MODE — SIDEBAR
+   ========================================================= */
+
+html.dark-mode .bugai-sidebar,
+html.dark .bugai-sidebar,
+body.dark-mode .bugai-sidebar,
+body.dark .bugai-sidebar {
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border-color: #1e293b;
+}
+
+html.dark-mode .sidebar-link,
+html.dark .sidebar-link,
+body.dark-mode .sidebar-link,
+body.dark .sidebar-link {
+    color: #cbd5e1;
+}
+
+html.dark-mode .sidebar-link:hover,
+html.dark .sidebar-link:hover,
+body.dark-mode .sidebar-link:hover,
+body.dark .sidebar-link:hover {
+    background: #1e293b;
+
+    color: #ffffff;
+}
+
+html.dark-mode .sidebar-link.active,
+html.dark .sidebar-link.active,
+body.dark-mode .sidebar-link.active,
+body.dark .sidebar-link.active {
+    background: #2563eb;
+
+    color: #ffffff;
 }
 
 
@@ -248,7 +1191,8 @@ textarea:focus {
     }
 
     .agent-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns:
+            repeat(3, 1fr);
     }
 }
 
@@ -259,9 +1203,36 @@ textarea:focus {
 
 @media (max-width: 900px) {
 
-    main {
-        padding: 80px 22px 30px;
+    .bugai-sidebar {
+        transform:
+            translateX(-100%);
+
+        transition:
+            transform 0.25s ease;
+
+        box-shadow:
+            10px 0 30px
+            rgba(0, 0, 0, 0.2);
     }
+
+    .bugai-sidebar.open {
+        transform:
+            translateX(0);
+    }
+
+    .sidebar-menu-button {
+        display: flex;
+    }
+
+    main {
+        margin-left: 0;
+
+        padding:
+            80px
+            22px
+            30px;
+    }
+
 }
 
 
@@ -274,4 +1245,59 @@ textarea:focus {
     .agent-grid {
         grid-template-columns: 1fr;
     }
+
+    .flow,
+    .rag-flow {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .flow b,
+    .rag-flow b {
+        text-align: center;
+    }
+
+    header h1 {
+        font-size: 30px;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    main {
+        padding:
+            70px
+            14px
+            35px;
+    }
+
+    .sidebar-menu-button {
+        top: 14px;
+        left: 14px;
+
+        width: 40px;
+        height: 40px;
+    }
+
+    header h1 {
+        font-size: 27px;
+    }
+
+    .card,
+    .information,
+    .recent,
+    .note,
+    .explanation,
+    .status,
+    .rag {
+        padding: 20px;
+    }
+
 }

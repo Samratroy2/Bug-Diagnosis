@@ -1,5 +1,3 @@
-"use strict";
-
 /* ============================================================
    BugAI - Bug Submission
    Milestone 3 + M4 compatible frontend
@@ -21,12 +19,21 @@ const ALLOWED_EXTENSIONS = [
    DOM ELEMENTS
    ============================================================ */
 
-const bugForm = document.getElementById("bugForm");
+const bugForm =
+    document.getElementById("bugForm");
 
-const bugTitle = document.getElementById("bugTitle");
-const project = document.getElementById("project");
-const description = document.getElementById("description");
-const stackTrace = document.getElementById("stackTrace");
+const bugTitle =
+    document.getElementById("bugTitle");
+
+const project =
+    document.getElementById("project");
+
+const description =
+    document.getElementById("description");
+
+const stackTrace =
+    document.getElementById("stackTrace");
+
 
 /*
  * Optional explicit triage fields.
@@ -34,6 +41,7 @@ const stackTrace = document.getElementById("stackTrace");
  * The frontend supports multiple possible IDs so that it works
  * with the existing BugAI HTML versions.
  */
+
 const severityField =
     document.getElementById("severity") ||
     document.getElementById("bugSeverity");
@@ -46,6 +54,7 @@ const componentField =
     document.getElementById("component") ||
     document.getElementById("affectedComponent") ||
     document.getElementById("bugComponent");
+
 
 const dropZone =
     document.getElementById("dropZone");
@@ -79,15 +88,17 @@ let selectedFile = null;
    INITIALIZATION
    ============================================================ */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    console.log(
-        "BugAI Milestone 3 Bug Submission JS ready."
-    );
+        console.log(
+            "BugAI Milestone 3 Bug Submission JS ready."
+        );
 
-    initializeFileUpload();
-
-});
+        initializeFileUpload();
+    }
+);
 
 
 /* ============================================================
@@ -112,11 +123,10 @@ function initializeFileUpload() {
                 handleFile(
                     logFile.files[0]
                 );
-
             }
-
         }
     );
+
 
     dropZone.addEventListener(
         "click",
@@ -129,9 +139,9 @@ function initializeFileUpload() {
             }
 
             logFile.click();
-
         }
     );
+
 
     dropZone.addEventListener(
         "dragover",
@@ -142,9 +152,9 @@ function initializeFileUpload() {
             dropZone.classList.add(
                 "drag-over"
             );
-
         }
     );
+
 
     dropZone.addEventListener(
         "dragleave",
@@ -153,9 +163,9 @@ function initializeFileUpload() {
             dropZone.classList.remove(
                 "drag-over"
             );
-
         }
     );
+
 
     dropZone.addEventListener(
         "drop",
@@ -178,12 +188,9 @@ function initializeFileUpload() {
                 handleFile(
                     files[0]
                 );
-
             }
-
         }
     );
-
 }
 
 
@@ -195,6 +202,7 @@ function handleFile(file) {
 
     const validation =
         validateFile(file);
+
 
     if (!validation.valid) {
 
@@ -211,7 +219,9 @@ function handleFile(file) {
         return;
     }
 
+
     selectedFile = file;
+
 
     const sizeMB =
         (
@@ -219,10 +229,10 @@ function handleFile(file) {
             (1024 * 1024)
         ).toFixed(2);
 
+
     if (fileInfo) {
 
         fileInfo.innerHTML = `
-
             <div class="file-success">
 
                 <strong>
@@ -241,15 +251,15 @@ function handleFile(file) {
                 </button>
 
             </div>
-
         `;
-
     }
+
 
     const removeButton =
         document.getElementById(
             "removeFile"
         );
+
 
     if (removeButton) {
 
@@ -257,9 +267,7 @@ function handleFile(file) {
             "click",
             removeFile
         );
-
     }
-
 }
 
 
@@ -275,17 +283,19 @@ function validateFile(file) {
             valid: false,
             message: "No file selected."
         };
-
     }
+
 
     const fileName =
         file.name || "";
+
 
     const extension =
         fileName
             .split(".")
             .pop()
             .toLowerCase();
+
 
     if (
         !ALLOWED_EXTENSIONS.includes(
@@ -298,8 +308,8 @@ function validateFile(file) {
             message:
                 "Invalid file type. Please upload TXT, LOG, JSON or CSV."
         };
-
     }
+
 
     if (
         file.size >
@@ -311,14 +321,13 @@ function validateFile(file) {
             message:
                 "File is too large. Maximum allowed size is 10 MB."
         };
-
     }
+
 
     return {
         valid: true,
         message: ""
     };
-
 }
 
 
@@ -330,14 +339,15 @@ function removeFile() {
 
     selectedFile = null;
 
+
     if (logFile) {
         logFile.value = "";
     }
 
+
     if (fileInfo) {
         fileInfo.innerHTML = "";
     }
-
 }
 
 
@@ -353,14 +363,17 @@ if (bugForm) {
 
             event.preventDefault();
 
+
             if (!validateForm()) {
                 return;
             }
+
 
             const originalButtonText =
                 submitButton
                     ? submitButton.textContent
                     : "Analyze Bug";
+
 
             if (submitButton) {
 
@@ -368,17 +381,18 @@ if (bugForm) {
 
                 submitButton.textContent =
                     "Analyzing...";
-
             }
 
+
             hideResult();
+
 
             try {
 
                 /*
-                 * IMPORTANT:
                  * Explicit triage fields are sent to Flask.
                  */
+
                 const bugData = {
 
                     title:
@@ -415,7 +429,6 @@ if (bugForm) {
                         componentField
                             ? componentField.value.trim()
                             : ""
-
                 };
 
 
@@ -429,6 +442,7 @@ if (bugForm) {
 
                         const fileText =
                             await selectedFile.text();
+
 
                         if (fileText.trim()) {
 
@@ -449,10 +463,9 @@ if (bugForm) {
                                     selectedFile.name +
                                     " ---\n\n" +
                                     fileText;
-
                             }
-
                         }
+
 
                     } catch (fileError) {
 
@@ -460,9 +473,7 @@ if (bugForm) {
                             "Unable to read attached file:",
                             fileError
                         );
-
                     }
-
                 }
 
 
@@ -480,7 +491,6 @@ if (bugForm) {
                     await fetch(
                         `${API_BASE_URL}/api/analyze`,
                         {
-
                             method: "POST",
 
                             headers: {
@@ -492,18 +502,20 @@ if (bugForm) {
                                 JSON.stringify(
                                     bugData
                                 )
-
                         }
                     );
 
 
                 /*
                  * Read response as text first.
+                 *
                  * This prevents:
                  * "Unexpected end of JSON input"
                  */
+
                 const responseText =
                     await response.text();
+
 
                 console.log(
                     "BugAI raw response:",
@@ -536,9 +548,7 @@ if (bugForm) {
                         throw new Error(
                             "Backend returned an invalid JSON response."
                         );
-
                     }
-
                 }
 
 
@@ -549,7 +559,6 @@ if (bugForm) {
                         data.message ||
                         `Server returned HTTP ${response.status}`
                     );
-
                 }
 
 
@@ -561,7 +570,6 @@ if (bugForm) {
                         data.error ||
                         "Bug analysis failed."
                     );
-
                 }
 
 
@@ -571,9 +579,64 @@ if (bugForm) {
                 );
 
 
-                displayAnalysis(
-                    data
-                );
+                displayAnalysis(data);
+
+
+                /* =================================================
+                   DASHBOARD UPDATE NOTIFICATION
+                   =================================================
+
+                   Notify Dashboard that a new analysis has been
+                   successfully completed.
+
+                   localStorage:
+                   - Works between different HTML pages/tabs.
+
+                   CustomEvent:
+                   - Supports same-document listeners.
+
+                   IMPORTANT:
+                   - This only refreshes Total Analyses and
+                     Recent Analyses.
+                   - It does NOT refresh Historical Defects.
+                   ================================================= */
+
+                try {
+
+                    const updateTime =
+                        String(Date.now());
+
+
+                    localStorage.setItem(
+                        "bugai-analysis-updated",
+                        updateTime
+                    );
+
+
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "bugai-analysis-updated",
+                            {
+                                detail: {
+                                    timestamp:
+                                        updateTime
+                                }
+                            }
+                        )
+                    );
+
+
+                    console.log(
+                        "✅ Dashboard refresh notification sent."
+                    );
+
+                } catch (storageError) {
+
+                    console.warn(
+                        "⚠️ Unable to notify Dashboard:",
+                        storageError
+                    );
+                }
 
 
             } catch (error) {
@@ -583,11 +646,11 @@ if (bugForm) {
                     error
                 );
 
+
                 showError(
                     error.message ||
                     "Unable to connect to the BugAI backend."
                 );
-
 
             } finally {
 
@@ -598,14 +661,10 @@ if (bugForm) {
 
                     submitButton.textContent =
                         originalButtonText;
-
                 }
-
             }
-
         }
     );
-
 }
 
 
@@ -620,10 +679,12 @@ function validateForm() {
             ? bugTitle.value.trim()
             : "";
 
+
     const desc =
         description
             ? description.value.trim()
             : "";
+
 
     if (!title) {
 
@@ -631,13 +692,15 @@ function validateForm() {
             "Please enter a bug title."
         );
 
+
         if (bugTitle) {
             bugTitle.focus();
         }
 
-        return false;
 
+        return false;
     }
+
 
     if (!desc) {
 
@@ -645,13 +708,15 @@ function validateForm() {
             "Please enter a bug description."
         );
 
+
         if (description) {
             description.focus();
         }
 
-        return false;
 
+        return false;
     }
+
 
     if (selectedFile) {
 
@@ -660,20 +725,20 @@ function validateForm() {
                 selectedFile
             );
 
+
         if (!validation.valid) {
 
             showFileError(
                 validation.message
             );
 
+
             return false;
-
         }
-
     }
 
-    return true;
 
+    return true;
 }
 
 
@@ -940,6 +1005,7 @@ function displayAnalysis(data) {
 
             </div>
 
+
             ${renderPatterns(
                 log.patterns
             )}
@@ -1064,6 +1130,7 @@ function displayAnalysis(data) {
 
             </div>
 
+
             ${renderSimilarDefects(
                 duplicate.matches
             )}
@@ -1080,6 +1147,7 @@ function displayAnalysis(data) {
             <h3>
                 Recommended Fix
             </h3>
+
 
             ${
                 remediation.status
@@ -1104,6 +1172,7 @@ function displayAnalysis(data) {
                     `
                     : ""
             }
+
 
             ${renderRecommendations(
                 remediation.recommendations
@@ -1145,10 +1214,7 @@ function displayAnalysis(data) {
         behavior: "smooth",
         block: "start"
     });
-
 }
-
-
 /* ============================================================
    SIMILAR DEFECTS
    ============================================================ */
@@ -1162,20 +1228,14 @@ function renderSimilarDefects(matches) {
     ) {
 
         return `
-
             <div class="empty-state">
-
                 No similar defects were retrieved.
-
             </div>
-
         `;
-
     }
 
 
     return `
-
         <div class="similar-defects">
 
             ${matches
@@ -1197,6 +1257,7 @@ function renderSimilarDefects(matches) {
                                     )}
 
                                 </strong>
+
 
                                 <span class="similarity">
 
@@ -1298,9 +1359,7 @@ function renderSimilarDefects(matches) {
                 .join("")}
 
         </div>
-
     `;
-
 }
 
 
@@ -1319,20 +1378,14 @@ function renderRecommendations(
     ) {
 
         return `
-
             <div class="empty-state">
-
                 No remediation recommendation available.
-
             </div>
-
         `;
-
     }
 
 
     return `
-
         <div class="recommendations">
 
             ${recommendations
@@ -1344,10 +1397,8 @@ function renderRecommendations(
                             <div class="recommendation-header">
 
                                 <span>
-
                                     Recommendation
                                     ${index + 1}
-
                                 </span>
 
                                 <strong>
@@ -1537,9 +1588,7 @@ function renderRecommendations(
                 .join("")}
 
         </div>
-
     `;
-
 }
 
 
@@ -1556,17 +1605,16 @@ function renderPatterns(patterns) {
     ) {
 
         return "";
-
     }
 
 
     return `
-
         <div class="patterns">
 
             <strong>
                 Detected Patterns
             </strong>
+
 
             <div class="pattern-list">
 
@@ -1589,9 +1637,7 @@ function renderPatterns(patterns) {
             </div>
 
         </div>
-
     `;
-
 }
 
 
@@ -1616,7 +1662,8 @@ function renderPatterns(patterns) {
  *
  * Desired UI:
  *
- *     DatabaseConnection.connect() → DatabaseConnection.java:32
+ *     DatabaseConnection.connect()
+ *     → DatabaseConnection.java:32
  */
 
 function simplifyClassName(className) {
@@ -1625,8 +1672,10 @@ function simplifyClassName(className) {
         return "";
     }
 
+
     const value =
         String(className).trim();
+
 
     return (
         value
@@ -1635,7 +1684,6 @@ function simplifyClassName(className) {
             .pop() ||
         value
     );
-
 }
 
 
@@ -1647,6 +1695,7 @@ function formatFailurePoint(
         return "Not detected";
     }
 
+
     if (
         typeof failurePoint !== "object"
     ) {
@@ -1654,31 +1703,36 @@ function formatFailurePoint(
         return escapeHtml(
             String(failurePoint)
         );
-
     }
+
 
     const file =
         failurePoint.file || "";
+
 
     const line =
         failurePoint.line
             ? `:${failurePoint.line}`
             : "";
 
+
     const method =
         String(
             failurePoint.method || ""
         )
-        .trim()
-        .replace(/\s+/g, "");
+            .trim()
+            .replace(/\s+/g, "");
+
 
     const className =
         simplifyClassName(
             failurePoint.class || ""
         );
 
+
     const location =
         `${file}${line}`;
+
 
     let output = "";
 
@@ -1714,14 +1768,12 @@ function formatFailurePoint(
 
         output =
             className;
-
     }
 
 
     return output
         ? escapeHtml(output)
         : "Not detected";
-
 }
 
 
@@ -1738,11 +1790,12 @@ function formatConfidence(value) {
     ) {
 
         return "N/A";
-
     }
+
 
     const number =
         Number(value);
+
 
     if (
         Number.isNaN(number)
@@ -1751,8 +1804,8 @@ function formatConfidence(value) {
         return escapeHtml(
             String(value)
         );
-
     }
+
 
     /*
      * Backend normally returns:
@@ -1773,11 +1826,10 @@ function formatConfidence(value) {
         return `${(
             number * 100
         ).toFixed(1)}%`;
-
     }
 
-    return `${number.toFixed(1)}%`;
 
+    return `${number.toFixed(1)}%`;
 }
 
 
@@ -1794,40 +1846,40 @@ function getSeverityClass(
             severity || ""
         ).toLowerCase();
 
+
     if (
         value.includes("critical")
     ) {
 
         return "severity-critical";
-
     }
+
 
     if (
         value.includes("high")
     ) {
 
         return "severity-high";
-
     }
+
 
     if (
         value.includes("medium")
     ) {
 
         return "severity-medium";
-
     }
+
 
     if (
         value.includes("low")
     ) {
 
         return "severity-low";
-
     }
 
-    return "";
 
+    return "";
 }
 
 
@@ -1845,25 +1897,28 @@ if (resetBtn) {
                 bugForm.reset();
             }
 
+
             selectedFile = null;
+
 
             if (fileInfo) {
                 fileInfo.innerHTML = "";
             }
 
+
             if (logFile) {
                 logFile.value = "";
             }
 
+
             hideResult();
+
 
             if (bugTitle) {
                 bugTitle.focus();
             }
-
         }
     );
-
 }
 
 
@@ -1877,12 +1932,13 @@ function hideResult() {
         return;
     }
 
+
     result.classList.add(
         "hidden"
     );
 
-    result.innerHTML = "";
 
+    result.innerHTML = "";
 }
 
 
@@ -1896,9 +1952,11 @@ function showError(message) {
         return;
     }
 
+
     result.classList.remove(
         "hidden"
     );
+
 
     result.innerHTML = `
 
@@ -1908,6 +1966,7 @@ function showError(message) {
                 Analysis Failed
             </h3>
 
+
             <p>
 
                 ${escapeHtml(
@@ -1916,11 +1975,13 @@ function showError(message) {
 
             </p>
 
+
             <div class="error-help">
 
                 <strong>
                     Check:
                 </strong>
+
 
                 <ul>
 
@@ -1950,11 +2011,11 @@ function showError(message) {
 
     `;
 
+
     result.scrollIntoView({
         behavior: "smooth",
         block: "start"
     });
-
 }
 
 
@@ -1968,6 +2029,7 @@ function showFileError(message) {
         return;
     }
 
+
     fileInfo.innerHTML = `
 
         <div class="file-error">
@@ -1977,7 +2039,6 @@ function showFileError(message) {
         </div>
 
     `;
-
 }
 
 
@@ -1995,14 +2056,15 @@ function truncate(
             text || ""
         );
 
+
     if (
         value.length <=
         maxLength
     ) {
 
         return value;
-
     }
+
 
     return (
         value.substring(
@@ -2010,7 +2072,6 @@ function truncate(
             maxLength
         ) + "..."
     );
-
 }
 
 
@@ -2043,7 +2104,6 @@ function escapeHtml(value) {
             /'/g,
             "&#039;"
         );
-
 }
 
 

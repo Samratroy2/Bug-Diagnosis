@@ -1,30 +1,337 @@
 /* =========================================================
    BUGAI SETTINGS PAGE
-   Page-specific styles only
-   Sidebar is controlled by sidebar.css
-========================================================= */
+   Common BugAI visual system
+   Self-contained sidebar
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #f5f7fb;
+    color: #102a43;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    line-height: 1.55;
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
+}
+
+
+/* =========================================================
+   BUGAI SIDEBAR
+   ========================================================= */
+
+.bugai-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #0f172a;
+    color: #ffffff;
+
+    border-right: 1px solid #1e293b;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SIDEBAR BRAND
+   ========================================================= */
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 22px 18px;
+
+    border-bottom: 1px solid #1e293b;
+
+    flex-shrink: 0;
+}
+
+.brand-logo {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.brand-name {
+    color: #ffffff;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   SIDEBAR NAVIGATION
+   ========================================================= */
+
+.sidebar-navigation {
+    flex: 1;
+
+    padding: 16px 12px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.navigation-label {
+    margin: 14px 10px 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.12em;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    width: 100%;
+    min-height: 42px;
+
+    margin-bottom: 4px;
+
+    padding: 10px 12px;
+
+    border-radius: 8px;
+
+    color: #cbd5e1;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sidebar-link:hover {
+    background: #1e293b;
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+}
+
+.sidebar-link.active {
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+.nav-icon {
+    width: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    font-size: 16px;
+}
+
+.nav-text {
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SIDEBAR FOOTER
+   ========================================================= */
+
+.sidebar-footer {
+    padding: 16px;
+
+    border-top: 1px solid #1e293b;
+
+    flex-shrink: 0;
+}
+
+.sidebar-status {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: #cbd5e1;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow:
+        0 0 0 3px rgba(34, 197, 94, 0.12);
+}
+
+.status-text {
+    white-space: nowrap;
+}
+
+.sidebar-version {
+    margin-top: 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   MOBILE SIDEBAR BUTTON
+   ========================================================= */
+
+.sidebar-menu-button {
+    display: none;
+
+    position: fixed;
+
+    top: 16px;
+    left: 16px;
+
+    z-index: 1100;
+
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+
+    border-radius: 10px;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    border: 1px solid #1e293b;
+
+    font-size: 21px;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 16px rgba(15, 23, 42, 0.2);
+}
+
+.sidebar-menu-button:hover {
+    background: #1e293b;
+}
+
+
+/* =========================================================
+   SIDEBAR OVERLAY
+   ========================================================= */
+
+.sidebar-overlay {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 900;
+
+    background:
+        rgba(15, 23, 42, 0.55);
+
+    backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.show {
+    display: block;
+}
 
 
 /* =========================================================
    SETTINGS PAGE
-========================================================= */
+   ========================================================= */
 
 .settings-page {
+    margin-left: 250px;
+
     min-height: 100vh;
 
     padding: 42px 56px 60px;
 
     background: #f5f7fb;
+
     color: #102a43;
 }
 
 
 /* =========================================================
-   HEADER
-========================================================= */
+   SETTINGS HEADER
+   ========================================================= */
 
 .settings-header {
     width: 100%;
+
     max-width: 1650px;
 
     margin: 0 auto 30px;
@@ -33,43 +340,46 @@
 .page-label {
     display: inline-block;
 
+    margin-bottom: 9px;
+
+    color: #2563eb;
+
     font-size: 11px;
     font-weight: 800;
 
     letter-spacing: 1.4px;
-
-    color: #2563eb;
-
-    margin-bottom: 9px;
 }
 
 .settings-header h1 {
     margin: 0 0 8px;
 
-    font-size: 32px;
-    line-height: 1.2;
-
     color: #0f2747;
+
+    font-size: 32px;
+
+    line-height: 1.2;
 }
 
 .settings-header p {
-    margin: 0;
+    max-width: 700px;
 
-    font-size: 15px;
-    line-height: 1.7;
+    margin: 0;
 
     color: #64748b;
 
-    max-width: 700px;
+    font-size: 15px;
+
+    line-height: 1.7;
 }
 
 
 /* =========================================================
    SETTINGS CONTAINER
-========================================================= */
+   ========================================================= */
 
 .settings-container {
     width: 100%;
+
     max-width: 1650px;
 
     margin: 0 auto;
@@ -83,10 +393,12 @@
 
 /* =========================================================
    SETTINGS CARD
-========================================================= */
+   ========================================================= */
 
 .settings-card {
     width: 100%;
+
+    padding: 26px 28px;
 
     background: #ffffff;
 
@@ -94,20 +406,22 @@
 
     border-radius: 16px;
 
-    padding: 26px 28px;
-
     box-shadow:
         0 4px 16px rgba(15, 23, 42, 0.04);
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
 }
 
 
 /* =========================================================
-   CARD HEADER
-========================================================= */
+   SETTINGS CARD HEADER
+   ========================================================= */
 
 .settings-card-header {
     display: flex;
-
     align-items: center;
 
     gap: 15px;
@@ -120,9 +434,10 @@
     height: 44px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
+
+    flex-shrink: 0;
 
     border-radius: 12px;
 
@@ -134,29 +449,29 @@
 .settings-card-header h2 {
     margin: 0 0 4px;
 
-    font-size: 18px;
-
     color: #0f2747;
+
+    font-size: 18px;
 }
 
 .settings-card-header p {
     margin: 0;
 
-    font-size: 13px;
-
     color: #64748b;
+
+    font-size: 13px;
 }
 
 
 /* =========================================================
    APPEARANCE OPTIONS
-========================================================= */
+   ========================================================= */
 
 .appearance-options {
     display: grid;
 
     grid-template-columns:
-        repeat(3, 1fr);
+        repeat(3, minmax(0, 1fr));
 
     gap: 14px;
 }
@@ -165,73 +480,87 @@
     position: relative;
 
     display: flex;
-
     align-items: center;
 
     gap: 12px;
 
-    text-align: left;
+    width: 100%;
 
     padding: 17px;
 
+    text-align: left;
+
     border: 1px solid #e2e8f0;
+
+    border-radius: 12px;
 
     background: #ffffff;
 
-    border-radius: 12px;
+    color: #172b4d;
 
     cursor: pointer;
 
     transition:
         border-color 0.2s ease,
         background 0.2s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .appearance-option:hover {
     border-color: #93c5fd;
 
     transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 15px rgba(15, 23, 42, 0.05);
 }
 
 .appearance-option.selected {
     border-color: #2563eb;
 
     background: #eff6ff;
+
+    box-shadow:
+        0 0 0 1px rgba(37, 99, 235, 0.08);
 }
 
 .appearance-icon {
+    flex-shrink: 0;
+
     font-size: 21px;
 }
 
 .appearance-option strong {
     display: block;
 
-    font-size: 14px;
+    margin-bottom: 3px;
 
     color: #172b4d;
 
-    margin-bottom: 3px;
+    font-size: 14px;
 }
 
 .appearance-option small {
     display: block;
 
-    font-size: 11px;
-
     color: #64748b;
+
+    font-size: 11px;
 }
 
 .theme-check {
     display: none;
 
-    margin-left: auto;
-
     width: 21px;
     height: 21px;
 
+    margin-left: auto;
+
     align-items: center;
     justify-content: center;
+
+    flex-shrink: 0;
 
     border-radius: 50%;
 
@@ -250,11 +579,10 @@
 
 /* =========================================================
    SETTING ROW
-========================================================= */
+   ========================================================= */
 
 .setting-row {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
 
@@ -265,45 +593,44 @@
 
 .setting-description {
     display: flex;
-
     flex-direction: column;
 
     gap: 5px;
 }
 
 .setting-description strong {
-    font-size: 14px;
-
     color: #172b4d;
+
+    font-size: 14px;
 }
 
 .setting-description span {
-    font-size: 12px;
-
-    line-height: 1.5;
+    max-width: 650px;
 
     color: #64748b;
 
-    max-width: 650px;
+    font-size: 12px;
+
+    line-height: 1.5;
 }
 
 
 /* =========================================================
    DIVIDER
-========================================================= */
+   ========================================================= */
 
 .setting-divider {
     height: 1px;
 
-    background: #e2e8f0;
-
     margin: 18px 0;
+
+    background: #e2e8f0;
 }
 
 
 /* =========================================================
-   TOGGLE
-========================================================= */
+   TOGGLE SWITCH
+   ========================================================= */
 
 .switch {
     position: relative;
@@ -317,10 +644,10 @@
 }
 
 .switch input {
-    opacity: 0;
-
     width: 0;
     height: 0;
+
+    opacity: 0;
 }
 
 .slider {
@@ -368,8 +695,8 @@
 
 
 /* =========================================================
-   SELECT
-========================================================= */
+   ANALYSIS MODE SELECT
+   ========================================================= */
 
 #analysisMode {
     min-width: 150px;
@@ -384,11 +711,19 @@
 
     color: #172b4d;
 
+    font-family: inherit;
+
     font-size: 13px;
 
     cursor: pointer;
 
     outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
 #analysisMode:focus {
@@ -400,8 +735,8 @@
 
 
 /* =========================================================
-   DANGER CARD
-========================================================= */
+   DANGER / RESET CARD
+   ========================================================= */
 
 .danger-card {
     display: flex;
@@ -413,92 +748,124 @@
 
     padding: 24px 28px;
 
+    background: #fffafa;
+
     border: 1px solid #fecaca;
 
     border-radius: 16px;
 
-    background: #fffafa;
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease;
 }
 
 .danger-card h2 {
     margin: 0 0 5px;
 
-    font-size: 16px;
-
     color: #991b1b;
+
+    font-size: 16px;
 }
 
 .danger-card p {
     margin: 0;
 
-    font-size: 12px;
-
     color: #7f1d1d;
+
+    font-size: 12px;
 }
 
 .reset-button {
+    padding: 10px 17px;
+
     border: 1px solid #dc2626;
+
+    border-radius: 9px;
 
     background: #ffffff;
 
     color: #dc2626;
 
-    padding: 10px 17px;
-
-    border-radius: 9px;
+    font-family: inherit;
 
     font-size: 12px;
-
     font-weight: 700;
 
     cursor: pointer;
 
     transition:
         background 0.2s ease,
-        color 0.2s ease;
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
 .reset-button:hover {
     background: #dc2626;
 
     color: #ffffff;
+
+    transform: translateY(-1px);
 }
 
 
 /* =========================================================
    SAVE STATUS
-========================================================= */
+   ========================================================= */
 
 .save-status {
-    text-align: center;
+    padding-top: 4px;
 
-    font-size: 12px;
+    text-align: center;
 
     color: #64748b;
 
-    padding-top: 4px;
+    font-size: 12px;
 }
 
 
 /* =========================================================
    DARK MODE
-========================================================= */
+   ========================================================= */
 
-body.dark-mode .settings-page {
+html.dark-mode body,
+html.dark body,
+body.dark-mode,
+body.dark {
     background: #0f172a;
 
     color: #e2e8f0;
 }
 
-body.dark-mode .settings-header h1 {
+html.dark-mode .settings-page,
+html.dark .settings-page,
+body.dark-mode .settings-page,
+body.dark .settings-page {
+    background: #0f172a;
+
+    color: #e2e8f0;
+}
+
+html.dark-mode .settings-header h1,
+html.dark .settings-header h1,
+body.dark-mode .settings-header h1,
+body.dark .settings-header h1 {
     color: #f8fafc;
 }
 
-body.dark-mode .settings-header p {
+html.dark-mode .settings-header p,
+html.dark .settings-header p,
+body.dark-mode .settings-header p,
+body.dark .settings-header p {
     color: #94a3b8;
 }
 
-body.dark-mode .settings-card {
+
+/* Cards */
+
+html.dark-mode .settings-card,
+html.dark .settings-card,
+body.dark-mode .settings-card,
+body.dark .settings-card {
     background: #1e293b;
 
     border-color: #334155;
@@ -506,55 +873,111 @@ body.dark-mode .settings-card {
     box-shadow: none;
 }
 
-body.dark-mode .settings-card-header h2 {
+
+/* Card headings */
+
+html.dark-mode .settings-card-header h2,
+html.dark .settings-card-header h2,
+body.dark-mode .settings-card-header h2,
+body.dark .settings-card-header h2 {
     color: #f8fafc;
 }
 
-body.dark-mode .settings-card-header p {
+html.dark-mode .settings-card-header p,
+html.dark .settings-card-header p,
+body.dark-mode .settings-card-header p,
+body.dark .settings-card-header p {
     color: #94a3b8;
 }
 
-body.dark-mode .settings-card-icon {
+
+/* Icons */
+
+html.dark-mode .settings-card-icon,
+html.dark .settings-card-icon,
+body.dark-mode .settings-card-icon,
+body.dark .settings-card-icon {
     background: #263b59;
 }
 
-body.dark-mode .appearance-option {
+
+/* Appearance */
+
+html.dark-mode .appearance-option,
+html.dark .appearance-option,
+body.dark-mode .appearance-option,
+body.dark .appearance-option {
     background: #172033;
 
     border-color: #334155;
+
+    color: #f1f5f9;
 }
 
-body.dark-mode .appearance-option:hover {
+html.dark-mode .appearance-option:hover,
+html.dark .appearance-option:hover,
+body.dark-mode .appearance-option:hover,
+body.dark .appearance-option:hover {
     border-color: #64748b;
 }
 
-body.dark-mode .appearance-option.selected {
+html.dark-mode .appearance-option.selected,
+html.dark .appearance-option.selected,
+body.dark-mode .appearance-option.selected,
+body.dark .appearance-option.selected {
     background: #172f52;
 
     border-color: #3b82f6;
 }
 
-body.dark-mode .appearance-option strong {
+html.dark-mode .appearance-option strong,
+html.dark .appearance-option strong,
+body.dark-mode .appearance-option strong,
+body.dark .appearance-option strong {
     color: #f1f5f9;
 }
 
-body.dark-mode .appearance-option small {
+html.dark-mode .appearance-option small,
+html.dark .appearance-option small,
+body.dark-mode .appearance-option small,
+body.dark .appearance-option small {
     color: #94a3b8;
 }
 
-body.dark-mode .setting-description strong {
+
+/* Setting descriptions */
+
+html.dark-mode .setting-description strong,
+html.dark .setting-description strong,
+body.dark-mode .setting-description strong,
+body.dark .setting-description strong {
     color: #f1f5f9;
 }
 
-body.dark-mode .setting-description span {
+html.dark-mode .setting-description span,
+html.dark .setting-description span,
+body.dark-mode .setting-description span,
+body.dark .setting-description span {
     color: #94a3b8;
 }
 
-body.dark-mode .setting-divider {
+
+/* Divider */
+
+html.dark-mode .setting-divider,
+html.dark .setting-divider,
+body.dark-mode .setting-divider,
+body.dark .setting-divider {
     background: #334155;
 }
 
-body.dark-mode #analysisMode {
+
+/* Select */
+
+html.dark-mode #analysisMode,
+html.dark #analysisMode,
+body.dark-mode #analysisMode,
+body.dark #analysisMode {
     background: #0f172a;
 
     color: #f8fafc;
@@ -562,21 +985,36 @@ body.dark-mode #analysisMode {
     border-color: #475569;
 }
 
-body.dark-mode .danger-card {
+
+/* Danger */
+
+html.dark-mode .danger-card,
+html.dark .danger-card,
+body.dark-mode .danger-card,
+body.dark .danger-card {
     background: #241416;
 
     border-color: #7f1d1d;
 }
 
-body.dark-mode .danger-card h2 {
+html.dark-mode .danger-card h2,
+html.dark .danger-card h2,
+body.dark-mode .danger-card h2,
+body.dark .danger-card h2 {
     color: #fca5a5;
 }
 
-body.dark-mode .danger-card p {
+html.dark-mode .danger-card p,
+html.dark .danger-card p,
+body.dark-mode .danger-card p,
+body.dark .danger-card p {
     color: #fca5a5;
 }
 
-body.dark-mode .reset-button {
+html.dark-mode .reset-button,
+html.dark .reset-button,
+body.dark-mode .reset-button,
+body.dark .reset-button {
     background: #1e293b;
 
     color: #fca5a5;
@@ -584,25 +1022,37 @@ body.dark-mode .reset-button {
     border-color: #ef4444;
 }
 
-body.dark-mode .reset-button:hover {
+html.dark-mode .reset-button:hover,
+html.dark .reset-button:hover,
+body.dark-mode .reset-button:hover,
+body.dark .reset-button:hover {
     background: #dc2626;
 
     color: #ffffff;
 }
 
-body.dark-mode .save-status {
+
+/* Save status */
+
+html.dark-mode .save-status,
+html.dark .save-status,
+body.dark-mode .save-status,
+body.dark .save-status {
     color: #94a3b8;
 }
 
 
 /* =========================================================
-   RESPONSIVE
-========================================================= */
+   RESPONSIVE — TABLET
+   ========================================================= */
 
 @media (max-width: 1200px) {
 
     .settings-page {
-        padding: 42px 38px 55px;
+        padding:
+            42px
+            38px
+            55px;
     }
 
     .settings-header,
@@ -612,10 +1062,39 @@ body.dark-mode .save-status {
 }
 
 
+/* =========================================================
+   RESPONSIVE — MOBILE SIDEBAR
+   ========================================================= */
+
 @media (max-width: 900px) {
 
+    .bugai-sidebar {
+        transform:
+            translateX(-100%);
+
+        transition:
+            transform 0.25s ease;
+
+        box-shadow:
+            10px 0 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .bugai-sidebar.open {
+        transform:
+            translateX(0);
+    }
+
+    .sidebar-menu-button {
+        display: flex;
+    }
+
     .settings-page {
-        padding: 80px 22px 50px;
+        margin-left: 0;
+
+        padding:
+            80px
+            22px
+            50px;
     }
 
     .appearance-options {
@@ -624,31 +1103,102 @@ body.dark-mode .save-status {
 }
 
 
+/* =========================================================
+   RESPONSIVE — SMALL MOBILE
+   ========================================================= */
+
 @media (max-width: 600px) {
 
     .settings-page {
-        padding: 75px 15px 40px;
+        padding:
+            75px
+            15px
+            40px;
     }
 
     .settings-header h1 {
         font-size: 27px;
     }
 
+    .settings-header p {
+        font-size: 14px;
+    }
+
     .settings-card {
-        padding: 21px 18px;
+        padding:
+            21px
+            18px;
+    }
+
+    .settings-card-header {
+        gap: 12px;
+    }
+
+    .settings-card-icon {
+        width: 42px;
+        height: 42px;
+
+        font-size: 19px;
     }
 
     .setting-row {
         align-items: flex-start;
     }
 
+    .setting-description {
+        max-width: calc(100% - 60px);
+    }
+
+    .setting-description span {
+        max-width: 100%;
+    }
+
     .danger-card {
         flex-direction: column;
 
         align-items: flex-start;
+
+        padding:
+            21px
+            18px;
     }
 
     .reset-button {
         width: 100%;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .sidebar-menu-button {
+        top: 14px;
+        left: 14px;
+
+        width: 40px;
+        height: 40px;
+    }
+
+    .settings-page {
+        padding:
+            70px
+            14px
+            35px;
+    }
+
+    .settings-header h1 {
+        font-size: 25px;
+    }
+
+    .settings-card-header h2 {
+        font-size: 17px;
+    }
+
+    .appearance-option {
+        padding: 15px;
     }
 }
