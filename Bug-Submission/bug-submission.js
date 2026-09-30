@@ -1,17 +1,13 @@
-// ============================================================
-// BugAI - Bug Submission
-// Milestone 3
-// ============================================================
-
 "use strict";
 
-// ============================================================
-// CONFIGURATION
-// ============================================================
+/* ============================================================
+   BugAI - Bug Submission
+   Milestone 3 + M4 compatible frontend
+   ============================================================ */
 
 const API_BASE_URL = "http://127.0.0.1:5000";
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 const ALLOWED_EXTENSIONS = [
     "txt",
@@ -21,9 +17,9 @@ const ALLOWED_EXTENSIONS = [
 ];
 
 
-// ============================================================
-// DOM ELEMENTS
-// ============================================================
+/* ============================================================
+   DOM ELEMENTS
+   ============================================================ */
 
 const bugForm = document.getElementById("bugForm");
 
@@ -32,13 +28,39 @@ const project = document.getElementById("project");
 const description = document.getElementById("description");
 const stackTrace = document.getElementById("stackTrace");
 
-const dropZone = document.getElementById("dropZone");
-const logFile = document.getElementById("logFile");
-const fileInfo = document.getElementById("fileInfo");
+/*
+ * Optional explicit triage fields.
+ *
+ * The frontend supports multiple possible IDs so that it works
+ * with the existing BugAI HTML versions.
+ */
+const severityField =
+    document.getElementById("severity") ||
+    document.getElementById("bugSeverity");
 
-const resetBtn = document.getElementById("resetBtn");
+const priorityField =
+    document.getElementById("priority") ||
+    document.getElementById("bugPriority");
 
-const result = document.getElementById("result");
+const componentField =
+    document.getElementById("component") ||
+    document.getElementById("affectedComponent") ||
+    document.getElementById("bugComponent");
+
+const dropZone =
+    document.getElementById("dropZone");
+
+const logFile =
+    document.getElementById("logFile");
+
+const fileInfo =
+    document.getElementById("fileInfo");
+
+const resetBtn =
+    document.getElementById("resetBtn");
+
+const result =
+    document.getElementById("result");
 
 const submitButton =
     bugForm
@@ -46,16 +68,16 @@ const submitButton =
         : null;
 
 
-// ============================================================
-// STATE
-// ============================================================
+/* ============================================================
+   STATE
+   ============================================================ */
 
 let selectedFile = null;
 
 
-// ============================================================
-// INITIALIZATION
-// ============================================================
+/* ============================================================
+   INITIALIZATION
+   ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -68,20 +90,15 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// ============================================================
-// FILE UPLOAD INITIALIZATION
-// ============================================================
+/* ============================================================
+   FILE UPLOAD
+   ============================================================ */
 
 function initializeFileUpload() {
 
     if (!dropZone || !logFile) {
         return;
     }
-
-
-    // --------------------------------------------
-    // File input
-    // --------------------------------------------
 
     logFile.addEventListener(
         "change",
@@ -101,11 +118,6 @@ function initializeFileUpload() {
         }
     );
 
-
-    // --------------------------------------------
-    // Click drop zone
-    // --------------------------------------------
-
     dropZone.addEventListener(
         "click",
         (event) => {
@@ -121,11 +133,6 @@ function initializeFileUpload() {
         }
     );
 
-
-    // --------------------------------------------
-    // Drag over
-    // --------------------------------------------
-
     dropZone.addEventListener(
         "dragover",
         (event) => {
@@ -139,11 +146,6 @@ function initializeFileUpload() {
         }
     );
 
-
-    // --------------------------------------------
-    // Drag leave
-    // --------------------------------------------
-
     dropZone.addEventListener(
         "dragleave",
         () => {
@@ -155,11 +157,6 @@ function initializeFileUpload() {
         }
     );
 
-
-    // --------------------------------------------
-    // Drop
-    // --------------------------------------------
-
     dropZone.addEventListener(
         "drop",
         (event) => {
@@ -170,10 +167,8 @@ function initializeFileUpload() {
                 "drag-over"
             );
 
-
             const files =
                 event.dataTransfer.files;
-
 
             if (
                 files &&
@@ -192,33 +187,31 @@ function initializeFileUpload() {
 }
 
 
-// ============================================================
-// HANDLE FILE
-// ============================================================
+/* ============================================================
+   HANDLE FILE
+   ============================================================ */
 
 function handleFile(file) {
 
     const validation =
         validateFile(file);
 
-
     if (!validation.valid) {
 
         selectedFile = null;
 
-        logFile.value = "";
+        if (logFile) {
+            logFile.value = "";
+        }
 
         showFileError(
             validation.message
         );
 
         return;
-
     }
 
-
     selectedFile = file;
-
 
     const sizeMB =
         (
@@ -226,36 +219,37 @@ function handleFile(file) {
             (1024 * 1024)
         ).toFixed(2);
 
+    if (fileInfo) {
 
-    fileInfo.innerHTML = `
+        fileInfo.innerHTML = `
 
-        <div class="file-success">
+            <div class="file-success">
 
-            <strong>
-                ✓ ${escapeHtml(file.name)}
-            </strong>
+                <strong>
+                    ✓ ${escapeHtml(file.name)}
+                </strong>
 
-            <span>
-                ${sizeMB} MB
-            </span>
+                <span>
+                    ${sizeMB} MB
+                </span>
 
-            <button
-                type="button"
-                id="removeFile"
-            >
-                Remove
-            </button>
+                <button
+                    type="button"
+                    id="removeFile"
+                >
+                    Remove
+                </button>
 
-        </div>
+            </div>
 
-    `;
+        `;
 
+    }
 
     const removeButton =
         document.getElementById(
             "removeFile"
         );
-
 
     if (removeButton) {
 
@@ -269,9 +263,9 @@ function handleFile(file) {
 }
 
 
-// ============================================================
-// VALIDATE FILE
-// ============================================================
+/* ============================================================
+   VALIDATE FILE
+   ============================================================ */
 
 function validateFile(file) {
 
@@ -284,17 +278,14 @@ function validateFile(file) {
 
     }
 
-
     const fileName =
         file.name || "";
-
 
     const extension =
         fileName
             .split(".")
             .pop()
             .toLowerCase();
-
 
     if (
         !ALLOWED_EXTENSIONS.includes(
@@ -310,7 +301,6 @@ function validateFile(file) {
 
     }
 
-
     if (
         file.size >
         MAX_FILE_SIZE
@@ -324,7 +314,6 @@ function validateFile(file) {
 
     }
 
-
     return {
         valid: true,
         message: ""
@@ -333,9 +322,9 @@ function validateFile(file) {
 }
 
 
-// ============================================================
-// REMOVE FILE
-// ============================================================
+/* ============================================================
+   REMOVE FILE
+   ============================================================ */
 
 function removeFile() {
 
@@ -352,9 +341,9 @@ function removeFile() {
 }
 
 
-// ============================================================
-// FORM SUBMISSION
-// ============================================================
+/* ============================================================
+   FORM SUBMISSION
+   ============================================================ */
 
 if (bugForm) {
 
@@ -364,29 +353,14 @@ if (bugForm) {
 
             event.preventDefault();
 
-
-            // --------------------------------------------
-            // Validate
-            // --------------------------------------------
-
             if (!validateForm()) {
                 return;
             }
-
-
-            // --------------------------------------------
-            // Save original button text
-            // --------------------------------------------
 
             const originalButtonText =
                 submitButton
                     ? submitButton.textContent
                     : "Analyze Bug";
-
-
-            // --------------------------------------------
-            // Loading state
-            // --------------------------------------------
 
             if (submitButton) {
 
@@ -397,40 +371,57 @@ if (bugForm) {
 
             }
 
-
             hideResult();
-
 
             try {
 
-                // ====================================================
-                // CREATE BUG DATA
-                // ====================================================
-
+                /*
+                 * IMPORTANT:
+                 * Explicit triage fields are sent to Flask.
+                 */
                 const bugData = {
 
                     title:
-                        bugTitle.value.trim(),
+                        bugTitle
+                            ? bugTitle.value.trim()
+                            : "",
 
                     project:
-                        project.value,
+                        project
+                            ? project.value
+                            : "",
 
                     description:
-                        description.value.trim(),
+                        description
+                            ? description.value.trim()
+                            : "",
 
                     stack_trace:
-                        stackTrace.value.trim()
+                        stackTrace
+                            ? stackTrace.value.trim()
+                            : "",
+
+                    severity:
+                        severityField
+                            ? severityField.value.trim()
+                            : "",
+
+                    priority:
+                        priorityField
+                            ? priorityField.value.trim()
+                            : "",
+
+                    component:
+                        componentField
+                            ? componentField.value.trim()
+                            : ""
 
                 };
 
 
-                // ====================================================
-                // IF A FILE IS SELECTED
-                //
-                // The current backend accepts JSON and analyzes
-                // stack_trace. Therefore we read the selected file
-                // in the browser and append its text to stack_trace.
-                // ====================================================
+                /* ------------------------------------------------
+                   ATTACHED FILE
+                   ------------------------------------------------ */
 
                 if (selectedFile) {
 
@@ -438,7 +429,6 @@ if (bugForm) {
 
                         const fileText =
                             await selectedFile.text();
-
 
                         if (fileText.trim()) {
 
@@ -476,23 +466,15 @@ if (bugForm) {
                 }
 
 
-                // ====================================================
-                // DEBUG LOG
-                //
-                // IMPORTANT:
-                // bugData exists ONLY inside this submit function.
-                // There is NO bugData reference outside this scope.
-                // ====================================================
-
                 console.log(
                     "Sending bug to BugAI:",
                     bugData
                 );
 
 
-                // ====================================================
-                // API REQUEST
-                // ====================================================
+                /* ------------------------------------------------
+                   API REQUEST
+                   ------------------------------------------------ */
 
                 const response =
                     await fetch(
@@ -515,23 +497,19 @@ if (bugForm) {
                     );
 
 
-                // ====================================================
-                // READ RESPONSE AS TEXT FIRST
-                // ====================================================
-
+                /*
+                 * Read response as text first.
+                 * This prevents:
+                 * "Unexpected end of JSON input"
+                 */
                 const responseText =
                     await response.text();
-
 
                 console.log(
                     "BugAI raw response:",
                     responseText
                 );
 
-
-                // ====================================================
-                // PARSE JSON
-                // ====================================================
 
                 let data = {};
 
@@ -564,10 +542,6 @@ if (bugForm) {
                 }
 
 
-                // ====================================================
-                // HTTP ERROR
-                // ====================================================
-
                 if (!response.ok) {
 
                     throw new Error(
@@ -578,10 +552,6 @@ if (bugForm) {
 
                 }
 
-
-                // ====================================================
-                // BACKEND ERROR
-                // ====================================================
 
                 if (
                     data.ok === false
@@ -594,10 +564,6 @@ if (bugForm) {
 
                 }
 
-
-                // ====================================================
-                // SUCCESS
-                // ====================================================
 
                 console.log(
                     "BugAI analysis completed:",
@@ -612,15 +578,10 @@ if (bugForm) {
 
             } catch (error) {
 
-                // ====================================================
-                // ERROR
-                // ====================================================
-
                 console.error(
                     "BugAI analysis error:",
                     error
                 );
-
 
                 showError(
                     error.message ||
@@ -629,10 +590,6 @@ if (bugForm) {
 
 
             } finally {
-
-                // ====================================================
-                // RESTORE BUTTON
-                // ====================================================
 
                 if (submitButton) {
 
@@ -652,9 +609,9 @@ if (bugForm) {
 }
 
 
-// ============================================================
-// FORM VALIDATION
-// ============================================================
+/* ============================================================
+   FORM VALIDATION
+   ============================================================ */
 
 function validateForm() {
 
@@ -663,12 +620,10 @@ function validateForm() {
             ? bugTitle.value.trim()
             : "";
 
-
     const desc =
         description
             ? description.value.trim()
             : "";
-
 
     if (!title) {
 
@@ -684,7 +639,6 @@ function validateForm() {
 
     }
 
-
     if (!desc) {
 
         showError(
@@ -699,14 +653,12 @@ function validateForm() {
 
     }
 
-
     if (selectedFile) {
 
         const validation =
             validateFile(
                 selectedFile
             );
-
 
         if (!validation.valid) {
 
@@ -720,44 +672,42 @@ function validateForm() {
 
     }
 
-
     return true;
 
 }
 
 
-// ============================================================
-// DISPLAY COMPLETE ANALYSIS
-// ============================================================
+/* ============================================================
+   DISPLAY COMPLETE ANALYSIS
+   ============================================================ */
 
 function displayAnalysis(data) {
 
     const triage =
         data.triage || {};
 
-
     const log =
         data.log_analysis || {};
-
 
     const rootCause =
         data.root_cause || {};
 
-
     const duplicate =
         data.duplicate_detection || {};
-
 
     const remediation =
         data.remediation || {};
 
-
     const retrieval =
         data.retrieval || {};
 
-
     const orchestration =
         data.orchestration || {};
+
+
+    if (!result) {
+        return;
+    }
 
 
     result.classList.remove(
@@ -766,10 +716,6 @@ function displayAnalysis(data) {
 
 
     result.innerHTML = `
-
-        <!-- ================================================= -->
-        <!-- RESULT HEADER -->
-        <!-- ================================================= -->
 
         <div class="result-header">
 
@@ -797,16 +743,15 @@ function displayAnalysis(data) {
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- TRIAGE -->
-        <!-- ================================================= -->
+        <!-- =================================================
+             TRIAGE
+             ================================================= -->
 
         <div class="result-section">
 
             <h3>
                 Triage Analysis
             </h3>
-
 
             <div class="analysis-grid">
 
@@ -912,16 +857,15 @@ function displayAnalysis(data) {
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- LOG ANALYSIS -->
-        <!-- ================================================= -->
+        <!-- =================================================
+             LOG ANALYSIS
+             ================================================= -->
 
         <div class="result-section">
 
             <h3>
                 Log Analysis
             </h3>
-
 
             <div class="analysis-grid">
 
@@ -996,7 +940,6 @@ function displayAnalysis(data) {
 
             </div>
 
-
             ${renderPatterns(
                 log.patterns
             )}
@@ -1004,16 +947,15 @@ function displayAnalysis(data) {
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- ROOT CAUSE -->
-        <!-- ================================================= -->
+        <!-- =================================================
+             ROOT CAUSE
+             ================================================= -->
 
         <div class="result-section">
 
             <h3>
                 Root Cause Analysis
             </h3>
-
 
             <div class="status-line">
 
@@ -1087,16 +1029,15 @@ function displayAnalysis(data) {
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- DUPLICATE DETECTION -->
-        <!-- ================================================= -->
+        <!-- =================================================
+             DUPLICATE DETECTION
+             ================================================= -->
 
         <div class="result-section">
 
             <h3>
                 Duplicate Detection
             </h3>
-
 
             <div class="duplicate-status">
 
@@ -1108,7 +1049,6 @@ function displayAnalysis(data) {
                     )}
 
                 </strong>
-
 
                 ${
                     duplicate.likely_duplicate
@@ -1124,7 +1064,6 @@ function displayAnalysis(data) {
 
             </div>
 
-
             ${renderSimilarDefects(
                 duplicate.matches
             )}
@@ -1132,16 +1071,15 @@ function displayAnalysis(data) {
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- REMEDIATION -->
-        <!-- ================================================= -->
+        <!-- =================================================
+             REMEDIATION
+             ================================================= -->
 
         <div class="result-section">
 
             <h3>
                 Recommended Fix
             </h3>
-
 
             ${
                 remediation.status
@@ -1167,7 +1105,6 @@ function displayAnalysis(data) {
                     : ""
             }
 
-
             ${renderRecommendations(
                 remediation.recommendations
             )}
@@ -1175,16 +1112,15 @@ function displayAnalysis(data) {
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- KNOWLEDGE BASE -->
-        <!-- ================================================= -->
+        <!-- =================================================
+             KNOWLEDGE BASE
+             ================================================= -->
 
         <div class="result-section">
 
             <h3>
                 Knowledge Base Evidence
             </h3>
-
 
             <p>
 
@@ -1213,13 +1149,11 @@ function displayAnalysis(data) {
 }
 
 
-// ============================================================
-// SIMILAR DEFECTS
-// ============================================================
+/* ============================================================
+   SIMILAR DEFECTS
+   ============================================================ */
 
-function renderSimilarDefects(
-    matches
-) {
+function renderSimilarDefects(matches) {
 
     if (
         !matches ||
@@ -1263,7 +1197,6 @@ function renderSimilarDefects(
                                     )}
 
                                 </strong>
-
 
                                 <span class="similarity">
 
@@ -1371,9 +1304,9 @@ function renderSimilarDefects(
 }
 
 
-// ============================================================
-// REMEDIATION RECOMMENDATIONS
-// ============================================================
+/* ============================================================
+   REMEDIATION RECOMMENDATIONS
+   ============================================================ */
 
 function renderRecommendations(
     recommendations
@@ -1416,7 +1349,6 @@ function renderRecommendations(
                                     ${index + 1}
 
                                 </span>
-
 
                                 <strong>
 
@@ -1490,6 +1422,48 @@ function renderRecommendations(
 
 
                             ${
+                                item.historical_resolution
+                                    ? `
+
+                                        <div class="historical-resolution">
+
+                                            <strong>
+                                                Historical Resolution:
+                                            </strong>
+
+                                            <p>
+
+                                                ${escapeHtml(
+                                                    item.historical_resolution
+                                                )}
+
+                                            </p>
+
+                                        </div>
+
+                                    `
+                                    : ""
+                            }
+
+
+                            ${
+                                item.historical_resolution_note
+                                    ? `
+
+                                        <div class="boundary-note">
+
+                                            ${escapeHtml(
+                                                item.historical_resolution_note
+                                            )}
+
+                                        </div>
+
+                                    `
+                                    : ""
+                            }
+
+
+                            ${
                                 Array.isArray(
                                     item.implementation_guidance
                                 ) &&
@@ -1501,7 +1475,6 @@ function renderRecommendations(
                                             <strong>
                                                 Implementation Guidance
                                             </strong>
-
 
                                             <ul>
 
@@ -1537,7 +1510,6 @@ function renderRecommendations(
                                                 Validation Steps
                                             </strong>
 
-
                                             <ol>
 
                                                 ${item
@@ -1571,13 +1543,11 @@ function renderRecommendations(
 }
 
 
-// ============================================================
-// DETECTED LOG PATTERNS
-// ============================================================
+/* ============================================================
+   DETECTED LOG PATTERNS
+   ============================================================ */
 
-function renderPatterns(
-    patterns
-) {
+function renderPatterns(patterns) {
 
     if (
         !patterns ||
@@ -1597,7 +1567,6 @@ function renderPatterns(
             <strong>
                 Detected Patterns
             </strong>
-
 
             <div class="pattern-list">
 
@@ -1626,24 +1595,60 @@ function renderPatterns(
 }
 
 
-// ============================================================
-// FAILURE POINT FORMAT
-// ============================================================
+/* ============================================================
+   FAILURE POINT FORMAT
+   ============================================================ */
+
+/*
+ * Backend may return:
+ *
+ * class:
+ *     "com.example.db.DatabaseConnection"
+ *
+ * method:
+ *     "connect"
+ *
+ * file:
+ *     "DatabaseConnection.java"
+ *
+ * line:
+ *     32
+ *
+ * Desired UI:
+ *
+ *     DatabaseConnection.connect() → DatabaseConnection.java:32
+ */
+
+function simplifyClassName(className) {
+
+    if (!className) {
+        return "";
+    }
+
+    const value =
+        String(className).trim();
+
+    return (
+        value
+            .split(".")
+            .filter(Boolean)
+            .pop() ||
+        value
+    );
+
+}
+
 
 function formatFailurePoint(
     failurePoint
 ) {
 
     if (!failurePoint) {
-
         return "Not detected";
-
     }
 
-
     if (
-        typeof failurePoint !==
-        "object"
+        typeof failurePoint !== "object"
     ) {
 
         return escapeHtml(
@@ -1652,54 +1657,79 @@ function formatFailurePoint(
 
     }
 
-
     const file =
         failurePoint.file || "";
-
 
     const line =
         failurePoint.line
             ? `:${failurePoint.line}`
             : "";
 
-
     const method =
-        failurePoint.method
-            ? ` → ${failurePoint.method}()`
-            : "";
-
+        String(
+            failurePoint.method || ""
+        )
+        .trim()
+        .replace(/\s+/g, "");
 
     const className =
-        failurePoint.class
-            ? `${failurePoint.class}.`
-            : "";
+        simplifyClassName(
+            failurePoint.class || ""
+        );
+
+    const location =
+        `${file}${line}`;
+
+    let output = "";
 
 
-    const output =
-        `${file}${line}${method}`;
+    if (
+        className &&
+        method &&
+        location
+    ) {
 
+        output =
+            `${className}.${method}() → ${location}`;
 
-    if (!output) {
+    } else if (
+        method &&
+        location
+    ) {
 
-        return "Not detected";
+        output =
+            `${method}() → ${location}`;
+
+    } else if (location) {
+
+        output =
+            location;
+
+    } else if (method) {
+
+        output =
+            `${method}()`;
+
+    } else if (className) {
+
+        output =
+            className;
 
     }
 
 
-    return escapeHtml(
-        `${className}${output}`
-    );
+    return output
+        ? escapeHtml(output)
+        : "Not detected";
 
 }
 
 
-// ============================================================
-// CONFIDENCE FORMAT
-// ============================================================
+/* ============================================================
+   CONFIDENCE FORMAT
+   ============================================================ */
 
-function formatConfidence(
-    value
-) {
+function formatConfidence(value) {
 
     if (
         value === null ||
@@ -1711,10 +1741,8 @@ function formatConfidence(
 
     }
 
-
     const number =
         Number(value);
-
 
     if (
         Number.isNaN(number)
@@ -1726,8 +1754,18 @@ function formatConfidence(
 
     }
 
+    /*
+     * Backend normally returns:
+     *
+     * 0.74
+     * 0.98
+     *
+     * Convert to:
+     *
+     * 74.0%
+     * 98.0%
+     */
 
-    // Backend normally returns 0.0 - 0.99
     if (
         number <= 1
     ) {
@@ -1738,15 +1776,14 @@ function formatConfidence(
 
     }
 
-
     return `${number.toFixed(1)}%`;
 
 }
 
 
-// ============================================================
-// SEVERITY CLASS
-// ============================================================
+/* ============================================================
+   SEVERITY CLASS
+   ============================================================ */
 
 function getSeverityClass(
     severity
@@ -1757,59 +1794,46 @@ function getSeverityClass(
             severity || ""
         ).toLowerCase();
 
-
     if (
-        value.includes(
-            "critical"
-        )
+        value.includes("critical")
     ) {
 
         return "severity-critical";
 
     }
 
-
     if (
-        value.includes(
-            "high"
-        )
+        value.includes("high")
     ) {
 
         return "severity-high";
 
     }
 
-
     if (
-        value.includes(
-            "medium"
-        )
+        value.includes("medium")
     ) {
 
         return "severity-medium";
 
     }
 
-
     if (
-        value.includes(
-            "low"
-        )
+        value.includes("low")
     ) {
 
         return "severity-low";
 
     }
 
-
     return "";
 
 }
 
 
-// ============================================================
-// RESET
-// ============================================================
+/* ============================================================
+   RESET
+   ============================================================ */
 
 if (resetBtn) {
 
@@ -1817,23 +1841,21 @@ if (resetBtn) {
         "click",
         () => {
 
-            bugForm.reset();
+            if (bugForm) {
+                bugForm.reset();
+            }
 
             selectedFile = null;
-
 
             if (fileInfo) {
                 fileInfo.innerHTML = "";
             }
 
-
             if (logFile) {
                 logFile.value = "";
             }
 
-
             hideResult();
-
 
             if (bugTitle) {
                 bugTitle.focus();
@@ -1845,9 +1867,9 @@ if (resetBtn) {
 }
 
 
-// ============================================================
-// HIDE RESULT
-// ============================================================
+/* ============================================================
+   HIDE RESULT
+   ============================================================ */
 
 function hideResult() {
 
@@ -1855,34 +1877,28 @@ function hideResult() {
         return;
     }
 
-
     result.classList.add(
         "hidden"
     );
-
 
     result.innerHTML = "";
 
 }
 
 
-// ============================================================
-// ERROR MESSAGE
-// ============================================================
+/* ============================================================
+   ERROR MESSAGE
+   ============================================================ */
 
-function showError(
-    message
-) {
+function showError(message) {
 
     if (!result) {
         return;
     }
 
-
     result.classList.remove(
         "hidden"
     );
-
 
     result.innerHTML = `
 
@@ -1892,7 +1908,6 @@ function showError(
                 Analysis Failed
             </h3>
 
-
             <p>
 
                 ${escapeHtml(
@@ -1901,13 +1916,11 @@ function showError(
 
             </p>
 
-
             <div class="error-help">
 
                 <strong>
                     Check:
                 </strong>
-
 
                 <ul>
 
@@ -1916,10 +1929,13 @@ function showError(
                     </li>
 
                     <li>
+
                         API endpoint:
+
                         <code>
                             http://127.0.0.1:5000/api/analyze
                         </code>
+
                     </li>
 
                     <li>
@@ -1934,7 +1950,6 @@ function showError(
 
     `;
 
-
     result.scrollIntoView({
         behavior: "smooth",
         block: "start"
@@ -1943,18 +1958,15 @@ function showError(
 }
 
 
-// ============================================================
-// FILE ERROR
-// ============================================================
+/* ============================================================
+   FILE ERROR
+   ============================================================ */
 
-function showFileError(
-    message
-) {
+function showFileError(message) {
 
     if (!fileInfo) {
         return;
     }
-
 
     fileInfo.innerHTML = `
 
@@ -1969,9 +1981,9 @@ function showFileError(
 }
 
 
-// ============================================================
-// TRUNCATE TEXT
-// ============================================================
+/* ============================================================
+   TRUNCATE TEXT
+   ============================================================ */
 
 function truncate(
     text,
@@ -1983,7 +1995,6 @@ function truncate(
             text || ""
         );
 
-
     if (
         value.length <=
         maxLength
@@ -1992,7 +2003,6 @@ function truncate(
         return value;
 
     }
-
 
     return (
         value.substring(
@@ -2004,13 +2014,11 @@ function truncate(
 }
 
 
-// ============================================================
-// ESCAPE HTML
-// ============================================================
+/* ============================================================
+   ESCAPE HTML
+   ============================================================ */
 
-function escapeHtml(
-    value
-) {
+function escapeHtml(value) {
 
     return String(
         value ?? ""
@@ -2039,9 +2047,9 @@ function escapeHtml(
 }
 
 
-// ============================================================
-// FINAL DEBUG MESSAGE
-// ============================================================
+/* ============================================================
+   FINAL DEBUG MESSAGE
+   ============================================================ */
 
 console.log(
     "BugAI Milestone 3 Bug Submission JS loaded successfully."

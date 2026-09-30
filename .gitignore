@@ -3,3 +3,5 @@ __pycache__/
 *.log
 logs/
 data/defects.csvdata/analytics.db
+data/defects.csv
+data/analytics.db
