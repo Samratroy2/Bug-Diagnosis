@@ -1,7 +1,9 @@
-/* =========================================================
+/*
+=========================================================
    BUGAI — KNOWLEDGE BASE
-   Milestone 3
-========================================================= */
+   Milestone 3 / Milestone 4
+=========================================================
+*/
 
 const API_BASE_URL = "http://127.0.0.1:5000";
 
@@ -16,6 +18,8 @@ let currentSearch = "";
 let currentProject = "";
 
 let searchTimer = null;
+let searchController = null;
+let recordsController = null;
 
 
 /* =========================================================
@@ -28,7 +32,7 @@ function getElement(id) {
 
 
 /* =========================================================
-   API
+   API REQUEST
 ========================================================= */
 
 async function apiRequest(url, options = {}) {
@@ -46,19 +50,25 @@ async function apiRequest(url, options = {}) {
     let data;
 
     try {
+
         data = JSON.parse(text);
+
     } catch {
+
         throw new Error(
             `Invalid JSON response from backend (${response.status}).`
         );
+
     }
 
     if (!response.ok) {
+
         throw new Error(
             data.error ||
             data.message ||
             `HTTP ${response.status}`
         );
+
     }
 
     return data;
@@ -101,21 +111,54 @@ async function loadStats() {
         const byProject =
             stats.by_project || {};
 
-        getElement("mozillaCount").textContent =
-            formatNumber(
-                byProject.Mozilla || 0
-            );
 
-        getElement("apacheCount").textContent =
-            formatNumber(
-                byProject.Apache || 0
-            );
+        /* -------------------------------------------------
+           PROJECT COUNTS
+        ------------------------------------------------- */
 
-        getElement("eclipseCount").textContent =
-            formatNumber(
-                byProject.Eclipse || 0
-            );
+        const mozillaCount =
+            getElement("mozillaCount");
 
+        const apacheCount =
+            getElement("apacheCount");
+
+        const eclipseCount =
+            getElement("eclipseCount");
+
+
+        if (mozillaCount) {
+
+            mozillaCount.textContent =
+                formatNumber(
+                    byProject.Mozilla || 0
+                );
+
+        }
+
+
+        if (apacheCount) {
+
+            apacheCount.textContent =
+                formatNumber(
+                    byProject.Apache || 0
+                );
+
+        }
+
+
+        if (eclipseCount) {
+
+            eclipseCount.textContent =
+                formatNumber(
+                    byProject.Eclipse || 0
+                );
+
+        }
+
+
+        /* -------------------------------------------------
+           DATASET TOTAL
+        ------------------------------------------------- */
 
         const datasetTotal =
             Number(
@@ -125,24 +168,48 @@ async function loadStats() {
                 0
             ) || 0;
 
+
         /*
-         * Do not overwrite filtered pagination totals here
-         * after a search/filter has been applied.
+         * Only update pagination total when there
+         * is no active search/filter.
          */
-        if (!currentSearch && !currentProject) {
+
+        if (
+            !currentSearch &&
+            !currentProject
+        ) {
+
             totalRecords = datasetTotal;
+
         }
 
-        getElement("totalCount").textContent =
-            formatNumber(datasetTotal);
 
-        getElement("datasetRecords").textContent =
-            formatNumber(datasetTotal);
+        const totalCount =
+            getElement("totalCount");
+
+        if (totalCount) {
+
+            totalCount.textContent =
+                formatNumber(datasetTotal);
+
+        }
 
 
-        /*
-         * Prefer the actual FAISS vector count.
-         */
+        const datasetRecords =
+            getElement("datasetRecords");
+
+        if (datasetRecords) {
+
+            datasetRecords.textContent =
+                formatNumber(datasetTotal);
+
+        }
+
+
+        /* -------------------------------------------------
+           FAISS COUNT
+        ------------------------------------------------- */
+
         const faissVectorCount =
             Number(
                 stats.index_vectors ??
@@ -153,24 +220,65 @@ async function loadStats() {
             ) || 0;
 
 
-        getElement("indexedCount").textContent =
-            formatNumber(faissVectorCount);
+        const indexedCount =
+            getElement("indexedCount");
 
-        getElement("faissVectors").textContent =
-            formatNumber(faissVectorCount);
+        if (indexedCount) {
 
+            indexedCount.textContent =
+                formatNumber(faissVectorCount);
 
-        getElement("embeddingModel").textContent =
-            stats.embedding_model ||
-            stats.model ||
-            "all-MiniLM-L6-v2";
+        }
 
 
-        getElement("vectorDimension").textContent =
-            stats.embedding_dimension ??
-            stats.dimension ??
-            384;
+        const faissVectors =
+            getElement("faissVectors");
 
+        if (faissVectors) {
+
+            faissVectors.textContent =
+                formatNumber(faissVectorCount);
+
+        }
+
+
+        /* -------------------------------------------------
+           EMBEDDING MODEL
+        ------------------------------------------------- */
+
+        const embeddingModel =
+            getElement("embeddingModel");
+
+        if (embeddingModel) {
+
+            embeddingModel.textContent =
+                stats.embedding_model ||
+                stats.model ||
+                "all-MiniLM-L6-v2";
+
+        }
+
+
+        /* -------------------------------------------------
+           VECTOR DIMENSION
+        ------------------------------------------------- */
+
+        const vectorDimension =
+            getElement("vectorDimension");
+
+        if (vectorDimension) {
+
+            vectorDimension.textContent =
+                stats.embedding_dimension ??
+                stats.dimension ??
+                384;
+
+        }
+
+
+        /* -------------------------------------------------
+           INDEX STATUS
+        ------------------------------------------------- */
 
         const indexExists =
             stats.index_exists !== false;
@@ -193,7 +301,9 @@ async function loadStats() {
 
             markPipelineReady();
 
-        } else if (
+        }
+
+        else if (
             faissVectorCount > 0
         ) {
 
@@ -204,7 +314,9 @@ async function loadStats() {
 
             markPipelinePartial();
 
-        } else {
+        }
+
+        else {
 
             setIndexStatus(
                 "Not Built",
@@ -212,9 +324,12 @@ async function loadStats() {
             );
 
             markPipelineNotReady();
+
         }
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(
             "Knowledge Base Stats Error:",
@@ -225,7 +340,9 @@ async function loadStats() {
             "Backend Offline",
             "error"
         );
+
     }
+
 }
 
 
@@ -233,7 +350,10 @@ async function loadStats() {
    STATUS
 ========================================================= */
 
-function setIndexStatus(text, statusClass) {
+function setIndexStatus(
+    text,
+    statusClass
+) {
 
     const element =
         getElement("indexStatus");
@@ -301,10 +421,12 @@ function markPipelineNotReady() {
 
 
 /* =========================================================
-   LOAD RECORDS
+   LOAD NORMAL RECORDS
 ========================================================= */
 
-async function loadRecords() {
+async function loadRecords({
+    keepExisting = false
+} = {}) {
 
     const recordsContainer =
         getElement("records");
@@ -313,38 +435,76 @@ async function loadRecords() {
         return;
     }
 
+
+    /*
+     * Cancel previous normal-record request.
+     */
+
+    if (recordsController) {
+        recordsController.abort();
+    }
+
+    recordsController =
+        new AbortController();
+
+
     setPaginationLoading(true);
 
-    recordsContainer.innerHTML = `
-        <div class="card loading-card">
-            <div class="loading-spinner"></div>
-            <h3>Loading knowledge base...</h3>
-            <p>Fetching historical defect records.</p>
-        </div>
-    `;
+
+    if (
+        !keepExisting ||
+        !allRecords.length
+    ) {
+
+        recordsContainer.innerHTML = `
+
+            <div class="card loading-card">
+
+                <div
+                    class="loading-spinner"
+                    aria-hidden="true"
+                ></div>
+
+                <h3>
+                    Loading historical defects...
+                </h3>
+
+                <p>
+                    Fetching ${RECORDS_PER_PAGE} records.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
 
     try {
 
         const params =
             new URLSearchParams();
 
+
         params.set(
             "page",
             String(currentPage)
         );
+
 
         params.set(
             "limit",
             String(RECORDS_PER_PAGE)
         );
 
-        if (currentSearch) {
 
-            params.set(
-                "search",
-                currentSearch
-            );
-        }
+        /*
+         * Project-only filter uses the normal
+         * backend records endpoint.
+         *
+         * Text searches are NOT handled here.
+         * They use FAISS through searchKnowledgeBase().
+         */
 
         if (currentProject) {
 
@@ -352,54 +512,335 @@ async function loadRecords() {
                 "project",
                 currentProject
             );
+
         }
 
 
         const url =
             `${API_BASE_URL}/api/knowledge-base/records?${params.toString()}`;
 
+
         console.log(
-            "Loading KB page:",
-            currentPage,
+            "Loading Knowledge Base records:",
             url
         );
 
 
-        const data =
-            await apiRequest(url);
+        const timeout =
+            setTimeout(
+                () => recordsController.abort(),
+                30000
+            );
 
+
+        try {
+
+            const data =
+                await apiRequest(
+                    url,
+                    {
+                        signal:
+                            recordsController.signal
+                    }
+                );
+
+
+            allRecords =
+                Array.isArray(data.records)
+                    ? data.records
+                    : [];
+
+
+            currentPage =
+                Number(data.page) ||
+                currentPage;
+
+
+            totalRecords =
+                Number(
+                    data.total_records ??
+                    data.total ??
+                    0
+                ) || 0;
+
+
+            totalPages =
+                Number(data.total_pages) ||
+                Math.max(
+                    1,
+                    Math.ceil(
+                        totalRecords /
+                        RECORDS_PER_PAGE
+                    )
+                );
+
+
+            renderRecords();
+
+            updateRecordsSummary();
+
+            updatePagination(
+                data.has_previous,
+                data.has_next
+            );
+
+        }
+
+        finally {
+
+            clearTimeout(timeout);
+
+        }
+
+    }
+
+    catch (error) {
+
+        if (
+            error.name === "AbortError"
+        ) {
+
+            /*
+             * Do not show timeout error when
+             * another request cancelled this one.
+             */
+
+            if (
+                recordsController &&
+                recordsController.signal.aborted
+            ) {
+
+                console.log(
+                    "Previous records request cancelled."
+                );
+
+            }
+
+        }
+
+        else {
+
+            console.error(
+                "Knowledge Base Records Error:",
+                error
+            );
+
+
+            recordsContainer.innerHTML = `
+
+                <div class="card error-card">
+
+                    <h3>
+                        Unable to load knowledge base
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(
+                            getFriendlyErrorMessage(error)
+                        )}
+                    </p>
+
+                    <button
+                        type="button"
+                        onclick="loadRecords()"
+                    >
+                        Try Again
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+
+        updatePagination();
+
+    }
+
+    finally {
+
+        setPaginationLoading(false);
+
+    }
+
+}
+
+
+/* =========================================================
+   FAST SEMANTIC SEARCH
+========================================================= */
+
+/*
+ * IMPORTANT:
+ *
+ * Text search now goes through:
+ *
+ * /api/search
+ *
+ * instead of:
+ *
+ * /api/knowledge-base/records?search=...
+ *
+ * This means the backend uses the existing
+ * 1,311,079-vector FAISS index rather than
+ * scanning the entire defects.csv file.
+ */
+
+async function searchKnowledgeBase() {
+
+    const recordsContainer =
+        getElement("records");
+
+    if (!recordsContainer) {
+        return;
+    }
+
+
+    /*
+     * Cancel previous semantic-search request.
+     */
+
+    if (searchController) {
+
+        searchController.abort();
+
+    }
+
+
+    searchController =
+        new AbortController();
+
+
+    setPaginationLoading(true);
+
+
+    recordsContainer.innerHTML = `
+
+        <div class="card loading-card">
+
+            <div
+                class="loading-spinner"
+                aria-hidden="true"
+            ></div>
+
+            <h3>
+                Searching knowledge base...
+            </h3>
+
+            <p>
+                Searching the FAISS semantic index.
+            </p>
+
+        </div>
+
+    `;
+
+
+    try {
+
+        const params =
+            new URLSearchParams();
+
+
+        params.set(
+            "q",
+            currentSearch
+        );
+
+
+        params.set(
+            "top_k",
+            "20"
+        );
+
+
+        /*
+         * Backend supports project filtering
+         * during semantic search.
+         */
+
+        if (currentProject) {
+
+            params.set(
+                "project",
+                currentProject
+            );
+
+        }
+
+
+        const url =
+            `${API_BASE_URL}/api/search?${params.toString()}`;
+
+
+        console.log(
+            "FAISS semantic search:",
+            url
+        );
+
+
+        const timeout =
+            setTimeout(
+                () => searchController.abort(),
+                30000
+            );
+
+
+        let data;
+
+
+        try {
+
+            data =
+                await apiRequest(
+                    url,
+                    {
+                        signal:
+                            searchController.signal
+                    }
+                );
+
+        }
+
+        finally {
+
+            clearTimeout(timeout);
+
+        }
+
+
+        /*
+         * /api/search returns:
+         *
+         * {
+         *   ok: true,
+         *   query: "...",
+         *   results: [...]
+         * }
+         */
 
         allRecords =
-            Array.isArray(data.records)
-                ? data.records
+            Array.isArray(data.results)
+                ? data.results
                 : [];
 
 
         /*
-         * Use the page returned by backend.
+         * Semantic search returns the top
+         * matching results rather than a
+         * traditional 1.31M-row pagination.
          */
-        currentPage =
-            Number(data.page) ||
-            currentPage;
-
 
         totalRecords =
-            Number(
-                data.total_records ??
-                data.total ??
-                0
-            ) || 0;
+            allRecords.length;
 
+
+        currentPage = 1;
 
         totalPages =
-            Number(data.total_pages) ||
-            Math.max(
-                1,
-                Math.ceil(
-                    totalRecords /
-                    RECORDS_PER_PAGE
-                )
-            );
+            allRecords.length > 0
+                ? 1
+                : 1;
 
 
         renderRecords();
@@ -407,22 +848,44 @@ async function loadRecords() {
         updateRecordsSummary();
 
         updatePagination(
-            data.has_previous,
-            data.has_next
+            false,
+            false
         );
 
-    } catch (error) {
+    }
+
+    catch (error) {
+
+        /*
+         * Abort can happen because the user
+         * typed another search.
+         */
+
+        if (
+            error.name === "AbortError"
+        ) {
+
+            console.log(
+                "Previous semantic search cancelled."
+            );
+
+            return;
+
+        }
+
 
         console.error(
-            "Knowledge Base Records Error:",
+            "FAISS Search Error:",
             error
         );
 
+
         recordsContainer.innerHTML = `
+
             <div class="card error-card">
 
                 <h3>
-                    Unable to load knowledge base
+                    Semantic search failed
                 </h3>
 
                 <p>
@@ -433,25 +896,79 @@ async function loadRecords() {
 
                 <button
                     type="button"
-                    onclick="loadRecords()"
+                    onclick="searchKnowledgeBase()"
                 >
                     Try Again
                 </button>
 
             </div>
+
         `;
 
-        updatePagination();
 
-    } finally {
+        allRecords = [];
+
+        totalRecords = 0;
+
+        totalPages = 1;
+
+        updateRecordsSummary();
+
+        updatePagination(
+            false,
+            false
+        );
+
+    }
+
+    finally {
 
         setPaginationLoading(false);
+
     }
+
 }
 
 
 /* =========================================================
-   RENDER
+   LOAD CURRENT VIEW
+========================================================= */
+
+async function loadCurrentView({
+    keepExisting = false
+} = {}) {
+
+    /*
+     * SEARCH MODE
+     *
+     * If a text search exists, use FAISS.
+     */
+
+    if (currentSearch) {
+
+        await searchKnowledgeBase();
+
+        return;
+
+    }
+
+
+    /*
+     * NORMAL MODE
+     *
+     * No text search means regular
+     * paginated records.
+     */
+
+    await loadRecords({
+        keepExisting
+    });
+
+}
+
+
+/* =========================================================
+   RENDER RECORDS
 ========================================================= */
 
 function renderRecords() {
@@ -467,6 +984,7 @@ function renderRecords() {
     if (!allRecords.length) {
 
         recordsContainer.innerHTML = `
+
             <div class="card">
 
                 <h3>
@@ -479,155 +997,245 @@ function renderRecords() {
                 </p>
 
             </div>
+
         `;
 
         return;
+
     }
 
 
     recordsContainer.innerHTML =
-        allRecords.map(record => {
+        allRecords
+            .map(record => {
 
-            const title =
-                record.title ||
-                "Untitled defect";
-
-            const project =
-                record.project ||
-                "Unknown";
-
-            const bugId =
-                record.bug_id ||
-                "Unknown ID";
-
-            const description =
-                record.description ||
-                "No description available.";
-
-            const resolution =
-                record.resolution ||
-                "Not recorded";
-
-            const severity =
-                record.severity || "";
-
-            const priority =
-                record.priority || "";
-
-            const component =
-                record.affected_component || "";
-
-            const stackTrace =
-                record.stack_trace || "";
+                const title =
+                    record.title ||
+                    "Untitled defect";
 
 
-            return `
-                <article class="record">
+                const project =
+                    record.project ||
+                    "Unknown";
 
-                    <div class="record-head">
 
-                        <div>
+                const bugId =
+                    record.bug_id ||
+                    "Unknown ID";
 
-                            <h3>
-                                ${escapeHTML(title)}
-                            </h3>
 
-                            <div class="record-tags">
+                const description =
+                    record.description ||
+                    "No description available.";
 
-                                <span class="tag">
-                                    ${escapeHTML(project)}
-                                </span>
 
-                                ${
-                                    severity
-                                    ? `
-                                        <span class="tag severity-tag">
-                                            ${escapeHTML(severity)}
-                                        </span>
-                                      `
-                                    : ""
-                                }
+                const resolution =
+                    record.resolution ||
+                    "Not recorded";
 
-                                ${
-                                    priority
-                                    ? `
-                                        <span class="tag priority-tag">
-                                            ${escapeHTML(priority)}
-                                        </span>
-                                      `
-                                    : ""
-                                }
 
-                                ${
-                                    component
-                                    ? `
-                                        <span class="tag component-tag">
-                                            ${escapeHTML(component)}
-                                        </span>
-                                      `
-                                    : ""
-                                }
+                const severity =
+                    record.severity ||
+                    "";
+
+
+                const priority =
+                    record.priority ||
+                    "";
+
+
+                const component =
+                    record.affected_component ||
+                    "";
+
+
+                const stackTrace =
+                    record.stack_trace ||
+                    "";
+
+
+                const score =
+                    record.score;
+
+
+                return `
+
+                    <article class="record">
+
+                        <div class="record-head">
+
+                            <div>
+
+                                <h3>
+                                    ${escapeHTML(title)}
+                                </h3>
+
+
+                                <div class="record-tags">
+
+                                    <span class="tag">
+                                        ${escapeHTML(project)}
+                                    </span>
+
+
+                                    ${
+                                        severity
+                                            ? `
+                                                <span
+                                                    class="tag severity-tag"
+                                                >
+                                                    ${escapeHTML(
+                                                        severity
+                                                    )}
+                                                </span>
+                                            `
+                                            : ""
+                                    }
+
+
+                                    ${
+                                        priority
+                                            ? `
+                                                <span
+                                                    class="tag priority-tag"
+                                                >
+                                                    ${escapeHTML(
+                                                        priority
+                                                    )}
+                                                </span>
+                                            `
+                                            : ""
+                                    }
+
+
+                                    ${
+                                        component
+                                            ? `
+                                                <span
+                                                    class="tag component-tag"
+                                                >
+                                                    ${escapeHTML(
+                                                        component
+                                                    )}
+                                                </span>
+                                            `
+                                            : ""
+                                    }
+
+
+                                    ${
+                                        Number.isFinite(
+                                            Number(score)
+                                        )
+                                            ? `
+                                                <span
+                                                    class="tag"
+                                                >
+                                                    Similarity:
+                                                    ${formatScore(score)}
+                                                </span>
+                                            `
+                                            : ""
+                                    }
+
+                                </div>
 
                             </div>
+
+
+                            <strong class="bug-id">
+                                ${escapeHTML(bugId)}
+                            </strong>
 
                         </div>
 
 
-                        <strong class="bug-id">
-                            ${escapeHTML(bugId)}
-                        </strong>
-
-                    </div>
+                        <p>
+                            ${escapeHTML(description)}
+                        </p>
 
 
-                    <p>
-                        ${escapeHTML(description)}
-                    </p>
+                        ${
+                            stackTrace
+                                ? `
+
+                                    <details
+                                        class="stack-details"
+                                    >
+
+                                        <summary>
+                                            Stack Trace / Error Log
+                                        </summary>
+
+                                        <pre>${escapeHTML(
+                                            stackTrace
+                                        )}</pre>
+
+                                    </details>
+
+                                `
+                                : ""
+                        }
 
 
-                    ${
-                        stackTrace
-                        ? `
-                            <details class="stack-details">
+                        <p class="resolution">
 
-                                <summary>
-                                    Stack Trace / Error Log
-                                </summary>
+                            <strong>
+                                Resolution:
+                            </strong>
 
-                                <pre>${escapeHTML(stackTrace)}</pre>
+                            ${escapeHTML(resolution)}
 
-                            </details>
-                          `
-                        : ""
-                    }
+                        </p>
 
 
-                    <p class="resolution">
+                        ${
+                            record.source_file
+                                ? `
 
-                        <strong>
-                            Resolution:
-                        </strong>
+                                    <small class="source">
 
-                        ${escapeHTML(resolution)}
+                                        Source:
+                                        ${escapeHTML(
+                                            record.source_file
+                                        )}
 
-                    </p>
+                                    </small>
+
+                                `
+                                : ""
+                        }
+
+                    </article>
+
+                `;
+
+            })
+            .join("");
+
+}
 
 
-                    ${
-                        record.source_file
-                        ? `
-                            <small class="source">
-                                Source:
-                                ${escapeHTML(record.source_file)}
-                            </small>
-                          `
-                        : ""
-                    }
+/* =========================================================
+   SCORE FORMAT
+========================================================= */
 
-                </article>
-            `;
+function formatScore(value) {
 
-        }).join("");
+    const score =
+        Number(value);
+
+    if (!Number.isFinite(score)) {
+        return "—";
+    }
+
+
+    /*
+     * FAISS score is generally cosine-like
+     * because embeddings are normalized.
+     */
+
+    return score.toFixed(4);
 }
 
 
@@ -651,11 +1259,34 @@ function updateRecordsSummary() {
     ) {
 
         element.textContent =
-            "No records displayed.";
+            currentSearch
+                ? "No matching records found."
+                : "No records displayed.";
 
         return;
+
     }
 
+
+    /*
+     * Semantic search mode
+     */
+
+    if (currentSearch) {
+
+        element.textContent =
+            `Showing ${formatNumber(
+                allRecords.length
+            )} semantic matches for "${currentSearch}"`;
+
+        return;
+
+    }
+
+
+    /*
+     * Normal pagination mode
+     */
 
     const start =
         (
@@ -675,6 +1306,7 @@ function updateRecordsSummary() {
 
     element.textContent =
         `Showing ${formatNumber(start)}–${formatNumber(end)} of ${formatNumber(totalRecords)} records`;
+
 }
 
 
@@ -697,6 +1329,33 @@ function updatePagination(
         getElement("pageNumber");
 
 
+    /*
+     * Semantic search has no multi-page
+     * result navigation.
+     */
+
+    if (currentSearch) {
+
+        if (previous) {
+            previous.disabled = true;
+        }
+
+        if (next) {
+            next.disabled = true;
+        }
+
+        if (pageNumber) {
+
+            pageNumber.textContent =
+                "Search Results";
+
+        }
+
+        return;
+
+    }
+
+
     totalPages =
         Math.max(
             1,
@@ -714,6 +1373,7 @@ function updatePagination(
             backendHasPrevious !== null
                 ? !backendHasPrevious
                 : currentPage <= 1;
+
     }
 
 
@@ -723,18 +1383,31 @@ function updatePagination(
             backendHasNext !== null
                 ? !backendHasNext
                 : currentPage >= totalPages;
+
     }
 
 
     if (pageNumber) {
 
         pageNumber.textContent =
-            `Page ${formatNumber(currentPage)} of ${formatNumber(totalPages)}`;
+            `Page ${formatNumber(
+                currentPage
+            )} of ${formatNumber(
+                totalPages
+            )}`;
+
     }
+
 }
 
 
-function setPaginationLoading(loading) {
+/* =========================================================
+   PAGINATION LOADING
+========================================================= */
+
+function setPaginationLoading(
+    loading
+) {
 
     const previous =
         getElement("previousPage");
@@ -752,7 +1425,15 @@ function setPaginationLoading(loading) {
         if (next) {
             next.disabled = true;
         }
+
     }
+
+    else {
+
+        updatePagination();
+
+    }
+
 }
 
 
@@ -762,18 +1443,38 @@ function setPaginationLoading(loading) {
 
 async function nextPage() {
 
-    if (currentPage >= totalPages) {
+    /*
+     * Semantic search has no normal pages.
+     */
+
+    if (currentSearch) {
         return;
     }
 
+
+    if (
+        currentPage >= totalPages
+    ) {
+
+        return;
+
+    }
+
+
     currentPage += 1;
 
-    await loadRecords();
+
+    await loadCurrentView();
+
 
     window.scrollTo({
+
         top: 0,
+
         behavior: "smooth"
+
     });
+
 }
 
 
@@ -783,18 +1484,38 @@ async function nextPage() {
 
 async function previousPage() {
 
-    if (currentPage <= 1) {
+    /*
+     * Semantic search has no normal pages.
+     */
+
+    if (currentSearch) {
         return;
     }
 
+
+    if (
+        currentPage <= 1
+    ) {
+
+        return;
+
+    }
+
+
     currentPage -= 1;
 
-    await loadRecords();
+
+    await loadCurrentView();
+
 
     window.scrollTo({
+
         top: 0,
+
         behavior: "smooth"
+
     });
+
 }
 
 
@@ -806,6 +1527,7 @@ function handleSearch() {
 
     clearTimeout(searchTimer);
 
+
     searchTimer =
         setTimeout(
             async () => {
@@ -813,21 +1535,46 @@ function handleSearch() {
                 const input =
                     getElement("search");
 
+
                 currentSearch =
                     (
                         input?.value ||
                         ""
                     ).trim();
 
+
                 currentPage = 1;
+
 
                 updateSearchInfo();
 
-                await loadRecords();
+
+                /*
+                 * If search is empty, return
+                 * to normal paginated records.
+                 */
+
+                if (!currentSearch) {
+
+                    await loadCurrentView({
+                        keepExisting: true
+                    });
+
+                    return;
+
+                }
+
+
+                /*
+                 * Search through FAISS.
+                 */
+
+                await searchKnowledgeBase();
 
             },
-            350
+            700
         );
+
 }
 
 
@@ -840,14 +1587,40 @@ async function handleProjectFilter() {
     const select =
         getElement("projectFilter");
 
+
     currentProject =
         select?.value || "";
 
+
     currentPage = 1;
+
 
     updateSearchInfo();
 
-    await loadRecords();
+
+    /*
+     * If there is an active search,
+     * repeat semantic search with project.
+     */
+
+    if (currentSearch) {
+
+        await searchKnowledgeBase();
+
+        return;
+
+    }
+
+
+    /*
+     * Otherwise load normal records
+     * with project filtering.
+     */
+
+    await loadRecords({
+        keepExisting: true
+    });
+
 }
 
 
@@ -871,23 +1644,31 @@ function updateSearchInfo() {
     ) {
 
         element.textContent =
-            `"${currentSearch}" in ${currentProject}`;
+            `Searching "${currentSearch}" in ${currentProject}`;
 
-    } else if (currentSearch) {
+    }
+
+    else if (currentSearch) {
 
         element.textContent =
             `Searching "${currentSearch}"`;
 
-    } else if (currentProject) {
+    }
+
+    else if (currentProject) {
 
         element.textContent =
             `${currentProject} records`;
 
-    } else {
+    }
+
+    else {
 
         element.textContent =
             "Search records";
+
     }
+
 }
 
 
@@ -900,22 +1681,35 @@ async function refreshStatus() {
     const button =
         getElement("refreshStats");
 
+
     if (button) {
 
         button.disabled = true;
 
         button.textContent =
             "Refreshing...";
+
     }
 
 
     try {
 
+        /*
+         * Refresh statistics.
+         */
+
         await loadStats();
 
-        await loadRecords();
 
-    } finally {
+        /*
+         * Refresh current view.
+         */
+
+        await loadCurrentView();
+
+    }
+
+    finally {
 
         if (button) {
 
@@ -923,8 +1717,11 @@ async function refreshStatus() {
 
             button.textContent =
                 "Refresh Status";
+
         }
+
     }
+
 }
 
 
@@ -932,7 +1729,9 @@ async function refreshStatus() {
    FRIENDLY ERROR
 ========================================================= */
 
-function getFriendlyErrorMessage(error) {
+function getFriendlyErrorMessage(
+    error
+) {
 
     if (
         error instanceof TypeError &&
@@ -945,12 +1744,26 @@ function getFriendlyErrorMessage(error) {
             "Unable to connect to the Python backend. " +
             "Run: python backend\\app.py"
         );
+
     }
+
+
+    if (
+        error?.name === "AbortError"
+    ) {
+
+        return (
+            "The request was cancelled or took too long."
+        );
+
+    }
+
 
     return (
         error?.message ||
         "Unknown error."
     );
+
 }
 
 
@@ -967,16 +1780,25 @@ function escapeHTML(value) {
         character => {
 
             const entities = {
+
                 "&": "&amp;",
+
                 "<": "&lt;",
+
                 ">": "&gt;",
+
                 '"': "&quot;",
+
                 "'": "&#039;"
+
             };
 
+
             return entities[character];
+
         }
     );
+
 }
 
 
@@ -986,70 +1808,105 @@ function escapeHTML(value) {
 
 document.addEventListener(
     "DOMContentLoaded",
-    async function () {
+    function () {
 
         const previous =
             getElement("previousPage");
 
+
         const next =
             getElement("nextPage");
+
 
         const search =
             getElement("search");
 
+
         const projectFilter =
             getElement("projectFilter");
+
 
         const refresh =
             getElement("refreshStats");
 
 
+        /* -----------------------------------------------
+           Previous page
+        ------------------------------------------------ */
+
         if (previous) {
+
             previous.addEventListener(
                 "click",
                 previousPage
             );
+
         }
 
 
+        /* -----------------------------------------------
+           Next page
+        ------------------------------------------------ */
+
         if (next) {
+
             next.addEventListener(
                 "click",
                 nextPage
             );
+
         }
 
 
+        /* -----------------------------------------------
+           Search
+        ------------------------------------------------ */
+
         if (search) {
+
             search.addEventListener(
                 "input",
                 handleSearch
             );
+
         }
 
 
+        /* -----------------------------------------------
+           Project filter
+        ------------------------------------------------ */
+
         if (projectFilter) {
+
             projectFilter.addEventListener(
                 "change",
                 handleProjectFilter
             );
+
         }
 
 
+        /* -----------------------------------------------
+           Refresh
+        ------------------------------------------------ */
+
         if (refresh) {
+
             refresh.addEventListener(
                 "click",
                 refreshStatus
             );
+
         }
 
 
         /*
-         * Load both initial datasets.
+         * Load statistics and records independently.
          */
-        await Promise.all([
-            loadStats(),
-            loadRecords()
-        ]);
+
+        loadStats();
+
+        loadRecords();
+
     }
 );

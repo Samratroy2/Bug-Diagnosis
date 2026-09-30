@@ -1,12 +1,12 @@
 /* =========================================================
    BUGAI — SEMANTIC SIMILARITY
-   Page-specific styles only
-   Sidebar is controlled by sidebar.css
-   ========================================================= */
+   Page-specific styles
+========================================================= */
 
 * {
     box-sizing: border-box;
 }
+
 
 body {
     margin: 0;
@@ -16,6 +16,7 @@ body {
     line-height: 1.55;
 }
 
+
 main {
     padding: 48px 56px;
     max-width: 1650px;
@@ -24,11 +25,12 @@ main {
 
 /* =========================================================
    HEADER
-   ========================================================= */
+========================================================= */
 
 header {
     margin-bottom: 28px;
 }
+
 
 header h1 {
     margin: 5px 0 8px;
@@ -36,13 +38,16 @@ header h1 {
     line-height: 1.15;
 }
 
+
 header p {
     margin: 0;
     color: #64748b;
     font-size: 16px;
 }
 
-header > span {
+
+header > span,
+.section-label {
     font-size: 12px;
     color: #2563eb;
     font-weight: 800;
@@ -52,55 +57,55 @@ header > span {
 
 /* =========================================================
    COMMON CARDS
-   ========================================================= */
+========================================================= */
 
 .card,
-.information,
-.recent,
-.note,
 .explanation {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 14px;
     padding: 28px;
-    box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, 0.04);
 }
 
 
 /* =========================================================
-   BUTTONS
-   ========================================================= */
+   SEARCH CARD
+========================================================= */
 
-button,
-.primary-btn {
-    border: 0;
-    border-radius: 8px;
-    padding: 11px 16px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.primary,
-.primary-btn {
-    background: #2563eb;
-    color: #ffffff;
-}
-
-.secondary {
-    background: #e2e8f0;
-    color: #172033;
+.search-card {
+    padding: 30px;
 }
 
 
-/* =========================================================
-   FORM ELEMENTS
-   ========================================================= */
+.form-heading {
+    margin-bottom: 20px;
+}
 
-input,
-select,
-textarea {
+
+.form-heading h2 {
+    margin: 0 0 4px;
+    font-size: 21px;
+}
+
+
+.form-heading p {
+    margin: 0;
+    color: #64748b;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+textarea,
+select {
     width: 100%;
     font: inherit;
     border: 1px solid #cbd5e1;
@@ -110,29 +115,97 @@ textarea {
     background: #ffffff;
 }
 
-input:focus,
-select:focus,
-textarea:focus {
+
+textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+
+textarea:focus,
+select:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 
 /* =========================================================
    CONTROLS
-   ========================================================= */
+========================================================= */
 
 .controls {
     display: grid;
-    grid-template-columns: 1fr 120px auto;
-    gap: 12px;
-    margin-top: 18px;
+    grid-template-columns: minmax(0, 1fr) 150px auto;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+
+.control-group {
+    min-width: 0;
+}
+
+
+.button-group {
+    min-width: 220px;
+}
+
+
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+
+.primary {
+    width: 100%;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+
+.primary:hover {
+    background: #1d4ed8;
+}
+
+
+.primary:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+
+.keyboard-hint {
+    margin-top: 13px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+
+.keyboard-hint span {
+    font-weight: 700;
+    color: #334155;
+}
+
+
+kbd {
+    background: #eef2f7;
+    border: 1px solid #d5dce6;
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 2px 6px;
+    font-size: 11px;
 }
 
 
 /* =========================================================
    PIPELINE
-   ========================================================= */
+========================================================= */
 
 .pipeline {
     display: flex;
@@ -142,13 +215,33 @@ textarea:focus {
     margin: 24px 0;
 }
 
-.pipeline span {
+
+.pipeline-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     background: #ffffff;
     border: 1px solid #dbe4ef;
-    border-radius: 8px;
-    padding: 10px 13px;
+    border-radius: 9px;
+    padding: 9px 13px;
     font-weight: 600;
+    font-size: 14px;
 }
+
+
+.step-number {
+    display: inline-flex;
+    width: 22px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 800;
+}
+
 
 .pipeline b {
     color: #2563eb;
@@ -156,73 +249,662 @@ textarea:focus {
 
 
 /* =========================================================
-   RESULTS
-   ========================================================= */
+   RESULTS HEADER
+========================================================= */
+
+.results-header {
+    margin: 28px 0 15px;
+}
+
+
+.results-header h2 {
+    margin: 4px 0 2px;
+    font-size: 25px;
+}
+
+
+.results-header p {
+    margin: 0;
+    color: #64748b;
+}
+
+
+/* =========================================================
+   SIMILARITY SUMMARY
+========================================================= */
+
+.similarity-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 14px;
+}
+
+
+.summary-label {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+.summary-score {
+    margin-top: 3px;
+    font-size: 34px;
+    line-height: 1.1;
+    font-weight: 850;
+}
+
+
+.summary-description {
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+.summary-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 13px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+
+/* =========================================================
+   THRESHOLD LEGEND
+========================================================= */
+
+.threshold-legend {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+}
+
+
+.legend-title {
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+
+.legend-items {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+
+.legend-item {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 13px;
+}
+
+
+.legend-item b {
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   RESULT CARD
+========================================================= */
 
 .result-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 12px;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 14px;
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, 0.03);
 }
 
-.result-card h3 {
-    margin: 0;
+
+.result-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
 }
 
-.score {
-    font-size: 18px;
+
+.result-title-area {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+}
+
+
+.result-rank {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #eff6ff;
     color: #2563eb;
+    font-size: 13px;
     font-weight: 800;
 }
 
+
+.result-card h3 {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+
 .meta {
+    margin-top: 5px;
     color: #64748b;
     font-size: 13px;
 }
 
 
+.meta-separator {
+    margin: 0 4px;
+}
+
+
+.score-area {
+    flex-shrink: 0;
+    text-align: right;
+}
+
+
+.score {
+    font-size: 22px;
+    font-weight: 850;
+}
+
+
+.classification-badge {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   SCORE BAR
+========================================================= */
+
+.score-bar-container {
+    margin: 16px 0 18px;
+}
+
+
+.score-bar-background {
+    width: 100%;
+    height: 7px;
+    background: #e8edf4;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+
+.score-bar {
+    height: 100%;
+    border-radius: inherit;
+    transition: width 0.4s ease;
+}
+
+
+/* =========================================================
+   RESULT SECTIONS
+========================================================= */
+
+.result-section h4 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569;
+}
+
+
+.result-section p {
+    margin: 0;
+    color: #334155;
+    white-space: pre-wrap;
+}
+
+
+/* =========================================================
+   RESOLUTION
+========================================================= */
+
+.resolution-box {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 17px;
+    padding: 14px 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+}
+
+
+.resolution-box strong {
+    font-size: 13px;
+}
+
+
+.resolution-box span {
+    color: #475569;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   INTERPRETATION
+========================================================= */
+
+.match-interpretation {
+    margin-top: 13px;
+    padding-top: 12px;
+    border-top: 1px solid #edf1f5;
+    color: #64748b;
+    font-size: 13px;
+}
+
+
+.interpretation-label {
+    font-weight: 800;
+    color: #334155;
+}
+
+
+/* =========================================================
+   CLASSIFICATION STATES
+========================================================= */
+
+.duplicate {
+    color: #15803d;
+}
+
+
+.related {
+    color: #b45309;
+}
+
+
+.unmatched {
+    color: #64748b;
+}
+
+
+.classification-badge.duplicate,
+.summary-status.duplicate,
+.legend-item.duplicate {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+
+.classification-badge.related,
+.summary-status.related,
+.legend-item.related {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+
+.classification-badge.unmatched,
+.summary-status.unmatched,
+.legend-item.unmatched {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+
+.score-bar.duplicate {
+    background: #16a34a;
+}
+
+
+.score-bar.related {
+    background: #d97706;
+}
+
+
+.score-bar.unmatched {
+    background: #94a3b8;
+}
+
+
 /* =========================================================
    EXPLANATION
-   ========================================================= */
+========================================================= */
 
 .explanation {
     margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 35px;
+}
+
+
+.explanation h2 {
+    margin: 5px 0 10px;
+}
+
+
+.explanation p {
+    color: #64748b;
+    margin: 7px 0;
+}
+
+
+.threshold-info {
+    border-left: 1px solid #e2e8f0;
+    padding-left: 28px;
+}
+
+
+.threshold-info h3 {
+    margin-top: 0;
+    font-size: 16px;
+}
+
+
+.threshold-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 11px 0;
+    font-size: 13px;
+    color: #475569;
+}
+
+
+.threshold-badge {
+    min-width: 70px;
+    text-align: center;
+    padding: 5px 7px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.threshold-badge.duplicate {
+    background: #dcfce7;
+}
+
+
+.threshold-badge.related {
+    background: #fef3c7;
+}
+
+
+.threshold-badge.unmatched {
+    background: #f1f5f9;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-card {
+    text-align: center;
+    padding: 45px 25px;
+}
+
+
+.loading-spinner {
+    width: 34px;
+    height: 34px;
+    margin: 0 auto 15px;
+    border: 3px solid #dbeafe;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+
+@keyframes spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+.search-stage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+
+.stage-active {
+    color: #2563eb;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   ERROR / WARNING
+========================================================= */
+
+.error-card,
+.warning-card,
+.no-results {
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+.error-icon,
+.status-icon {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+
+.no-results .status-icon {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+
+.error-card code {
+    display: inline-block;
+    margin: 8px 0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: #f1f5f9;
+}
+
+
+.retry-button {
+    display: block;
+    margin: 18px auto 0;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+
+.suggestion {
+    max-width: 550px;
+    margin: 20px auto 0;
+    padding: 15px;
+    text-align: left;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+
+.suggestion ul {
+    margin-bottom: 0;
 }
 
 
 /* =========================================================
    TABLET
-   ========================================================= */
+========================================================= */
 
 @media (max-width: 1200px) {
 
     main {
         padding: 42px 38px;
     }
+
+
+    .explanation {
+        grid-template-columns: 1fr;
+    }
+
+
+    .threshold-info {
+        border-left: 0;
+        border-top: 1px solid #e2e8f0;
+        padding-left: 0;
+        padding-top: 20px;
+    }
+
 }
 
 
 /* =========================================================
    MOBILE
-   ========================================================= */
+========================================================= */
 
 @media (max-width: 900px) {
 
     main {
         padding: 80px 22px 30px;
     }
+
+
+    .controls {
+        grid-template-columns: 1fr;
+    }
+
+
+    .button-group {
+        min-width: 0;
+    }
+
+
+    .similarity-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
 }
 
 
 /* =========================================================
    SMALL MOBILE
-   ========================================================= */
+========================================================= */
 
-@media (max-width: 700px) {
+@media (max-width: 600px) {
 
-    .controls {
-        grid-template-columns: 1fr;
+    main {
+        padding: 75px 15px 25px;
     }
+
+
+    header h1 {
+        font-size: 29px;
+    }
+
+
+    .search-card,
+    .card,
+    .result-card,
+    .explanation {
+        padding: 18px;
+    }
+
+
+    .pipeline {
+        gap: 6px;
+    }
+
+
+    .pipeline b {
+        display: none;
+    }
+
+
+    .pipeline-step {
+        flex: 1 1 45%;
+        justify-content: center;
+    }
+
+
+    .result-top {
+        flex-direction: column;
+    }
+
+
+    .score-area {
+        text-align: left;
+    }
+
+
+    .result-title-area {
+        width: 100%;
+    }
+
+
+    .legend-items {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+
+    .summary-score {
+        font-size: 29px;
+    }
+
 }

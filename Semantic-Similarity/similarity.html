@@ -1,11 +1,333 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BugAI - Semantic Similarity</title><link rel="stylesheet" href="../sidebar.css"><link rel="stylesheet" href="similarity.css"></head>
-<body><div id="sidebar-container"></div><main>
-<header><span>RAG RETRIEVAL</span><h1>Semantic Similarity Search</h1><p>Compare a new bug description with historical defect records using generated embeddings.</p></header>
-<section class="card"><label for="query">Bug Description / Error</label><textarea id="query" rows="7" placeholder="Example: Application throws null pointer exception when browser session is missing..."></textarea>
-<div class="controls"><select id="project"><option value="">All Projects</option><option>Mozilla</option><option>Apache</option><option>Eclipse</option></select><select id="topK"><option>3</option><option>5</option><option>10</option></select><button id="searchButton">Find Similar Defects</button></div></section>
-<section class="pipeline"><span>Query</span><b>→</b><span>Embedding Model</span><b>→</b><span>FAISS Search</span><b>→</b><span>Cosine Similarity</span><b>→</b><span>Rank Results</span></section>
-<section id="results"></section>
-<section class="explanation"><h2>How retrieval works</h2><p>The backend creates semantic embeddings for prepared defect chunks and stores them in a FAISS vector index. A submitted bug is embedded with the same model, searched against the index and ranked by similarity.</p></section>
-</main><script src="../sidebar.js"></script><script src="similarity.js"></script></body></html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        BugAI - Semantic Similarity
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="../sidebar.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="similarity.css"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <div id="sidebar-container"></div>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main>
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header>
+
+            <span>
+                RAG RETRIEVAL
+            </span>
+
+            <h1>
+                Semantic Similarity Search
+            </h1>
+
+            <p>
+                Compare a new bug description with historical
+                defect records using semantic embeddings and
+                FAISS vector search.
+            </p>
+
+        </header>
+
+
+        <!-- =================================================
+             SEARCH CARD
+        ================================================== -->
+
+        <section class="card search-card">
+
+            <div class="form-heading">
+
+                <h2>
+                    Search Historical Defects
+                </h2>
+
+                <p>
+                    Enter the error message, failure behaviour,
+                    or bug description.
+                </p>
+
+            </div>
+
+
+            <label for="query">
+                Bug Description / Error
+            </label>
+
+
+            <textarea
+                id="query"
+                rows="7"
+                placeholder="Example: Database connection refused when loading the dashboard. java.sql.SQLException Connection refused..."
+            ></textarea>
+
+
+            <div class="controls">
+
+                <div class="control-group">
+
+                    <label for="project">
+                        Project
+                    </label>
+
+                    <select id="project">
+
+                        <option value="">
+                            All Projects
+                        </option>
+
+                        <option value="Mozilla">
+                            Mozilla
+                        </option>
+
+                        <option value="Apache">
+                            Apache
+                        </option>
+
+                        <option value="Eclipse">
+                            Eclipse
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="control-group">
+
+                    <label for="topK">
+                        Results
+                    </label>
+
+                    <select id="topK">
+
+                        <option value="3">
+                            3
+                        </option>
+
+                        <option value="5">
+                            5
+                        </option>
+
+                        <option value="10" selected>
+                            10
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="button-group">
+
+                    <label>
+                        &nbsp;
+                    </label>
+
+                    <button
+                        id="searchButton"
+                        class="primary"
+                        type="button"
+                    >
+                        Find Similar Defects
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="keyboard-hint">
+
+                <span>
+                    Tip:
+                </span>
+
+                Press
+                <kbd>Ctrl</kbd>
+                +
+                <kbd>Enter</kbd>
+                to search.
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PIPELINE
+        ================================================== -->
+
+        <section class="pipeline">
+
+            <div class="pipeline-step active">
+                <span class="step-number">1</span>
+                <span>Query</span>
+            </div>
+
+            <b>→</b>
+
+            <div class="pipeline-step active">
+                <span class="step-number">2</span>
+                <span>Embedding Model</span>
+            </div>
+
+            <b>→</b>
+
+            <div class="pipeline-step active">
+                <span class="step-number">3</span>
+                <span>FAISS Search</span>
+            </div>
+
+            <b>→</b>
+
+            <div class="pipeline-step active">
+                <span class="step-number">4</span>
+                <span>Similarity</span>
+            </div>
+
+            <b>→</b>
+
+            <div class="pipeline-step active">
+                <span class="step-number">5</span>
+                <span>Rank Results</span>
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             RESULTS
+        ================================================== -->
+
+        <section id="results"></section>
+
+
+        <!-- =================================================
+             EXPLANATION
+        ================================================== -->
+
+        <section class="explanation">
+
+            <div>
+
+                <span class="section-label">
+                    RETRIEVAL PIPELINE
+                </span>
+
+                <h2>
+                    How retrieval works
+                </h2>
+
+                <p>
+                    The backend creates semantic embeddings
+                    for prepared defect chunks and stores them
+                    in a FAISS vector index.
+                </p>
+
+                <p>
+                    A submitted bug is embedded with the same
+                    model, searched against the index and ranked
+                    by similarity.
+                </p>
+
+            </div>
+
+
+            <div class="threshold-info">
+
+                <h3>
+                    Similarity thresholds
+                </h3>
+
+                <div class="threshold-row">
+
+                    <span class="threshold-badge duplicate">
+                        ≥ 82%
+                    </span>
+
+                    <span>
+                        Duplicate candidate
+                    </span>
+
+                </div>
+
+
+                <div class="threshold-row">
+
+                    <span class="threshold-badge related">
+                        65–81.9%
+                    </span>
+
+                    <span>
+                        Related defect
+                    </span>
+
+                </div>
+
+
+                <div class="threshold-row">
+
+                    <span class="threshold-badge unmatched">
+                        &lt; 65%
+                    </span>
+
+                    <span>
+                        Weak / unmatched
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         SCRIPTS
+    ====================================================== -->
+
+    <script src="../sidebar.js"></script>
+
+    <script src="similarity.js"></script>
+
+</body>
+
+</html>

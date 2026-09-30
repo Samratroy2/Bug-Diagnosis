@@ -1060,7 +1060,7 @@ def _get_project_ids(metadata, target_project):
 
 
 
-def _format_search_result(item, score):
+def _format_search_result(item, score, rerank_score=None):
     """Build the compact historical-defect result."""
 
     result = {
@@ -1081,6 +1081,7 @@ def _format_search_result(item, score):
             "root_cause",
             "confirmed_fix",
             "source",
+            "source_file",
             "timestamp"
         ]
     }
@@ -1092,13 +1093,194 @@ def _format_search_result(item, score):
         item.get("title", "")
     )
 
+    # Keep the original FAISS similarity score for transparency and
+    # compatibility with duplicate detection. The optional rerank score
+    # is used only to order the UI/RAG candidates.
     result["score"] = round(
         float(score),
         4
     )
 
+    if rerank_score is not None:
+        result["rerank_score"] = round(
+            float(rerank_score),
+            4
+        )
+
     return result
 
+
+_SEARCH_STOPWORDS = {
+    "a", "an", "and", "are", "as", "at", "be", "by", "for",
+    "from", "in", "is", "it", "of", "on", "or", "that", "the",
+    "this", "to", "was", "when", "with", "while", "after", "before",
+    "causes", "cause", "causing", "error", "errors", "issue", "issues",
+    "bug", "bugs", "problem", "problems", "fails", "failed", "failure",
+    "failing", "application", "app", "system", "using", "used"
+}
+
+# Terms that describe a bug in general but should not dominate relevance.
+# Domain terms such as payment, database, profile, order, authentication,
+# renderer, etc. remain important and are therefore NOT included here.
+_GENERIC_SEARCH_TERMS = {
+    "crash", "crashes", "crashed", "crashing", "fail", "failed",
+    "calculat", "calculation", "calculations", "total", "amount",
+    "value", "result", "results", "incorrect", "wrong", "issue",
+    "problem", "exception", "error", "errors", "api", "request",
+    "response", "operation", "operations", "handling", "handle"
+}
+
+_SEARCH_SYNONYMS = {
+    "crashes": "crash",
+    "crashed": "crash",
+    "crashing": "crash",
+    "failure": "fail",
+    "failed": "fail",
+    "fails": "fail",
+    "failing": "fail",
+    "calculates": "calculat",
+    "calculated": "calculat",
+    "calculating": "calculat",
+    "calculation": "calculat",
+    "calculations": "calculat",
+    "payments": "payment",
+    "transactions": "transaction",
+    "exceptions": "exception",
+    "connections": "connection",
+    "connecting": "connect",
+    "connected": "connect",
+    "queries": "query",
+    "databases": "database",
+    "servers": "server",
+    "requests": "request",
+    "responses": "response",
+    "profiles": "profile"
+}
+
+
+def _search_tokens(text):
+    """Normalize meaningful query/document terms for lightweight reranking."""
+
+    tokens = re.findall(
+        r"[a-z0-9]+",
+        str(text or "").lower()
+    )
+
+    normalized = []
+
+    for token in tokens:
+        if token in _SEARCH_STOPWORDS:
+            continue
+
+        token = _SEARCH_SYNONYMS.get(token, token)
+
+        if len(token) > 5:
+            if token.endswith("ing"):
+                token = token[:-3]
+            elif token.endswith("ed"):
+                token = token[:-2]
+            elif token.endswith("es"):
+                token = token[:-2]
+            elif token.endswith("s"):
+                token = token[:-1]
+
+        if len(token) >= 2:
+            normalized.append(token)
+
+    return normalized
+
+
+def _lexical_rerank_score(query, item):
+    """Return a 0..1 relevance score using field-aware and domain-aware matching."""
+
+    query_tokens = set(_search_tokens(query))
+    if not query_tokens:
+        return 0.0
+
+    # Generic bug-language is useful context, but should not outrank a
+    # domain/entity match. For example, "total" should not make an unrelated
+    # SQL issue outrank a payment issue when the query says "payment total".
+    domain_tokens = {
+        token for token in query_tokens
+        if token not in _GENERIC_SEARCH_TERMS
+    }
+
+    fields = {
+        "title": (str(item.get("title", "")), 6.0),
+        "affected_component": (str(item.get("affected_component", "")), 5.0),
+        "stack_trace": (str(item.get("stack_trace", "")), 4.0),
+        "description": (str(item.get("description", "")), 3.0),
+        "resolution": (str(item.get("resolution", "")), 1.0)
+    }
+
+    weighted_hit = 0.0
+    weighted_possible = 0.0
+    domain_hit = 0.0
+    domain_possible = 0.0
+    phrase_bonus = 0.0
+
+    query_text = " ".join(_search_tokens(query))
+
+    for field_name, (field_text, weight) in fields.items():
+        field_tokens = set(_search_tokens(field_text))
+        weighted_possible += weight
+
+        if not field_tokens:
+            continue
+
+        overlap = query_tokens & field_tokens
+        if overlap:
+            weighted_hit += weight * (len(overlap) / len(query_tokens))
+
+        if domain_tokens:
+            domain_overlap = domain_tokens & field_tokens
+            domain_possible += weight
+            if domain_overlap:
+                # Domain matches get stronger treatment than generic words.
+                domain_hit += weight * (len(domain_overlap) / len(domain_tokens))
+
+        normalized_field = " ".join(_search_tokens(field_text))
+        if query_text and query_text in normalized_field:
+            phrase_bonus += 0.12 * weight
+
+    base_score = weighted_hit / weighted_possible if weighted_possible else 0.0
+    domain_score = domain_hit / domain_possible if domain_possible else 0.0
+
+    # A title/component domain match is especially valuable. Apply a bounded
+    # bonus so semantic similarity still matters, while unrelated domains are
+    # clearly separated from matching ones.
+    domain_bonus = 0.28 * domain_score if domain_tokens else 0.0
+
+    # If the query has a strong domain term and the candidate contains none of
+    # them, apply a modest penalty. This is what prevents generic high-semantic
+    # matches such as an unrelated SQL "total" issue from beating payment bugs.
+    domain_miss_penalty = 0.0
+    if domain_tokens and domain_score == 0.0:
+        domain_miss_penalty = 0.22
+
+    score = base_score + phrase_bonus + domain_bonus - domain_miss_penalty
+    return max(0.0, min(1.0, score))
+
+
+def _hybrid_rerank(query, candidates):
+    """Rerank FAISS candidates using semantic similarity + domain-aware fields."""
+
+    ranked = []
+
+    for item, semantic_score in candidates:
+        lexical_score = _lexical_rerank_score(query, item)
+
+        # Semantic retrieval finds the neighborhood; field/domain matching
+        # decides which bugs are actually about the requested problem.
+        hybrid_score = (
+            0.55 * float(semantic_score) +
+            0.45 * lexical_score
+        )
+
+        ranked.append((hybrid_score, semantic_score, item))
+
+    ranked.sort(key=lambda row: row[0], reverse=True)
+    return ranked
 
 
 def search_index(
@@ -1107,13 +1289,17 @@ def search_index(
     project=""
 ):
     """
-    Fast semantic search over the existing 1.31M-vector index.
+    Fast hybrid search over the existing 1.31M-vector index.
 
-    Important:
-    - No FAISS disk read per request.
-    - No metadata JSON parse per request.
-    - No full project-vector reconstruction per request.
-    - Existing IndexFlatIP production index is preserved.
+    Stage 1:
+        FAISS semantic retrieval produces a small candidate pool.
+
+    Stage 2:
+        Lightweight lexical reranking checks important words in title,
+        component, description and stack trace.
+
+    This improves relevance without rebuilding the production FAISS index
+    and without scanning the 1.31M-row CSV.
     """
 
     index, metadata = _refresh_search_cache()
@@ -1137,10 +1323,8 @@ def search_index(
 
     requested_project = clean_text(project)
 
-    # Global search only needs a small candidate set.
-    #
-    # Project-filtered searches use a larger candidate set because
-    # Apache is much larger than Mozilla/Eclipse in the current KB.
+    # Retrieve enough candidates for lexical reranking, but keep the pool
+    # small enough that the 1.31M-vector FAISS search remains fast.
     if requested_project:
         search_count = min(
             max(top_k * 100, 1000),
@@ -1149,7 +1333,7 @@ def search_index(
         )
     else:
         search_count = min(
-            max(top_k * 4, 24),
+            max(top_k * 8, 64),
             index.ntotal
         )
 
@@ -1164,19 +1348,21 @@ def search_index(
         else ""
     )
 
-    results = []
+    candidates = []
     seen = set()
 
     for score, idx in zip(
         scores[0],
         ids[0]
     ):
+
         if idx < 0:
             continue
 
         item = metadata[int(idx)]
 
         if target_project:
+
             item_project = canonical_project(
                 item.get("project", ""),
                 item.get("source_file", ""),
@@ -1197,25 +1383,40 @@ def search_index(
 
         seen.add(bug_id)
 
-        results.append(
-            _format_search_result(
+        candidates.append(
+            (
                 item,
-                score
+                float(score)
             )
         )
 
-        if len(results) >= top_k:
-            break
+    ranked = _hybrid_rerank(
+        query,
+        candidates
+    )
+
+    results = []
+
+    for hybrid_score, semantic_score, item in ranked[:top_k]:
+
+        results.append(
+            _format_search_result(
+                item,
+                semantic_score,
+                hybrid_score
+            )
+        )
 
     if target_project:
         print(
             f"[RAG] Returning {len(results)} "
             f"{target_project} results from "
-            f"{search_count:,} candidates.",
+            f"{search_count:,} FAISS candidates with hybrid reranking.",
             flush=True
         )
 
     return results
+
 
 # ============================================================
 # GENERAL HELPERS
@@ -3376,264 +3577,155 @@ def get_index_vector_count():
     "/api/knowledge-base/records"
 )
 def records():
+    """
+    Return Knowledge Base records without scanning 1.31M CSV rows for
+    every text search.
+
+    - Empty search: fast paginated CSV-cache slice.
+    - Text search: semantic FAISS search over the existing production index.
+    - Project + text search: semantic FAISS search constrained to project.
+    """
 
     try:
-
-        # --------------------------------------------------------
-        # PAGINATION
-        # --------------------------------------------------------
-
-        page = int(
-            request.args.get(
-                "page",
-                1
-            )
-        )
-
-        limit = int(
-            request.args.get(
-                "limit",
-                20
-            )
-        )
-
         page = max(
             1,
-            page
+            int(request.args.get("page", 1))
         )
 
         limit = max(
             1,
             min(
-                limit,
+                int(request.args.get("limit", 20)),
                 100
             )
         )
 
-        # --------------------------------------------------------
-        # FILTERS
-        # --------------------------------------------------------
-
-        search = (
-            request.args.get(
-                "search",
-                ""
-            )
-            .strip()
-            .lower()
+        search = clean_text(
+            request.args.get("search", "")
         )
 
-        project = (
-            request.args.get(
-                "project",
-                ""
-            )
-            .strip()
+        project = clean_text(
+            request.args.get("project", "")
         )
 
         # --------------------------------------------------------
-        # LOAD RECORDS
+        # FAST PATH: no search and no project filter
         # --------------------------------------------------------
+        # Do not touch the FAISS metadata or perform semantic search.
+        if not search and not project:
+            all_records = load_records()
+            total_records = len(all_records)
+            total_pages = max(
+                1,
+                math.ceil(total_records / limit)
+            )
 
-        all_records = load_records()
+            page = min(page, total_pages)
+            start = (page - 1) * limit
+            end = start + limit
+
+            display_records = []
+
+            for record in all_records[start:end]:
+                item = dict(record)
+                item["project"] = canonical_record_project(record)
+                display_records.append(item)
+
+            return jsonify({
+                "ok": True,
+                "records": display_records,
+                "page": page,
+                "limit": limit,
+                "total_records": total_records,
+                "total_pages": total_pages,
+                "has_previous": page > 1,
+                "has_next": page < total_pages,
+                "search_mode": "pagination"
+            })
 
         # --------------------------------------------------------
-        # FILTER
+        # SEMANTIC SEARCH PATH
         # --------------------------------------------------------
+        # IMPORTANT: Never scan all 1.31M CSV rows here.
+        # search_index() uses the already-cached FAISS index and metadata.
+        results = search_index(
+            search,
+            top_k=min(max(limit, 20), 50),
+            project=project
+        ) if search else []
 
-        filtered_records = all_records
+        # If only a project filter was supplied, use the cached metadata
+        # membership map rather than scanning defects.csv.
+        if not search and project:
+            metadata = get_search_metadata()
+            target_project = canonical_project(project)
+            project_ids = _get_project_ids(
+                metadata,
+                target_project
+            )
 
-        if project:
+            total_records = len(project_ids)
+            total_pages = max(
+                1,
+                math.ceil(total_records / limit)
+            )
 
-            filtered_records = [
+            page = min(page, total_pages)
+            start = (page - 1) * limit
+            selected_ids = project_ids[start:start + limit]
 
-                record
-
-                for record in filtered_records
-
-                if canonical_project(
-                    record.get(
-                        "project",
-                        ""
-                    )
-                ) == canonical_project(project)
-
+            results = [
+                _format_search_result(
+                    metadata[idx],
+                    1.0
+                )
+                for idx in selected_ids
             ]
 
-        # --------------------------------------------------------
-        # SEARCH
-        # --------------------------------------------------------
-
-        if search:
-
-            filtered_records = [
-
-                record
-
-                for record in filtered_records
-
-                if search in (
-                    " ".join([
-
-                        str(
-                            record.get(
-                                "bug_id",
-                                ""
-                            )
-                        ),
-
-                        str(
-                            record.get(
-                                "project",
-                                ""
-                            )
-                        ),
-
-                        str(
-                            record.get(
-                                "title",
-                                ""
-                            )
-                        ),
-
-                        str(
-                            record.get(
-                                "description",
-                                ""
-                            )
-                        ),
-
-                        str(
-                            record.get(
-                                "stack_trace",
-                                ""
-                            )
-                        ),
-
-                        str(
-                            record.get(
-                                "resolution",
-                                ""
-                            )
-                        ),
-
-                        str(
-                            record.get(
-                                "severity",
-                                ""
-                            )
-                        ),
-
-                        str(
-                            record.get(
-                                "priority",
-                                ""
-                            )
-                        ),
-
-                        str(
-                            record.get(
-                                "affected_component",
-                                ""
-                            )
-                        )
-
-                    ])
-                ).lower()
-
-            ]
-
-        # --------------------------------------------------------
-        # TOTAL AFTER FILTER
-        # --------------------------------------------------------
-
-        total_records = len(
-            filtered_records
-        )
-
-        total_pages = max(
-            1,
-            math.ceil(
-                total_records /
-                limit
-            )
-        )
-
-        # --------------------------------------------------------
-        # CLAMP PAGE
-        # --------------------------------------------------------
-
-        if page > total_pages:
-            page = total_pages
-
-        # --------------------------------------------------------
-        # CURRENT PAGE
-        # --------------------------------------------------------
-
-        start = (
-            page - 1
-        ) * limit
-
-        end = start + limit
-
-        page_records = filtered_records[
-            start:end
-        ]
-
-        # Normalize the project shown by the UI without modifying
-        # defects.csv on disk. This keeps the browser consistent with
-        # the project statistics and project filter.
+        # Convert semantic-search result shape to the same shape expected
+        # by the Knowledge Base frontend.
         display_records = []
 
-        for record in page_records:
-            item = dict(record)
-            item["project"] = canonical_record_project(record)
-            display_records.append(item)
+        for item in results:
+            record = dict(item)
 
-        # --------------------------------------------------------
-        # RESPONSE
-        # --------------------------------------------------------
+            # The UI expects source_file when it is available.
+            if "source_file" not in record:
+                record["source_file"] = item.get(
+                    "source",
+                    ""
+                )
+
+            display_records.append(record)
+
+        total_records = len(display_records)
+        total_pages = max(
+            1,
+            math.ceil(total_records / limit)
+        )
+
+        # Semantic search returns one result page by design.
+        page = 1
 
         return jsonify({
-
-            "ok":
-                True,
-
-            "records":
-                display_records,
-
-            "page":
-                page,
-
-            "limit":
-                limit,
-
-            "total_records":
-                total_records,
-
-            "total_pages":
-                total_pages,
-
-            "has_previous":
-                page > 1,
-
-            "has_next":
-                page < total_pages
-
+            "ok": True,
+            "records": display_records[:limit],
+            "page": page,
+            "limit": limit,
+            "total_records": total_records,
+            "total_pages": total_pages,
+            "has_previous": False,
+            "has_next": False,
+            "search_mode": "semantic",
+            "query": search,
+            "project": project
         })
 
     except Exception as e:
-
         traceback.print_exc()
-
         return jsonify({
-
-            "ok":
-                False,
-
-            "error":
-                str(e)
-
+            "ok": False,
+            "error": str(e)
         }), 500
 
 
