@@ -7,8 +7,6 @@
 
     <title>BugAI — Settings</title>
 
-    <!-- Shared Sidebar CSS -->
-    <!-- Settings Page CSS -->
     <link rel="stylesheet" href="settings.css">
 </head>
 
@@ -19,8 +17,145 @@
     ====================================================== -->
 
     <aside id="bugaiSidebar" class="bugai-sidebar">
-  <div class="sidebar-brand"><div class="brand-logo">B</div><div><div class="brand-name">BugAI</div><div class="brand-subtitle">Intelligent Bug Diagnosis</div></div></div>
-  <nav class="sidebar-navigation"><div class="navigation-label">MAIN</div><a class="sidebar-link" href="../Dashboard/dashboard.html"><span class="nav-icon">⌂</span><span class="nav-text">Dashboard</span></a><a class="sidebar-link" href="../Bug-Submission/bug-submission.html"><span class="nav-icon">＋</span><span class="nav-text">Bug Submission</span></a><a class="sidebar-link" href="../Workflow/workflow.html"><span class="nav-icon">↝</span><span class="nav-text">Workflow</span></a><a class="sidebar-link" href="../Architecture/architecture.html"><span class="nav-icon">◈</span><span class="nav-text">Architecture</span></a><div class="navigation-label">INTELLIGENCE</div><a class="sidebar-link" href="../Knowledge-Base/knowledge-base.html"><span class="nav-icon">▣</span><span class="nav-text">Knowledge Base</span></a><a class="sidebar-link" href="../Semantic-Similarity/similarity.html"><span class="nav-icon">⌕</span><span class="nav-text">Semantic Similarity</span></a><a class="sidebar-link" href="../Validation/validation.html"><span class="nav-icon">✓</span><span class="nav-text">Validation</span></a><div class="navigation-label">SYSTEM</div><a class="sidebar-link" href="../analytics/analytics.html"><span class="nav-icon">▥</span><span class="nav-text">Analytics</span></a><a class="sidebar-link active" href="../Settings/settings.html" aria-current="page"><span class="nav-icon">⚙</span><span class="nav-text">Settings</span></a></nav><div class="sidebar-footer"><div class="sidebar-status"><span class="status-dot"></span><span class="status-text">Backend Connected</span></div><div class="sidebar-version">BugAI · Milestone 4</div></div></aside><button id="sidebarMenuButton" class="sidebar-menu-button" type="button" aria-label="Open navigation" aria-controls="bugaiSidebar" aria-expanded="false">☰</button><div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">B</div>
+
+            <div>
+                <div class="brand-name">BugAI</div>
+
+                <div class="brand-subtitle">
+                    Intelligent Bug Diagnosis
+                </div>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-navigation">
+
+            <div class="navigation-label">
+                MAIN
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Dashboard/dashboard.html"
+            >
+                <span class="nav-icon">⌂</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Bug-Submission/bug-submission.html"
+            >
+                <span class="nav-icon">＋</span>
+                <span class="nav-text">Bug Submission</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Workflow/workflow.html"
+            >
+                <span class="nav-icon">↝</span>
+                <span class="nav-text">Workflow</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Architecture/architecture.html"
+            >
+                <span class="nav-icon">◈</span>
+                <span class="nav-text">Architecture</span>
+            </a>
+
+
+            <div class="navigation-label">
+                INTELLIGENCE
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Knowledge-Base/knowledge-base.html"
+            >
+                <span class="nav-icon">▣</span>
+                <span class="nav-text">Knowledge Base</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Semantic-Similarity/similarity.html"
+            >
+                <span class="nav-icon">⌕</span>
+                <span class="nav-text">Semantic Similarity</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Validation/validation.html"
+            >
+                <span class="nav-icon">✓</span>
+                <span class="nav-text">Validation</span>
+            </a>
+
+
+            <div class="navigation-label">
+                SYSTEM
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../analytics/analytics.html"
+            >
+                <span class="nav-icon">▥</span>
+                <span class="nav-text">Analytics</span>
+            </a>
+
+
+            <a
+                class="sidebar-link active"
+                href="../Settings/settings.html"
+                aria-current="page"
+            >
+                <span class="nav-icon">⚙</span>
+                <span class="nav-text">Settings</span>
+            </a>
+
+        </nav>
+
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+
+            <div class="sidebar-status">
+
+                <span class="status-dot"></span>
+
+                <span class="status-text">
+                    Backend Connected
+                </span>
+
+            </div>
+
+
+            <div class="sidebar-version">
+                BugAI · Milestone 4
+            </div>
+
+        </div>
+
+    </aside>
 
 
     <!-- =====================================================
@@ -32,6 +167,8 @@
         class="sidebar-menu-button"
         type="button"
         aria-label="Toggle navigation"
+        aria-controls="bugaiSidebar"
+        aria-expanded="false"
     >
         <span></span>
         <span></span>
@@ -55,9 +192,7 @@
 
     <main class="settings-page">
 
-        <!-- =================================================
-             PAGE HEADER
-        ================================================== -->
+        <!-- PAGE HEADER -->
 
         <section class="settings-header">
 
@@ -119,6 +254,7 @@
 
 
                     <!-- LIGHT -->
+
                     <button
                         class="appearance-option"
                         data-theme="light"
@@ -150,6 +286,7 @@
 
 
                     <!-- DARK -->
+
                     <button
                         class="appearance-option"
                         data-theme="dark"
@@ -181,6 +318,7 @@
 
 
                     <!-- SYSTEM -->
+
                     <button
                         class="appearance-option"
                         data-theme="system"
@@ -430,7 +568,7 @@
 
 
             <!-- =================================================
-                 SYSTEM INFORMATION
+                 SYSTEM PREFERENCES
             ================================================== -->
 
             <div class="settings-card">
@@ -490,7 +628,7 @@
                 <div class="setting-divider"></div>
 
 
-                <!-- CONFIRM BEFORE RESET -->
+                <!-- CONFIRM RESET -->
 
                 <div class="setting-row">
 
@@ -501,7 +639,8 @@
                         </strong>
 
                         <span>
-                            Ask for confirmation before resetting settings.
+                            Ask for confirmation before restoring
+                            all settings to their defaults.
                         </span>
 
                     </div>
@@ -524,20 +663,29 @@
 
 
             <!-- =================================================
-                 RESET
+                 RESET SETTINGS
             ================================================== -->
 
-            <div class="danger-card">
+            <div class="settings-card reset-card">
 
-                <div>
+                <div class="settings-card-header">
 
-                    <h2>
-                        Reset Settings
-                    </h2>
+                    <div class="settings-card-icon reset-icon">
+                        ↻
+                    </div>
 
-                    <p>
-                        Restore all BugAI settings to their default values.
-                    </p>
+                    <div>
+
+                        <h2>
+                            Reset Settings
+                        </h2>
+
+                        <p>
+                            Restore all BugAI preferences to their
+                            default values.
+                        </p>
+
+                    </div>
 
                 </div>
 
@@ -547,15 +695,62 @@
                     class="reset-button"
                     type="button"
                 >
-                    Reset to Default
+                    Reset All Settings
                 </button>
 
             </div>
 
 
             <!-- =================================================
-                 SAVE STATUS
+                 LOGOUT
             ================================================== -->
+
+            <div class="settings-card logout-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon logout-card-icon">
+                        ↪
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Logout
+                        </h2>
+
+                        <p>
+                            Sign out of your BugAI account on this device.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    id="logoutButton"
+                    class="logout-page-button"
+                    type="button"
+                >
+
+                    <span
+                        class="logout-icon"
+                        aria-hidden="true"
+                    >
+                        ↪
+                    </span>
+
+                    <span>
+                        Logout
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <!-- SAVE STATUS -->
 
             <div
                 id="saveStatus"
@@ -563,7 +758,6 @@
             >
                 ✓ Settings are automatically saved
             </div>
-
 
         </section>
 
@@ -574,38 +768,11 @@
          JAVASCRIPT
     ====================================================== -->
 
-    <!-- Sidebar behavior only — does NOT load sidebar.html -->
-    <!-- Settings functionality -->
-    <script src="settings.js"></script>
+    <script
+        type="module"
+        src="settings.js"
+    ></script>
 
-
-<script>
-(function(){
-  const SETTINGS_KEY='bugai-settings', LEGACY_KEY='bugai-theme';
-  function getTheme(){
-    try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}'); if(s.theme) return s.theme;}catch(e){}
-    return localStorage.getItem(LEGACY_KEY)||'system';
-  }
-  function applyTheme(){
-    const t=getTheme(), dark=t==='dark'||(t==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.classList.toggle('dark-mode',dark);
-    document.documentElement.classList.toggle('dark',dark);
-    document.body.classList.toggle('dark-mode',dark);
-    document.body.classList.toggle('dark',dark);
-  }
-  function initMenu(){
-    const s=document.getElementById('bugaiSidebar'), b=document.getElementById('sidebarMenuButton'), o=document.getElementById('sidebarOverlay');
-    if(!s||!b||!o)return;
-    const close=()=>{s.classList.remove('open');o.classList.remove('show');b.setAttribute('aria-expanded','false');};
-    b.addEventListener('click',()=>{const open=s.classList.toggle('open');o.classList.toggle('show',open);b.setAttribute('aria-expanded',String(open));});
-    o.addEventListener('click',close); document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
-    window.addEventListener('resize',()=>{if(window.innerWidth>900)close();});
-  }
-  document.addEventListener('DOMContentLoaded',()=>{applyTheme();initMenu();});
-  window.addEventListener('storage',e=>{if(e.key===SETTINGS_KEY||e.key===LEGACY_KEY)applyTheme();});
-  if(window.matchMedia)window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',applyTheme);
-})();
-</script>
 </body>
 
 </html>

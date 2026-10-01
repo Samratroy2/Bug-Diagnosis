@@ -5,3 +5,4 @@ logs/
 data/defects.csvdata/analytics.db
 data/defects.csv
 data/analytics.db
+firebase.js

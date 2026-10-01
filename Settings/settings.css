@@ -2,7 +2,7 @@
    BUGAI SETTINGS PAGE
    Common BugAI visual system
    Self-contained sidebar
-   ========================================================= */
+========================================================= */
 
 * {
     box-sizing: border-box;
@@ -14,10 +14,18 @@ html {
 
 body {
     margin: 0;
+
     background: #f5f7fb;
     color: #102a43;
-    font-family: Inter, "Segoe UI", Arial, sans-serif;
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
     line-height: 1.55;
+
     transition:
         background-color 0.25s ease,
         color 0.25s ease;
@@ -25,11 +33,12 @@ body {
 
 
 /* =========================================================
-   BUGAI SIDEBAR
-   ========================================================= */
+   SIDEBAR
+========================================================= */
 
 .bugai-sidebar {
     position: fixed;
+
     top: 0;
     left: 0;
 
@@ -52,7 +61,7 @@ body {
 
 /* =========================================================
    SIDEBAR BRAND
-   ========================================================= */
+========================================================= */
 
 .sidebar-brand {
     display: flex;
@@ -80,7 +89,6 @@ body {
     border-radius: 10px;
 
     background: #2563eb;
-
     color: #ffffff;
 
     font-size: 20px;
@@ -109,7 +117,7 @@ body {
 
 /* =========================================================
    SIDEBAR NAVIGATION
-   ========================================================= */
+========================================================= */
 
 .sidebar-navigation {
     flex: 1;
@@ -192,7 +200,7 @@ body {
 
 /* =========================================================
    SIDEBAR FOOTER
-   ========================================================= */
+========================================================= */
 
 .sidebar-footer {
     padding: 16px;
@@ -225,7 +233,12 @@ body {
     background: #22c55e;
 
     box-shadow:
-        0 0 0 3px rgba(34, 197, 94, 0.12);
+        0 0 0 3px rgba(
+            34,
+            197,
+            94,
+            0.12
+        );
 }
 
 .status-text {
@@ -243,7 +256,7 @@ body {
 
 /* =========================================================
    MOBILE SIDEBAR BUTTON
-   ========================================================= */
+========================================================= */
 
 .sidebar-menu-button {
     display: none;
@@ -263,20 +276,41 @@ body {
     border-radius: 10px;
 
     background: #0f172a;
-
     color: #ffffff;
 
     border: 1px solid #1e293b;
 
-    font-size: 21px;
-
     align-items: center;
     justify-content: center;
+
+    flex-direction: column;
+
+    gap: 5px;
 
     cursor: pointer;
 
     box-shadow:
-        0 5px 16px rgba(15, 23, 42, 0.2);
+        0 5px 16px rgba(
+            15,
+            23,
+            42,
+            0.2
+        );
+}
+
+.sidebar-menu-button span {
+    width: 20px;
+    height: 2px;
+
+    display: block;
+
+    border-radius: 2px;
+
+    background: #ffffff;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
 }
 
 .sidebar-menu-button:hover {
@@ -285,8 +319,8 @@ body {
 
 
 /* =========================================================
-   SIDEBAR OVERLAY
-   ========================================================= */
+   MOBILE OVERLAY
+========================================================= */
 
 .sidebar-overlay {
     display: none;
@@ -298,7 +332,12 @@ body {
     z-index: 900;
 
     background:
-        rgba(15, 23, 42, 0.55);
+        rgba(
+            15,
+            23,
+            42,
+            0.55
+        );
 
     backdrop-filter: blur(2px);
 }
@@ -310,7 +349,7 @@ body {
 
 /* =========================================================
    SETTINGS PAGE
-   ========================================================= */
+========================================================= */
 
 .settings-page {
     margin-left: 250px;
@@ -327,7 +366,7 @@ body {
 
 /* =========================================================
    SETTINGS HEADER
-   ========================================================= */
+========================================================= */
 
 .settings-header {
     width: 100%;
@@ -375,7 +414,7 @@ body {
 
 /* =========================================================
    SETTINGS CONTAINER
-   ========================================================= */
+========================================================= */
 
 .settings-container {
     width: 100%;
@@ -393,7 +432,7 @@ body {
 
 /* =========================================================
    SETTINGS CARD
-   ========================================================= */
+========================================================= */
 
 .settings-card {
     width: 100%;
@@ -407,7 +446,12 @@ body {
     border-radius: 16px;
 
     box-shadow:
-        0 4px 16px rgba(15, 23, 42, 0.04);
+        0 4px 16px rgba(
+            15,
+            23,
+            42,
+            0.04
+        );
 
     transition:
         background-color 0.25s ease,
@@ -417,8 +461,8 @@ body {
 
 
 /* =========================================================
-   SETTINGS CARD HEADER
-   ========================================================= */
+   CARD HEADER
+========================================================= */
 
 .settings-card-header {
     display: flex;
@@ -465,13 +509,16 @@ body {
 
 /* =========================================================
    APPEARANCE OPTIONS
-   ========================================================= */
+========================================================= */
 
 .appearance-options {
     display: grid;
 
     grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
 
     gap: 14px;
 }
@@ -513,7 +560,12 @@ body {
     transform: translateY(-1px);
 
     box-shadow:
-        0 5px 15px rgba(15, 23, 42, 0.05);
+        0 5px 15px rgba(
+            15,
+            23,
+            42,
+            0.05
+        );
 }
 
 .appearance-option.selected {
@@ -522,7 +574,12 @@ body {
     background: #eff6ff;
 
     box-shadow:
-        0 0 0 1px rgba(37, 99, 235, 0.08);
+        0 0 0 1px rgba(
+            37,
+            99,
+            235,
+            0.08
+        );
 }
 
 .appearance-icon {
@@ -579,7 +636,7 @@ body {
 
 /* =========================================================
    SETTING ROW
-   ========================================================= */
+========================================================= */
 
 .setting-row {
     display: flex;
@@ -617,7 +674,7 @@ body {
 
 /* =========================================================
    DIVIDER
-   ========================================================= */
+========================================================= */
 
 .setting-divider {
     height: 1px;
@@ -630,7 +687,7 @@ body {
 
 /* =========================================================
    TOGGLE SWITCH
-   ========================================================= */
+========================================================= */
 
 .switch {
     position: relative;
@@ -680,7 +737,12 @@ body {
     border-radius: 50%;
 
     box-shadow:
-        0 1px 4px rgba(0, 0, 0, 0.2);
+        0 1px 4px rgba(
+            0,
+            0,
+            0,
+            0.2
+        );
 
     transition: 0.25s;
 }
@@ -695,8 +757,8 @@ body {
 
 
 /* =========================================================
-   ANALYSIS MODE SELECT
-   ========================================================= */
+   ANALYSIS MODE
+========================================================= */
 
 #analysisMode {
     min-width: 150px;
@@ -730,49 +792,27 @@ body {
     border-color: #2563eb;
 
     box-shadow:
-        0 0 0 3px rgba(37, 99, 235, 0.1);
+        0 0 0 3px rgba(
+            37,
+            99,
+            235,
+            0.1
+        );
 }
 
 
 /* =========================================================
-   DANGER / RESET CARD
-   ========================================================= */
+   RESET CARD
+========================================================= */
 
-.danger-card {
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 25px;
-
-    padding: 24px 28px;
-
+.reset-card {
+    border-color: #fecaca;
     background: #fffafa;
-
-    border: 1px solid #fecaca;
-
-    border-radius: 16px;
-
-    transition:
-        background-color 0.25s ease,
-        border-color 0.25s ease;
 }
 
-.danger-card h2 {
-    margin: 0 0 5px;
-
-    color: #991b1b;
-
-    font-size: 16px;
-}
-
-.danger-card p {
-    margin: 0;
-
-    color: #7f1d1d;
-
-    font-size: 12px;
+.reset-icon {
+    background: #fef2f2;
+    color: #dc2626;
 }
 
 .reset-button {
@@ -809,8 +849,100 @@ body {
 
 
 /* =========================================================
+   LOGOUT CARD
+========================================================= */
+
+.logout-card {
+    border-color: #fecaca;
+}
+
+.logout-card-icon {
+    background: #fef2f2;
+
+    color: #dc2626;
+}
+
+.logout-page-button {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    min-width: 130px;
+    min-height: 42px;
+
+    padding: 10px 18px;
+
+    border: 1px solid #dc2626;
+
+    border-radius: 9px;
+
+    background: #dc2626;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.logout-page-button:hover {
+    background: #b91c1c;
+
+    border-color: #b91c1c;
+
+    transform: translateY(-1px);
+}
+
+.logout-page-button:active {
+    transform: translateY(0);
+}
+
+.logout-page-button:disabled {
+    cursor: wait;
+
+    opacity: 0.65;
+}
+
+.logout-icon {
+    font-size: 17px;
+
+    line-height: 1;
+}
+
+.logout-page-button.logging-out
+.logout-icon {
+    animation:
+        logoutSpin 0.8s linear infinite;
+}
+
+@keyframes logoutSpin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =========================================================
    SAVE STATUS
-   ========================================================= */
+========================================================= */
 
 .save-status {
     padding-top: 4px;
@@ -825,7 +957,7 @@ body {
 
 /* =========================================================
    DARK MODE
-   ========================================================= */
+========================================================= */
 
 html.dark-mode body,
 html.dark body,
@@ -836,6 +968,7 @@ body.dark {
     color: #e2e8f0;
 }
 
+
 html.dark-mode .settings-page,
 html.dark .settings-page,
 body.dark-mode .settings-page,
@@ -845,12 +978,14 @@ body.dark .settings-page {
     color: #e2e8f0;
 }
 
+
 html.dark-mode .settings-header h1,
 html.dark .settings-header h1,
 body.dark-mode .settings-header h1,
 body.dark .settings-header h1 {
     color: #f8fafc;
 }
+
 
 html.dark-mode .settings-header p,
 html.dark .settings-header p,
@@ -883,6 +1018,7 @@ body.dark .settings-card-header h2 {
     color: #f8fafc;
 }
 
+
 html.dark-mode .settings-card-header p,
 html.dark .settings-card-header p,
 body.dark-mode .settings-card-header p,
@@ -897,7 +1033,7 @@ html.dark-mode .settings-card-icon,
 html.dark .settings-card-icon,
 body.dark-mode .settings-card-icon,
 body.dark .settings-card-icon {
-    background: #263b59;
+    background: #172554;
 }
 
 
@@ -907,35 +1043,41 @@ html.dark-mode .appearance-option,
 html.dark .appearance-option,
 body.dark-mode .appearance-option,
 body.dark .appearance-option {
-    background: #172033;
+    background: #0f172a;
 
     border-color: #334155;
 
-    color: #f1f5f9;
+    color: #e2e8f0;
 }
+
 
 html.dark-mode .appearance-option:hover,
 html.dark .appearance-option:hover,
 body.dark-mode .appearance-option:hover,
 body.dark .appearance-option:hover {
-    border-color: #64748b;
+    border-color: #475569;
+
+    background: #172033;
 }
+
 
 html.dark-mode .appearance-option.selected,
 html.dark .appearance-option.selected,
 body.dark-mode .appearance-option.selected,
 body.dark .appearance-option.selected {
-    background: #172f52;
+    background: #172554;
 
     border-color: #3b82f6;
 }
+
 
 html.dark-mode .appearance-option strong,
 html.dark .appearance-option strong,
 body.dark-mode .appearance-option strong,
 body.dark .appearance-option strong {
-    color: #f1f5f9;
+    color: #f8fafc;
 }
+
 
 html.dark-mode .appearance-option small,
 html.dark .appearance-option small,
@@ -945,7 +1087,7 @@ body.dark .appearance-option small {
 }
 
 
-/* Setting descriptions */
+/* Setting text */
 
 html.dark-mode .setting-description strong,
 html.dark .setting-description strong,
@@ -953,6 +1095,7 @@ body.dark-mode .setting-description strong,
 body.dark .setting-description strong {
     color: #f1f5f9;
 }
+
 
 html.dark-mode .setting-description span,
 html.dark .setting-description span,
@@ -980,47 +1123,50 @@ body.dark-mode #analysisMode,
 body.dark #analysisMode {
     background: #0f172a;
 
-    color: #f8fafc;
-
     border-color: #475569;
+
+    color: #f8fafc;
 }
 
 
-/* Danger */
+/* Reset */
 
-html.dark-mode .danger-card,
-html.dark .danger-card,
-body.dark-mode .danger-card,
-body.dark .danger-card {
-    background: #241416;
+html.dark-mode .reset-card,
+html.dark .reset-card,
+body.dark-mode .reset-card,
+body.dark .reset-card {
+    background: #1e293b;
 
     border-color: #7f1d1d;
 }
 
-html.dark-mode .danger-card h2,
-html.dark .danger-card h2,
-body.dark-mode .danger-card h2,
-body.dark .danger-card h2 {
-    color: #fca5a5;
+
+html.dark-mode .reset-icon,
+html.dark .reset-icon,
+body.dark-mode .reset-icon,
+body.dark .reset-icon {
+    background: rgba(
+        220,
+        38,
+        38,
+        0.12
+    );
+
+    color: #f87171;
 }
 
-html.dark-mode .danger-card p,
-html.dark .danger-card p,
-body.dark-mode .danger-card p,
-body.dark .danger-card p {
-    color: #fca5a5;
-}
 
 html.dark-mode .reset-button,
 html.dark .reset-button,
 body.dark-mode .reset-button,
 body.dark .reset-button {
-    background: #1e293b;
-
-    color: #fca5a5;
+    background: transparent;
 
     border-color: #ef4444;
+
+    color: #f87171;
 }
+
 
 html.dark-mode .reset-button:hover,
 html.dark .reset-button:hover,
@@ -1029,6 +1175,53 @@ body.dark .reset-button:hover {
     background: #dc2626;
 
     color: #ffffff;
+}
+
+
+/* Logout */
+
+html.dark-mode .logout-card,
+html.dark .logout-card,
+body.dark-mode .logout-card,
+body.dark .logout-card {
+    border-color: #7f1d1d;
+}
+
+
+html.dark-mode .logout-card-icon,
+html.dark .logout-card-icon,
+body.dark-mode .logout-card-icon,
+body.dark .logout-card-icon {
+    background: rgba(
+        220,
+        38,
+        38,
+        0.12
+    );
+
+    color: #f87171;
+}
+
+
+html.dark-mode .logout-page-button,
+html.dark .logout-page-button,
+body.dark-mode .logout-page-button,
+body.dark .logout-page-button {
+    background: #dc2626;
+
+    border-color: #dc2626;
+
+    color: #ffffff;
+}
+
+
+html.dark-mode .logout-page-button:hover,
+html.dark .logout-page-button:hover,
+body.dark-mode .logout-page-button:hover,
+body.dark .logout-page-button:hover {
+    background: #b91c1c;
+
+    border-color: #b91c1c;
 }
 
 
@@ -1043,28 +1236,20 @@ body.dark .save-status {
 
 
 /* =========================================================
-   RESPONSIVE — TABLET
-   ========================================================= */
+   RESPONSIVE
+========================================================= */
 
 @media (max-width: 1200px) {
 
     .settings-page {
         padding:
-            42px
             38px
+            35px
             55px;
     }
 
-    .settings-header,
-    .settings-container {
-        max-width: 100%;
-    }
 }
 
-
-/* =========================================================
-   RESPONSIVE — MOBILE SIDEBAR
-   ========================================================= */
 
 @media (max-width: 900px) {
 
@@ -1074,131 +1259,178 @@ body.dark .save-status {
 
         transition:
             transform 0.25s ease;
-
-        box-shadow:
-            10px 0 30px rgba(0, 0, 0, 0.2);
     }
+
 
     .bugai-sidebar.open {
         transform:
             translateX(0);
     }
 
+
     .sidebar-menu-button {
         display: flex;
     }
+
 
     .settings-page {
         margin-left: 0;
 
         padding:
-            80px
-            22px
-            50px;
+            85px
+            24px
+            45px;
     }
+
 
     .appearance-options {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
+
 }
 
-
-/* =========================================================
-   RESPONSIVE — SMALL MOBILE
-   ========================================================= */
 
 @media (max-width: 600px) {
 
     .settings-page {
         padding:
-            75px
+            78px
             15px
-            40px;
+            35px;
     }
+
 
     .settings-header h1 {
         font-size: 27px;
     }
 
+
     .settings-header p {
-        font-size: 14px;
+        font-size: 13px;
     }
+
 
     .settings-card {
         padding:
-            21px
-            18px;
+            21px 18px;
     }
 
+
     .settings-card-header {
+        align-items: flex-start;
+
         gap: 12px;
     }
 
-    .settings-card-icon {
-        width: 42px;
-        height: 42px;
 
-        font-size: 19px;
+    .settings-card-icon {
+        width: 40px;
+        height: 40px;
+
+        font-size: 18px;
     }
+
+
+    .settings-card-header h2 {
+        font-size: 16px;
+    }
+
 
     .setting-row {
         align-items: flex-start;
+
+        gap: 20px;
     }
 
-    .setting-description {
-        max-width: calc(100% - 60px);
-    }
 
     .setting-description span {
-        max-width: 100%;
+        max-width: none;
     }
 
-    .danger-card {
-        flex-direction: column;
 
-        align-items: flex-start;
-
-        padding:
-            21px
-            18px;
+    #analysisMode {
+        min-width: 125px;
     }
 
-    .reset-button {
+
+    .reset-button,
+    .logout-page-button {
         width: 100%;
     }
+
+}
+
+
+@media (max-width: 420px) {
+
+    .settings-page {
+        padding:
+            75px
+            12px
+            30px;
+    }
+
+
+    .settings-card {
+        padding:
+            18px 15px;
+    }
+
+
+    .settings-card-header {
+        flex-direction: row;
+    }
+
+
+    .setting-row {
+        flex-direction: column;
+    }
+
+
+    .switch {
+        align-self: flex-end;
+    }
+
+
+    #analysisMode {
+        width: 100%;
+    }
+
 }
 
 
 /* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
+   ACCESSIBILITY
+========================================================= */
 
-@media (max-width: 430px) {
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible {
+    outline: 3px solid rgba(
+        37,
+        99,
+        235,
+        0.35
+    );
 
-    .sidebar-menu-button {
-        top: 14px;
-        left: 14px;
+    outline-offset: 2px;
+}
 
-        width: 40px;
-        height: 40px;
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+
+        animation-duration: 0.01ms !important;
+
+        animation-iteration-count: 1 !important;
+
+        transition-duration: 0.01ms !important;
     }
 
-    .settings-page {
-        padding:
-            70px
-            14px
-            35px;
-    }
-
-    .settings-header h1 {
-        font-size: 25px;
-    }
-
-    .settings-card-header h2 {
-        font-size: 17px;
-    }
-
-    .appearance-option {
-        padding: 15px;
-    }
 }

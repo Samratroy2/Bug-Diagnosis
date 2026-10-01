@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Login to BugAI - Intelligent Bug Diagnosis Platform"
+    >
+
+    <title>Login | BugAI</title>
+
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+    <main class="auth-page">
+
+        <section
+            class="auth-card"
+            aria-labelledby="loginTitle"
+        >
+
+            <!-- =================================================
+                 BRAND
+                 ================================================= -->
+
+            <div class="brand">
+
+                <div
+                    class="brand-logo"
+                    aria-hidden="true"
+                >
+                    B
+                </div>
+
+                <div class="brand-text">
+
+                    <h1>BugAI</h1>
+
+                    <span>
+                        Intelligent Bug Diagnosis
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 HEADING
+                 ================================================= -->
+
+            <div class="auth-heading">
+
+                <h2 id="loginTitle">
+                    Welcome back
+                </h2>
+
+                <p>
+                    Login to continue to your BugAI dashboard.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 MESSAGE
+                 ================================================= -->
+
+            <div
+                id="message"
+                class="message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+
+            <!-- =================================================
+                 LOGIN FORM
+                 ================================================= -->
+
+            <form
+                id="loginForm"
+                class="auth-form"
+                novalidate
+            >
+
+                <!-- Email -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span
+                            class="input-icon"
+                            aria-hidden="true"
+                        >
+                            ✉
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            inputmode="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="form-group">
+
+                    <div class="label-row">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <a
+                            href="#"
+                            id="forgotPassword"
+                        >
+                            Forgot password?
+                        </a>
+
+                    </div>
+
+
+                    <div class="input-wrapper">
+
+                        <span
+                            class="input-icon"
+                            aria-hidden="true"
+                        >
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="togglePassword"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >
+                            Show
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Remember Me -->
+
+                <div class="remember-row">
+
+                    <label class="checkbox-label">
+
+                        <input
+                            type="checkbox"
+                            id="rememberMe"
+                            name="rememberMe"
+                        >
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <!-- Login Button -->
+
+                <button
+                    type="submit"
+                    id="loginButton"
+                    class="primary-button"
+                >
+
+                    <span id="loginButtonText">
+                        Login
+                    </span>
+
+                    <span
+                        id="loginSpinner"
+                        class="spinner"
+                        aria-hidden="true"
+                    ></span>
+
+                </button>
+
+            </form>
+
+
+            <!-- =================================================
+                 CREATE ACCOUNT
+                 ================================================= -->
+
+            <div class="switch-auth">
+
+                <span>
+                    Don't have an account?
+                </span>
+
+                <a
+                    href="../Create-Account/create-account.html"
+                >
+                    Create account
+                </a>
+
+            </div>
+
+
+            <!-- =================================================
+                 FOOTER
+                 ================================================= -->
+
+            <div class="auth-footer">
+
+                <span>
+                    BugAI
+                </span>
+
+                <span aria-hidden="true">
+                    •
+                </span>
+
+                <span>
+                    Intelligent Bug Diagnosis Platform
+                </span>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script
+        type="module"
+        src="login.js"
+    ></script>
+
+</body>
+</html>

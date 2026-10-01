@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Create Account | BugAI</title>
+
+    <link
+        rel="stylesheet"
+        href="create-account.css"
+    >
+
+</head>
+
+<body>
+
+    <main class="auth-page">
+
+        <section class="auth-card">
+
+            <!-- Brand -->
+            <div class="brand">
+
+                <div class="brand-logo">
+                    B
+                </div>
+
+                <div class="brand-text">
+
+                    <h1>BugAI</h1>
+
+                    <span>
+                        Intelligent Bug Diagnosis
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Heading -->
+            <div class="auth-heading">
+
+                <h2>Create your account</h2>
+
+                <p>
+                    Create an account to start using BugAI.
+                </p>
+
+            </div>
+
+
+            <!-- Message -->
+            <div
+                id="message"
+                class="message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+
+            <!-- Form -->
+            <form
+                id="createAccountForm"
+                class="auth-form"
+            >
+
+                <!-- Name -->
+                <div class="form-group">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            👤
+                        </span>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Email -->
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Create a password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="togglePassword"
+                        >
+                            Show
+                        </button>
+
+                    </div>
+
+                    <small class="input-help">
+                        Password must contain at least 6 characters.
+                    </small>
+
+                </div>
+
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+
+                    <label for="confirmPassword">
+                        Confirm Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirm your password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="toggleConfirmPassword"
+                        >
+                            Show
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Create Account -->
+                <button
+                    type="submit"
+                    id="createAccountButton"
+                    class="primary-button"
+                >
+
+                    <span id="createAccountButtonText">
+                        Create Account
+                    </span>
+
+                    <span
+                        id="createAccountSpinner"
+                        class="spinner"
+                        aria-hidden="true"
+                    ></span>
+
+                </button>
+
+            </form>
+
+
+            <!-- Login -->
+            <div class="switch-auth">
+
+                <span>
+                    Already have an account?
+                </span>
+
+                <a href="../Login/login.html">
+                    Login
+                </a>
+
+            </div>
+
+
+            <!-- Footer -->
+            <div class="auth-footer">
+
+                <span>BugAI</span>
+
+                <span>•</span>
+
+                <span>
+                    Intelligent Bug Diagnosis Platform
+                </span>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script
+        type="module"
+        src="create-account.js"
+    ></script>
+
+</body>
+</html>

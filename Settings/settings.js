@@ -1,17 +1,242 @@
 /* =========================================================
    BUGAI SETTINGS
-========================================================= */
+   ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+import {
+    auth,
+    signOut
+} from "../firebase.js";
 
-    initializeSettings();
 
-});
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        initializeSettings();
+
+        initializeSidebar();
+
+        initializeLogout();
+
+    }
+);
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+function initializeLogout() {
+
+    const logoutButton =
+        document.getElementById("logoutButton");
+
+    if (!logoutButton) {
+        return;
+    }
+
+
+    logoutButton.addEventListener(
+        "click",
+        async () => {
+
+            const confirmed =
+                window.confirm(
+                    "Are you sure you want to logout?"
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            logoutButton.disabled = true;
+
+            logoutButton.classList.add(
+                "logging-out"
+            );
+
+
+            try {
+
+                /*
+                 * Firebase authentication is handled
+                 * through the shared firebase.js file.
+                 */
+                await signOut(auth);
+
+
+                /*
+                 * Redirect to the separate login page.
+                 */
+                window.location.href =
+                    "../Login/login.html";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Logout failed:",
+                    error
+                );
+
+
+                logoutButton.disabled = false;
+
+                logoutButton.classList.remove(
+                    "logging-out"
+                );
+
+
+                showStatus(
+                    "Logout failed. Please try again."
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+function initializeSidebar() {
+
+    const sidebar =
+        document.getElementById(
+            "bugaiSidebar"
+        );
+
+
+    const button =
+        document.getElementById(
+            "sidebarMenuButton"
+        );
+
+
+    const overlay =
+        document.getElementById(
+            "sidebarOverlay"
+        );
+
+
+    if (
+        !sidebar ||
+        !button ||
+        !overlay
+    ) {
+        return;
+    }
+
+
+    const closeSidebar = () => {
+
+        sidebar.classList.remove(
+            "open"
+        );
+
+
+        overlay.classList.remove(
+            "show"
+        );
+
+
+        button.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+
+        document.body.classList.remove(
+            "sidebar-open"
+        );
+
+    };
+
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            const isOpen =
+                sidebar.classList.toggle(
+                    "open"
+                );
+
+
+            overlay.classList.toggle(
+                "show",
+                isOpen
+            );
+
+
+            button.setAttribute(
+                "aria-expanded",
+                String(isOpen)
+            );
+
+
+            document.body.classList.toggle(
+                "sidebar-open",
+                isOpen
+            );
+
+        }
+    );
+
+
+    overlay.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeSidebar();
+
+            }
+
+        }
+    );
+
+
+    window.addEventListener(
+        "resize",
+        () => {
+
+            if (
+                window.innerWidth > 900
+            ) {
+
+                closeSidebar();
+
+            }
+
+        }
+    );
+
+}
 
 
 /* =========================================================
    DEFAULT SETTINGS
-========================================================= */
+   ========================================================= */
 
 const DEFAULT_SETTINGS = {
 
@@ -33,13 +258,16 @@ const DEFAULT_SETTINGS = {
 
 
 /* =========================================================
-   LOAD SETTINGS
-========================================================= */
+   GET SETTINGS
+   ========================================================= */
 
 function getSettings() {
 
     const saved =
-        localStorage.getItem("bugai-settings");
+        localStorage.getItem(
+            "bugai-settings"
+        );
+
 
     if (!saved) {
 
@@ -49,11 +277,15 @@ function getSettings() {
 
     }
 
+
     try {
 
         return {
+
             ...DEFAULT_SETTINGS,
+
             ...JSON.parse(saved)
+
         };
 
     } catch (error) {
@@ -62,6 +294,7 @@ function getSettings() {
             "Unable to load BugAI settings:",
             error
         );
+
 
         return {
             ...DEFAULT_SETTINGS
@@ -74,7 +307,7 @@ function getSettings() {
 
 /* =========================================================
    SAVE SETTINGS
-========================================================= */
+   ========================================================= */
 
 function saveSettings(settings) {
 
@@ -85,24 +318,27 @@ function saveSettings(settings) {
 
 
     /*
-       Keep these individual keys too,
-       because other BugAI pages can use them.
-    */
+     * Keep individual storage keys for compatibility
+     * with other BugAI pages.
+     */
 
     localStorage.setItem(
         "bugai-theme",
         settings.theme
     );
 
+
     localStorage.setItem(
         "bugai-notifications",
         settings.notifications
     );
 
+
     localStorage.setItem(
         "bugai-sound",
         settings.sound
     );
+
 
     localStorage.setItem(
         "bugai-auto-results",
@@ -113,40 +349,43 @@ function saveSettings(settings) {
 
 
 /* =========================================================
-   INITIALIZE
-========================================================= */
+   INITIALIZE SETTINGS
+   ========================================================= */
 
 function initializeSettings() {
 
-    const settings = getSettings();
+    const settings =
+        getSettings();
 
 
-    /* Theme */
+    applyTheme(
+        settings.theme
+    );
 
-    applyTheme(settings.theme);
-
-
-    /* Toggles */
 
     const notificationToggle =
         document.getElementById(
             "notificationToggle"
         );
 
+
     const soundToggle =
         document.getElementById(
             "soundToggle"
         );
+
 
     const autoResultToggle =
         document.getElementById(
             "autoResultToggle"
         );
 
+
     const historyToggle =
         document.getElementById(
             "historyToggle"
         );
+
 
     const confirmResetToggle =
         document.getElementById(
@@ -154,42 +393,51 @@ function initializeSettings() {
         );
 
 
-    if (notificationToggle) {
-        notificationToggle.checked =
-            settings.notifications;
-    }
-
-
-    if (soundToggle) {
-        soundToggle.checked =
-            settings.sound;
-    }
-
-
-    if (autoResultToggle) {
-        autoResultToggle.checked =
-            settings.autoResults;
-    }
-
-
-    if (historyToggle) {
-        historyToggle.checked =
-            settings.history;
-    }
-
-
-    if (confirmResetToggle) {
-        confirmResetToggle.checked =
-            settings.confirmReset;
-    }
-
-
-    /* Analysis Mode */
-
     const analysisMode =
         document.getElementById(
             "analysisMode"
         );
+
+
+    if (notificationToggle) {
+
+        notificationToggle.checked =
+            settings.notifications;
+
+    }
+
+
+    if (soundToggle) {
+
+        soundToggle.checked =
+            settings.sound;
+
+    }
+
+
+    if (autoResultToggle) {
+
+        autoResultToggle.checked =
+            settings.autoResults;
+
+    }
+
+
+    if (historyToggle) {
+
+        historyToggle.checked =
+            settings.history;
+
+    }
+
+
+    if (confirmResetToggle) {
+
+        confirmResetToggle.checked =
+            settings.confirmReset;
+
+    }
+
 
     if (analysisMode) {
 
@@ -199,9 +447,9 @@ function initializeSettings() {
     }
 
 
-    /* Theme buttons */
-
-    updateThemeButtons(settings.theme);
+    updateThemeButtons(
+        settings.theme
+    );
 
 
     setupEventListeners();
@@ -211,9 +459,13 @@ function initializeSettings() {
 
 /* =========================================================
    EVENT LISTENERS
-========================================================= */
+   ========================================================= */
 
 function setupEventListeners() {
+
+    /*
+     * Theme
+     */
 
     const themeButtons =
         document.querySelectorAll(
@@ -221,52 +473,80 @@ function setupEventListeners() {
         );
 
 
-    themeButtons.forEach(button => {
+    themeButtons.forEach(
+        (button) => {
 
-        button.addEventListener(
-            "click",
-            () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                const theme =
-                    button.dataset.theme;
-
-                const settings =
-                    getSettings();
-
-                settings.theme =
-                    theme;
-
-                saveSettings(settings);
-
-                applyTheme(theme);
-
-                updateThemeButtons(theme);
-
-                showStatus(
-                    "Appearance updated"
-                );
-
-            }
-        );
-
-    });
+                    const theme =
+                        button.dataset.theme;
 
 
-    /* Notifications */
+                    if (!theme) {
+                        return;
+                    }
+
+
+                    const settings =
+                        getSettings();
+
+
+                    settings.theme =
+                        theme;
+
+
+                    saveSettings(
+                        settings
+                    );
+
+
+                    applyTheme(
+                        theme
+                    );
+
+
+                    updateThemeButtons(
+                        theme
+                    );
+
+
+                    showStatus(
+                        "Appearance updated"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+     * Notifications
+     */
 
     document
-        .getElementById("notificationToggle")
+        .getElementById(
+            "notificationToggle"
+        )
         ?.addEventListener(
             "change",
-            event => {
+            (event) => {
 
                 const settings =
                     getSettings();
+
 
                 settings.notifications =
                     event.target.checked;
 
-                saveSettings(settings);
+
+                saveSettings(
+                    settings
+                );
+
 
                 showStatus(
                     event.target.checked
@@ -278,21 +558,30 @@ function setupEventListeners() {
         );
 
 
-    /* Sound */
+    /*
+     * Sound
+     */
 
     document
-        .getElementById("soundToggle")
+        .getElementById(
+            "soundToggle"
+        )
         ?.addEventListener(
             "change",
-            event => {
+            (event) => {
 
                 const settings =
                     getSettings();
 
+
                 settings.sound =
                     event.target.checked;
 
-                saveSettings(settings);
+
+                saveSettings(
+                    settings
+                );
+
 
                 showStatus(
                     event.target.checked
@@ -304,21 +593,30 @@ function setupEventListeners() {
         );
 
 
-    /* Auto Results */
+    /*
+     * Automatic Results
+     */
 
     document
-        .getElementById("autoResultToggle")
+        .getElementById(
+            "autoResultToggle"
+        )
         ?.addEventListener(
             "change",
-            event => {
+            (event) => {
 
                 const settings =
                     getSettings();
 
+
                 settings.autoResults =
                     event.target.checked;
 
-                saveSettings(settings);
+
+                saveSettings(
+                    settings
+                );
+
 
                 showStatus(
                     event.target.checked
@@ -330,21 +628,30 @@ function setupEventListeners() {
         );
 
 
-    /* Analysis Mode */
+    /*
+     * Analysis Mode
+     */
 
     document
-        .getElementById("analysisMode")
+        .getElementById(
+            "analysisMode"
+        )
         ?.addEventListener(
             "change",
-            event => {
+            (event) => {
 
                 const settings =
                     getSettings();
 
+
                 settings.analysisMode =
                     event.target.value;
 
-                saveSettings(settings);
+
+                saveSettings(
+                    settings
+                );
+
 
                 showStatus(
                     "Analysis mode updated"
@@ -354,21 +661,30 @@ function setupEventListeners() {
         );
 
 
-    /* History */
+    /*
+     * History
+     */
 
     document
-        .getElementById("historyToggle")
+        .getElementById(
+            "historyToggle"
+        )
         ?.addEventListener(
             "change",
-            event => {
+            (event) => {
 
                 const settings =
                     getSettings();
 
+
                 settings.history =
                     event.target.checked;
 
-                saveSettings(settings);
+
+                saveSettings(
+                    settings
+                );
+
 
                 showStatus(
                     event.target.checked
@@ -380,21 +696,30 @@ function setupEventListeners() {
         );
 
 
-    /* Confirm Reset */
+    /*
+     * Confirm Reset
+     */
 
     document
-        .getElementById("confirmResetToggle")
+        .getElementById(
+            "confirmResetToggle"
+        )
         ?.addEventListener(
             "change",
-            event => {
+            (event) => {
 
                 const settings =
                     getSettings();
 
+
                 settings.confirmReset =
                     event.target.checked;
 
-                saveSettings(settings);
+
+                saveSettings(
+                    settings
+                );
+
 
                 showStatus(
                     "Reset preference updated"
@@ -404,10 +729,14 @@ function setupEventListeners() {
         );
 
 
-    /* Reset */
+    /*
+     * Reset
+     */
 
     document
-        .getElementById("resetSettings")
+        .getElementById(
+            "resetSettings"
+        )
         ?.addEventListener(
             "click",
             resetAllSettings
@@ -418,33 +747,9 @@ function setupEventListeners() {
 
 /* =========================================================
    THEME
-========================================================= */
+   ========================================================= */
 
 function applyTheme(theme) {
-
-    if (theme === "dark") {
-
-        document.body.classList.add(
-            "dark-mode"
-        );
-
-        return;
-
-    }
-
-
-    if (theme === "light") {
-
-        document.body.classList.remove(
-            "dark-mode"
-        );
-
-        return;
-
-    }
-
-
-    /* System */
 
     const prefersDark =
         window.matchMedia &&
@@ -453,17 +758,47 @@ function applyTheme(theme) {
         ).matches;
 
 
-    document.body.classList.toggle(
+    const isDark =
+        theme === "dark" ||
+        (
+            theme === "system" &&
+            prefersDark
+        );
+
+
+    document.documentElement.classList.toggle(
         "dark-mode",
-        prefersDark
+        isDark
     );
+
+
+    document.documentElement.classList.toggle(
+        "dark",
+        isDark
+    );
+
+
+    if (document.body) {
+
+        document.body.classList.toggle(
+            "dark-mode",
+            isDark
+        );
+
+
+        document.body.classList.toggle(
+            "dark",
+            isDark
+        );
+
+    }
 
 }
 
 
 /* =========================================================
    THEME BUTTON STATE
-========================================================= */
+   ========================================================= */
 
 function updateThemeButtons(theme) {
 
@@ -471,21 +806,23 @@ function updateThemeButtons(theme) {
         .querySelectorAll(
             ".appearance-option"
         )
-        .forEach(button => {
+        .forEach(
+            (button) => {
 
-            button.classList.toggle(
-                "selected",
-                button.dataset.theme === theme
-            );
+                button.classList.toggle(
+                    "selected",
+                    button.dataset.theme === theme
+                );
 
-        });
+            }
+        );
 
 }
 
 
 /* =========================================================
    RESET SETTINGS
-========================================================= */
+   ========================================================= */
 
 function resetAllSettings() {
 
@@ -513,7 +850,9 @@ function resetAllSettings() {
     };
 
 
-    saveSettings(defaults);
+    saveSettings(
+        defaults
+    );
 
 
     applyTheme(
@@ -526,40 +865,88 @@ function resetAllSettings() {
     );
 
 
-    document.getElementById(
-        "notificationToggle"
-    ).checked =
-        defaults.notifications;
+    const notificationToggle =
+        document.getElementById(
+            "notificationToggle"
+        );
 
 
-    document.getElementById(
-        "soundToggle"
-    ).checked =
-        defaults.sound;
+    const soundToggle =
+        document.getElementById(
+            "soundToggle"
+        );
 
 
-    document.getElementById(
-        "autoResultToggle"
-    ).checked =
-        defaults.autoResults;
+    const autoResultToggle =
+        document.getElementById(
+            "autoResultToggle"
+        );
 
 
-    document.getElementById(
-        "historyToggle"
-    ).checked =
-        defaults.history;
+    const historyToggle =
+        document.getElementById(
+            "historyToggle"
+        );
 
 
-    document.getElementById(
-        "confirmResetToggle"
-    ).checked =
-        defaults.confirmReset;
+    const confirmResetToggle =
+        document.getElementById(
+            "confirmResetToggle"
+        );
 
 
-    document.getElementById(
-        "analysisMode"
-    ).value =
-        defaults.analysisMode;
+    const analysisMode =
+        document.getElementById(
+            "analysisMode"
+        );
+
+
+    if (notificationToggle) {
+
+        notificationToggle.checked =
+            defaults.notifications;
+
+    }
+
+
+    if (soundToggle) {
+
+        soundToggle.checked =
+            defaults.sound;
+
+    }
+
+
+    if (autoResultToggle) {
+
+        autoResultToggle.checked =
+            defaults.autoResults;
+
+    }
+
+
+    if (historyToggle) {
+
+        historyToggle.checked =
+            defaults.history;
+
+    }
+
+
+    if (confirmResetToggle) {
+
+        confirmResetToggle.checked =
+            defaults.confirmReset;
+
+    }
+
+
+    if (analysisMode) {
+
+        analysisMode.value =
+            defaults.analysisMode;
+
+    }
 
 
     showStatus(
@@ -571,7 +958,7 @@ function resetAllSettings() {
 
 /* =========================================================
    STATUS MESSAGE
-========================================================= */
+   ========================================================= */
 
 function showStatus(message) {
 
@@ -590,7 +977,8 @@ function showStatus(message) {
         "✓ " + message;
 
 
-    status.style.opacity = "1";
+    status.style.opacity =
+        "1";
 
 
     clearTimeout(
@@ -599,19 +987,120 @@ function showStatus(message) {
 
 
     window.bugAIStatusTimer =
-        setTimeout(() => {
+        setTimeout(
+            () => {
 
-            status.textContent =
-                "✓ Settings are automatically saved";
+                status.textContent =
+                    "✓ Settings are automatically saved";
 
-        }, 2200);
+            },
+            2200
+        );
+
+}
+
+
+/* =========================================================
+   CROSS-PAGE THEME SYNC
+   ========================================================= */
+
+window.addEventListener(
+    "storage",
+    (event) => {
+
+        if (
+            event.key === "bugai-settings" ||
+            event.key === "bugai-theme"
+        ) {
+
+            const settings =
+                getSettings();
+
+
+            applyTheme(
+                settings.theme
+            );
+
+
+            updateThemeButtons(
+                settings.theme
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SYSTEM THEME CHANGE
+   ========================================================= */
+
+if (window.matchMedia) {
+
+    const mediaQuery =
+        window.matchMedia(
+            "(prefers-color-scheme: dark)"
+        );
+
+
+    const handleSystemThemeChange = () => {
+
+        const settings =
+            getSettings();
+
+
+        if (
+            settings.theme === "system"
+        ) {
+
+            applyTheme(
+                "system"
+            );
+
+        }
+
+    };
+
+
+    /*
+     * Modern browsers
+     */
+
+    if (
+        typeof mediaQuery.addEventListener ===
+        "function"
+    ) {
+
+        mediaQuery.addEventListener(
+            "change",
+            handleSystemThemeChange
+        );
+
+    }
+
+
+    /*
+     * Older browser fallback
+     */
+
+    else if (
+        typeof mediaQuery.addListener ===
+        "function"
+    ) {
+
+        mediaQuery.addListener(
+            handleSystemThemeChange
+        );
+
+    }
 
 }
 
 
 /* =========================================================
    GLOBAL BUGAI SETTINGS API
-========================================================= */
+   ========================================================= */
 
 window.BugAISettings = {
 
@@ -656,8 +1145,34 @@ window.BugAISettings = {
 
     isDarkMode() {
 
-        return getSettings()
-            .theme === "dark";
+        const settings =
+            getSettings();
+
+
+        if (
+            settings.theme === "dark"
+        ) {
+
+            return true;
+
+        }
+
+
+        if (
+            settings.theme === "light"
+        ) {
+
+            return false;
+
+        }
+
+
+        return (
+            window.matchMedia &&
+            window.matchMedia(
+                "(prefers-color-scheme: dark)"
+            ).matches
+        );
 
     }
 
