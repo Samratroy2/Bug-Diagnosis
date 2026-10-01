@@ -1,44 +1,788 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BugAI - AI Architecture</title><link rel="stylesheet" href="architecture.css"></head>
-<body><aside id="bugaiSidebar" class="bugai-sidebar">
-  <div class="sidebar-brand"><div class="brand-logo">B</div><div><div class="brand-name">BugAI</div><div class="brand-subtitle">Intelligent Bug Diagnosis</div></div></div>
-  <nav class="sidebar-navigation"><div class="navigation-label">MAIN</div><a class="sidebar-link" href="../Dashboard/dashboard.html"><span class="nav-icon">⌂</span><span class="nav-text">Dashboard</span></a><a class="sidebar-link" href="../Bug-Submission/bug-submission.html"><span class="nav-icon">＋</span><span class="nav-text">Bug Submission</span></a><a class="sidebar-link" href="../Workflow/workflow.html"><span class="nav-icon">↝</span><span class="nav-text">Workflow</span></a><a class="sidebar-link active" href="../Architecture/architecture.html" aria-current="page"><span class="nav-icon">◈</span><span class="nav-text">Architecture</span></a><div class="navigation-label">INTELLIGENCE</div><a class="sidebar-link" href="../Knowledge-Base/knowledge-base.html"><span class="nav-icon">▣</span><span class="nav-text">Knowledge Base</span></a><a class="sidebar-link" href="../Semantic-Similarity/similarity.html"><span class="nav-icon">⌕</span><span class="nav-text">Semantic Similarity</span></a><a class="sidebar-link" href="../Validation/validation.html"><span class="nav-icon">✓</span><span class="nav-text">Validation</span></a><div class="navigation-label">SYSTEM</div><a class="sidebar-link" href="../analytics/analytics.html"><span class="nav-icon">▥</span><span class="nav-text">Analytics</span></a><a class="sidebar-link" href="../Settings/settings.html"><span class="nav-icon">⚙</span><span class="nav-text">Settings</span></a></nav><div class="sidebar-footer"><div class="sidebar-status"><span class="status-dot"></span><span class="status-text">Backend Connected</span></div><div class="sidebar-version">BugAI · Milestone 4</div></div></aside><button id="sidebarMenuButton" class="sidebar-menu-button" type="button" aria-label="Open navigation" aria-controls="bugaiSidebar" aria-expanded="false">☰</button><div id="sidebarOverlay" class="sidebar-overlay"></div><button id="sidebarMenuButton" class="sidebar-menu-button" type="button" aria-label="Open navigation" aria-controls="bugaiSidebar" aria-expanded="false">☰</button><div id="sidebarOverlay" class="sidebar-overlay"></div><main>
-<header><span>Milestone 1</span><h1>AI System Architecture</h1><p>Designed architecture, agent responsibilities, orchestration flow and historical-defect RAG pipeline.</p></header>
-<section class="flow"><div>User Bug Report</div><b>→</b><div>Bug Processing</div><b>→</b><div>Agent Orchestrator</div><b>→</b><div>Semantic Search + RAG</div><b>→</b><div>Diagnosis + Fix Recommendation</div></section>
-<section><h2>Agent Responsibilities</h2><div id="agents" class="agent-grid"></div></section>
-<section class="rag"><h2>Historical Defect RAG Architecture</h2><div class="rag-flow">
-<div>Historical Datasets</div><b>→</b><div>Cleaning</div><b>→</b><div>Chunking</div><b>→</b><div>Embedding Model</div><b>→</b><div>FAISS Vector Index</div><b>→</b><div>Top-K Retrieval</div>
-</div><p class="note-text">The prototype uses sentence-transformers embeddings and FAISS for vector indexing. The retrieved historical records are supplied to the diagnosis workflow.</p></section>
-<section><h2>Historical Defect Data Model</h2><div class="table-wrap"><table><thead><tr><th>Field</th><th>Purpose</th></tr></thead><tbody>
-<tr><td>bug_id</td><td>Unique defect identifier</td></tr><tr><td>project</td><td>Mozilla, Apache or Eclipse</td></tr><tr><td>title</td><td>Short defect summary</td></tr><tr><td>description</td><td>Detailed defect statement</td></tr><tr><td>stack_trace</td><td>Failure trace or diagnostic logs</td></tr><tr><td>resolution</td><td>Known resolution/fix</td></tr><tr><td>embedding</td><td>Generated semantic vector stored in the vector index</td></tr></tbody></table></div></section>
-<section class="status"><h2>Milestone 1 Implementation Status</h2><ul><li>Defect workflow study and representation — <strong>Completed</strong></li><li>System architecture and five-agent design — <strong>Completed</strong></li><li>Bug submission and file upload module — <strong>Completed</strong></li><li>Dataset preparation, chunking, embeddings and FAISS indexing prototype — <strong>Completed</strong></li><li>Semantic similarity retrieval API — <strong>Completed</strong></li></ul></section>
-</main><script src="architecture.js"></script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BugAI - AI System Architecture</title>
+
+    <link rel="stylesheet" href="architecture.css">
+</head>
+
+<body>
+
+<!-- =========================================================
+     SIDEBAR
+     ========================================================= -->
+
+<aside id="bugaiSidebar" class="bugai-sidebar">
+
+    <div class="sidebar-brand">
+        <div class="brand-logo">B</div>
+
+        <div>
+            <div class="brand-name">BugAI</div>
+            <div class="brand-subtitle">
+                Intelligent Bug Diagnosis
+            </div>
+        </div>
+    </div>
+
+    <nav class="sidebar-navigation">
+
+        <div class="navigation-label">MAIN</div>
+
+        <a class="sidebar-link"
+           href="../Dashboard/dashboard.html">
+            <span class="nav-icon">⌂</span>
+            <span class="nav-text">Dashboard</span>
+        </a>
+
+        <a class="sidebar-link"
+           href="../Bug-Submission/bug-submission.html">
+            <span class="nav-icon">＋</span>
+            <span class="nav-text">Bug Submission</span>
+        </a>
+
+        <a class="sidebar-link"
+           href="../Workflow/workflow.html">
+            <span class="nav-icon">↝</span>
+            <span class="nav-text">Workflow</span>
+        </a>
+
+        <a class="sidebar-link active"
+           href="../Architecture/architecture.html"
+           aria-current="page">
+            <span class="nav-icon">◈</span>
+            <span class="nav-text">Architecture</span>
+        </a>
+
+        <div class="navigation-label">INTELLIGENCE</div>
+
+        <a class="sidebar-link"
+           href="../Knowledge-Base/knowledge-base.html">
+            <span class="nav-icon">▣</span>
+            <span class="nav-text">Knowledge Base</span>
+        </a>
+
+        <a class="sidebar-link"
+           href="../Semantic-Similarity/similarity.html">
+            <span class="nav-icon">⌕</span>
+            <span class="nav-text">Semantic Similarity</span>
+        </a>
+
+        <a class="sidebar-link"
+           href="../Validation/validation.html">
+            <span class="nav-icon">✓</span>
+            <span class="nav-text">Validation</span>
+        </a>
+
+        <div class="navigation-label">SYSTEM</div>
+
+        <a class="sidebar-link"
+           href="../analytics/analytics.html">
+            <span class="nav-icon">▥</span>
+            <span class="nav-text">Analytics</span>
+        </a>
+
+        <a class="sidebar-link"
+           href="../Settings/settings.html">
+            <span class="nav-icon">⚙</span>
+            <span class="nav-text">Settings</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+        <div class="sidebar-status">
+            <span class="status-dot"></span>
+            <span class="status-text">Backend Connected</span>
+        </div>
+
+        <div class="sidebar-version">
+            BugAI · Milestone 4
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- Mobile navigation -->
+
+<button
+    id="sidebarMenuButton"
+    class="sidebar-menu-button"
+    type="button"
+    aria-label="Open navigation"
+    aria-controls="bugaiSidebar"
+    aria-expanded="false">
+    ☰
+</button>
+
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+     ========================================================= -->
+
+<main>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <span>Milestone 1–4</span>
+
+        <h1>AI System Architecture</h1>
+
+        <p>
+            End-to-end architecture for intelligent bug diagnosis,
+            historical-defect retrieval, root-cause analysis,
+            duplicate detection, remediation and validation.
+        </p>
+
+    </header>
+
+
+    <!-- =====================================================
+         COMPLETE SYSTEM ARCHITECTURE
+         ===================================================== -->
+
+    <section>
+
+        <h2>Complete BugAI Architecture</h2>
+
+        <div class="flow">
+
+            <div>
+                <strong>01</strong>
+                User Bug Report
+            </div>
+
+            <b>→</b>
+
+            <div>
+                <strong>02</strong>
+                Bug Processing
+            </div>
+
+            <b>→</b>
+
+            <div>
+                <strong>03</strong>
+                Triage + Log Analysis
+            </div>
+
+            <b>→</b>
+
+            <div>
+                <strong>04</strong>
+                Embedding Generation
+            </div>
+
+            <b>→</b>
+
+            <div>
+                <strong>05</strong>
+                FAISS + RAG Retrieval
+            </div>
+
+            <b>→</b>
+
+            <div>
+                <strong>06</strong>
+                Root Cause Analysis
+            </div>
+
+            <b>→</b>
+
+            <div>
+                <strong>07</strong>
+                Duplicate Detection
+            </div>
+
+            <b>→</b>
+
+            <div>
+                <strong>08</strong>
+                Remediation
+            </div>
+
+            <b>→</b>
+
+            <div>
+                <strong>09</strong>
+                Structured Findings
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         IMPLEMENTED SYSTEM LAYERS
+         ===================================================== -->
+
+    <section>
+
+        <h2>Implemented System Layers</h2>
+
+        <div id="architectureLayers" class="architecture-layer-grid"></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         AGENT RESPONSIBILITIES
+         ===================================================== -->
+
+    <section>
+
+        <h2>Agent Responsibilities</h2>
+
+        <div id="agents" class="agent-grid"></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RAG ARCHITECTURE
+         ===================================================== -->
+
+    <section class="rag">
+
+        <h2>Historical Defect RAG Architecture</h2>
+
+        <div class="rag-flow">
+
+            <div>
+                Historical Defect Datasets
+            </div>
+
+            <b>→</b>
+
+            <div>
+                Data Cleaning
+            </div>
+
+            <b>→</b>
+
+            <div>
+                Defect Representation
+            </div>
+
+            <b>→</b>
+
+            <div>
+                Sentence Transformer
+            </div>
+
+            <b>→</b>
+
+            <div>
+                384-D Embeddings
+            </div>
+
+            <b>→</b>
+
+            <div>
+                FAISS Vector Index
+            </div>
+
+            <b>→</b>
+
+            <div>
+                Top-K Retrieval
+            </div>
+
+            <b>→</b>
+
+            <div>
+                Historical Evidence
+            </div>
+
+        </div>
+
+        <p class="note-text">
+            BugAI uses the all-MiniLM-L6-v2 sentence-transformer
+            embedding model to convert defect information into
+            384-dimensional semantic vectors. FAISS performs
+            similarity-based retrieval over the historical defect
+            knowledge base.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         DATA FLOW
+         ===================================================== -->
+
+    <section>
+
+        <h2>Diagnosis Data Flow</h2>
+
+        <div class="flow">
+
+            <div>
+                Bug Context
+            </div>
+
+            <b>→</b>
+
+            <div>
+                Triage Findings
+            </div>
+
+            <b>+</b>
+
+            <div>
+                Log Findings
+            </div>
+
+            <b>+</b>
+
+            <div>
+                Historical Evidence
+            </div>
+
+            <b>→</b>
+
+            <div>
+                Root Cause
+            </div>
+
+            <b>→</b>
+
+            <div>
+                Duplicate Status
+            </div>
+
+            <b>→</b>
+
+            <div>
+                Recommended Fix
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         HISTORICAL DEFECT DATA MODEL
+         ===================================================== -->
+
+    <section>
+
+        <h2>Historical Defect Data Model</h2>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>bug_id</td>
+                        <td>
+                            Unique historical defect identifier.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>project</td>
+                        <td>
+                            Source project such as Mozilla,
+                            Apache or Eclipse.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>title</td>
+                        <td>
+                            Short defect summary.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>description</td>
+                        <td>
+                            Detailed description of the defect.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>stack_trace</td>
+                        <td>
+                            Stack trace, exception or diagnostic
+                            information when available.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>resolution</td>
+                        <td>
+                            Historical resolution or known fix.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>embedding</td>
+                        <td>
+                            Semantic vector represented in the
+                            FAISS vector index.
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         M4 ARCHITECTURE
+         ===================================================== -->
+
+    <section class="status">
+
+        <h2>Milestone 4 Architecture Extensions</h2>
+
+        <ul>
+
+            <li>
+                <strong>Defect Pattern Analytics</strong>
+                — Analyze defect patterns across submitted and
+                historical records.
+            </li>
+
+            <li>
+                <strong>Knowledge Base Growth</strong>
+                — Support the growth of the defect knowledge base
+                using confirmed resolved bugs.
+            </li>
+
+            <li>
+                <strong>End-to-End Validation</strong>
+                — Test the complete diagnosis pipeline across
+                different bug types, languages and stack-trace
+                formats.
+            </li>
+
+            <li>
+                <strong>Structured Diagnosis</strong>
+                — Present the combined findings from the diagnosis
+                agents in a single structured result.
+            </li>
+
+            <li>
+                <strong>Technical Documentation</strong>
+                — Document architecture, implementation,
+                experiments and complete project workflow.
+            </li>
+
+        </ul>
+
+    </section>
+
+
+    <!-- =====================================================
+         IMPLEMENTATION STATUS
+         ===================================================== -->
+
+    <section class="status">
+
+        <h2>Implementation Status</h2>
+
+        <ul>
+
+            <li>
+                Bug submission and input processing —
+                <strong>Completed</strong>
+            </li>
+
+            <li>
+                Triage Agent —
+                <strong>Completed</strong>
+            </li>
+
+            <li>
+                Log Analysis Agent —
+                <strong>Completed</strong>
+            </li>
+
+            <li>
+                Sentence-transformer embedding pipeline —
+                <strong>Completed</strong>
+            </li>
+
+            <li>
+                FAISS historical defect retrieval —
+                <strong>Completed</strong>
+            </li>
+
+            <li>
+                Root Cause Agent —
+                <strong>Completed</strong>
+            </li>
+
+            <li>
+                Duplicate Detection Agent —
+                <strong>Completed</strong>
+            </li>
+
+            <li>
+                Remediation Agent —
+                <strong>Completed</strong>
+            </li>
+
+            <li>
+                Structured Findings —
+                <strong>Completed</strong>
+            </li>
+
+            <li>
+                Defect Pattern Analytics —
+                <strong>Implemented</strong>
+            </li>
+
+            <li>
+                Knowledge Base Growth —
+                <strong>Implemented</strong>
+            </li>
+
+            <li>
+                End-to-End Validation —
+                <strong>Implemented</strong>
+            </li>
+
+        </ul>
+
+    </section>
+
+</main>
+
+
+<script src="architecture.js"></script>
+
+
+<!-- =========================================================
+     THEME + MOBILE SIDEBAR
+     ========================================================= -->
+
 <script>
-(function(){
-  const SETTINGS_KEY='bugai-settings', LEGACY_KEY='bugai-theme';
-  function getTheme(){
-    try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}'); if(s.theme) return s.theme;}catch(e){}
-    return localStorage.getItem(LEGACY_KEY)||'system';
-  }
-  function applyTheme(){
-    const t=getTheme(), dark=t==='dark'||(t==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.classList.toggle('dark-mode',dark);
-    document.documentElement.classList.toggle('dark',dark);
-    document.body.classList.toggle('dark-mode',dark);
-    document.body.classList.toggle('dark',dark);
-  }
-  function initMenu(){
-    const s=document.getElementById('bugaiSidebar'), b=document.getElementById('sidebarMenuButton'), o=document.getElementById('sidebarOverlay');
-    if(!s||!b||!o)return;
-    const close=()=>{s.classList.remove('open');o.classList.remove('show');b.setAttribute('aria-expanded','false');};
-    b.addEventListener('click',()=>{const open=s.classList.toggle('open');o.classList.toggle('show',open);b.setAttribute('aria-expanded',String(open));});
-    o.addEventListener('click',close); document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
-    window.addEventListener('resize',()=>{if(window.innerWidth>900)close();});
-  }
-  document.addEventListener('DOMContentLoaded',()=>{applyTheme();initMenu();});
-  window.addEventListener('storage',e=>{if(e.key===SETTINGS_KEY||e.key===LEGACY_KEY)applyTheme();});
-  if(window.matchMedia)window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',applyTheme);
+
+(function () {
+
+    const SETTINGS_KEY = "bugai-settings";
+    const LEGACY_KEY = "bugai-theme";
+
+
+    function getTheme() {
+
+        try {
+
+            const settings =
+                JSON.parse(
+                    localStorage.getItem(SETTINGS_KEY) || "{}"
+                );
+
+            if (settings.theme) {
+                return settings.theme;
+            }
+
+        } catch (error) {
+            console.warn("Unable to read BugAI settings.", error);
+        }
+
+        return localStorage.getItem(LEGACY_KEY) || "system";
+    }
+
+
+    function applyTheme() {
+
+        const theme = getTheme();
+
+        const dark =
+            theme === "dark" ||
+            (
+                theme === "system" &&
+                window.matchMedia &&
+                window.matchMedia(
+                    "(prefers-color-scheme: dark)"
+                ).matches
+            );
+
+
+        document.documentElement.classList.toggle(
+            "dark-mode",
+            dark
+        );
+
+        document.documentElement.classList.toggle(
+            "dark",
+            dark
+        );
+
+        document.body.classList.toggle(
+            "dark-mode",
+            dark
+        );
+
+        document.body.classList.toggle(
+            "dark",
+            dark
+        );
+
+    }
+
+
+    function initMenu() {
+
+        const sidebar =
+            document.getElementById("bugaiSidebar");
+
+        const button =
+            document.getElementById("sidebarMenuButton");
+
+        const overlay =
+            document.getElementById("sidebarOverlay");
+
+
+        if (!sidebar || !button || !overlay) {
+            return;
+        }
+
+
+        function closeMenu() {
+
+            sidebar.classList.remove("open");
+
+            overlay.classList.remove("show");
+
+            button.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        }
+
+
+        button.addEventListener("click", function () {
+
+            const isOpen =
+                sidebar.classList.toggle("open");
+
+            overlay.classList.toggle(
+                "show",
+                isOpen
+            );
+
+            button.setAttribute(
+                "aria-expanded",
+                String(isOpen)
+            );
+
+        });
+
+
+        overlay.addEventListener(
+            "click",
+            closeMenu
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (event.key === "Escape") {
+                    closeMenu();
+                }
+
+            }
+        );
+
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (window.innerWidth > 900) {
+                    closeMenu();
+                }
+
+            }
+        );
+
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            applyTheme();
+            initMenu();
+
+        }
+    );
+
+
+    window.addEventListener(
+        "storage",
+        function (event) {
+
+            if (
+                event.key === SETTINGS_KEY ||
+                event.key === LEGACY_KEY
+            ) {
+
+                applyTheme();
+
+            }
+
+        }
+    );
+
+
+    if (window.matchMedia) {
+
+        const mediaQuery =
+            window.matchMedia(
+                "(prefers-color-scheme: dark)"
+            );
+
+
+        if (mediaQuery.addEventListener) {
+
+            mediaQuery.addEventListener(
+                "change",
+                applyTheme
+            );
+
+        }
+
+    }
+
 })();
+
 </script>
-</body></html>
+
+</body>
+</html>

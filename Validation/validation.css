@@ -1,6 +1,11 @@
 /* =========================================================
    BUGAI — VALIDATION
-   Self-contained page styles
+   Full M4 Validation & End-to-End Testing Styles
+   ========================================================= */
+
+
+/* =========================================================
+   GLOBAL
    ========================================================= */
 
 * {
@@ -30,11 +35,8 @@ body {
 
 main {
     margin-left: 250px;
-
     min-height: 100vh;
-
     padding: 48px 56px;
-
     max-width: 1650px;
 }
 
@@ -44,94 +46,100 @@ main {
    ========================================================= */
 
 header {
-    margin-bottom: 28px;
+    margin-bottom: 30px;
 }
 
 header > span {
     display: inline-block;
-
     font-size: 12px;
-
     font-weight: 700;
-
     color: #2563eb;
-
     letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 header h1 {
-    margin: 5px 0 8px;
-
+    margin: 6px 0 8px;
     color: #172033;
-
     font-size: 36px;
-
     line-height: 1.15;
 }
 
 header p {
     margin: 0;
-
+    max-width: 950px;
     color: #64748b;
-
     font-size: 16px;
 }
 
 
 /* =========================================================
-   SUMMARY
+   SUMMARY METRICS
    ========================================================= */
 
 .summary-grid {
     display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-bottom: 22px;
+}
 
-    grid-template-columns:
-        repeat(6, 1fr);
+.metric {
+    min-width: 0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, 0.04);
 
-    gap: 12px;
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.2s ease;
+}
 
-    margin-bottom: 20px;
+.metric:hover {
+    transform: translateY(-2px);
+}
+
+.metric strong {
+    display: block;
+    color: #172033;
+    font-size: 25px;
+    line-height: 1.2;
+    margin-bottom: 7px;
+}
+
+.metric span {
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.4;
 }
 
 
 /* =========================================================
-   CARDS / METRICS
+   COMMON CARD
    ========================================================= */
 
-.metric,
 .card {
     background: #ffffff;
-
-    border:
-        1px solid #e2e8f0;
-
+    border: 1px solid #e2e8f0;
     border-radius: 14px;
-
-    padding: 20px;
+    padding: 26px;
+    margin-bottom: 24px;
 
     box-shadow:
-        0 5px 18px
-        rgba(15, 23, 42, 0.04);
+        0 5px 18px rgba(15, 23, 42, 0.04);
 
     transition:
         background-color 0.25s ease,
         border-color 0.25s ease,
         color 0.25s ease,
         box-shadow 0.25s ease;
-}
-
-.metric strong {
-    display: block;
-
-    color: #172033;
-
-    font-size: 25px;
-}
-
-.metric span {
-    font-size: 12px;
-
-    color: #64748b;
 }
 
 
@@ -141,22 +149,27 @@ header p {
 
 .section-head {
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+}
 
-    gap: 15px;
+.section-head > div {
+    min-width: 0;
 }
 
 .section-head h2 {
     margin: 0;
-
     color: #172033;
+    font-size: 22px;
+    line-height: 1.3;
 }
 
 .section-head p {
+    margin: 6px 0 0;
     color: #64748b;
+    font-size: 14px;
 }
 
 
@@ -166,80 +179,80 @@ header p {
 
 .primary {
     border: 0;
-
     border-radius: 8px;
-
-    padding: 11px 16px;
+    padding: 11px 17px;
+    min-height: 42px;
 
     font: inherit;
-
     font-weight: 600;
 
     cursor: pointer;
 
     background: #2563eb;
-
     color: #ffffff;
 
     transition:
         background-color 0.2s ease,
         color 0.2s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        opacity 0.2s ease;
 }
 
 .primary:hover {
     background: #1d4ed8;
-
     transform: translateY(-1px);
 }
 
 .primary:disabled {
     opacity: 0.6;
-
     cursor: not-allowed;
-
     transform: none;
 }
 
 
 /* =========================================================
-   TABLE
+   VALIDATION TABLE
    ========================================================= */
 
 .table-wrap {
-    overflow: auto;
-
     width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
 }
 
 table {
     width: 100%;
-
+    min-width: 760px;
     border-collapse: collapse;
+    background: #ffffff;
 }
 
 th,
 td {
     text-align: left;
-
-    padding: 12px;
-
-    border-bottom:
-        1px solid #e2e8f0;
-
+    padding: 13px 14px;
+    border-bottom: 1px solid #e2e8f0;
     font-size: 14px;
-
     color: #334155;
+    vertical-align: top;
 }
 
 th {
     color: #64748b;
-
-    font-size: 12px;
-
+    background: #f8fafc;
+    font-size: 11px;
     text-transform: uppercase;
-
     font-weight: 800;
+    letter-spacing: 0.05em;
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+tbody tr:hover td {
+    background: #f8fafc;
 }
 
 
@@ -249,14 +262,196 @@ th {
 
 .pass {
     color: #166534;
-
     font-weight: 700;
 }
 
 .fail {
     color: #b91c1c;
-
     font-weight: 700;
+}
+
+
+/* =========================================================
+   E2E TEST COVERAGE
+   ========================================================= */
+
+.coverage-card {
+    overflow: hidden;
+}
+
+.coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+}
+
+.coverage-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.coverage-item:hover {
+    transform: translateY(-2px);
+    background: #ffffff;
+    border-color: #cbd5e1;
+    box-shadow:
+        0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.coverage-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    margin-bottom: 12px;
+
+    border-radius: 8px;
+
+    background: #dbeafe;
+    color: #2563eb;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.coverage-item h3 {
+    margin: 0 0 8px;
+    color: #172033;
+    font-size: 16px;
+    line-height: 1.35;
+}
+
+.coverage-item p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   VALIDATION DIMENSIONS
+   ========================================================= */
+
+.dimension-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.dimension {
+    padding: 18px;
+
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.dimension:hover {
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+}
+
+.dimension strong {
+    display: block;
+    margin-bottom: 6px;
+
+    color: #172033;
+    font-size: 15px;
+}
+
+.dimension span {
+    display: block;
+
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   VALIDATION PIPELINE
+   ========================================================= */
+
+.validation-flow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+.validation-flow div {
+    padding: 13px 16px;
+
+    background: #f8fafc;
+    border: 1px solid #dbe4ef;
+    border-radius: 10px;
+
+    color: #172033;
+    font-size: 13px;
+    font-weight: 700;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.validation-flow div:hover {
+    transform: translateY(-2px);
+    background: #ffffff;
+    border-color: #bfdbfe;
+}
+
+.validation-flow b {
+    color: #2563eb;
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   M4 STATUS
+   ========================================================= */
+
+.validation-status-card {
+    margin-bottom: 30px;
+}
+
+.validation-status-card h2 {
+    margin: 0 0 18px;
+    color: #172033;
+    font-size: 22px;
+}
+
+.validation-status-card ul {
+    margin: 0;
+    padding-left: 22px;
+}
+
+.validation-status-card li {
+    margin: 10px 0;
+    color: #475569;
+}
+
+.validation-status-card strong {
+    color: #166534;
 }
 
 
@@ -276,7 +471,6 @@ html.dark body,
 body.dark-mode,
 body.dark {
     background: #0b1120;
-
     color: #e2e8f0;
 }
 
@@ -308,30 +502,18 @@ body.dark header > span {
 
 
 /* =========================================================
-   DARK MODE — CARDS
+   DARK MODE — METRICS
    ========================================================= */
 
 html.dark-mode .metric,
 html.dark .metric,
 body.dark-mode .metric,
-body.dark .metric,
-html.dark-mode .card,
-html.dark .card,
-body.dark-mode .card,
-body.dark .card {
+body.dark .metric {
     background: #111827;
-
     border-color: #243244;
-
     color: #e2e8f0;
-
     box-shadow: none;
 }
-
-
-/* =========================================================
-   DARK MODE — METRICS
-   ========================================================= */
 
 html.dark-mode .metric strong,
 html.dark .metric strong,
@@ -349,7 +531,22 @@ body.dark .metric span {
 
 
 /* =========================================================
-   DARK MODE — SECTION HEADER
+   DARK MODE — CARDS
+   ========================================================= */
+
+html.dark-mode .card,
+html.dark .card,
+body.dark-mode .card,
+body.dark .card {
+    background: #111827;
+    border-color: #243244;
+    color: #e2e8f0;
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   DARK MODE — SECTION HEADERS
    ========================================================= */
 
 html.dark-mode .section-head h2,
@@ -369,7 +566,6 @@ body.dark .section-head p {
 
 /* =========================================================
    DARK MODE — PRIMARY BUTTON
-   White background + black text
    ========================================================= */
 
 html.dark-mode .primary,
@@ -377,11 +573,8 @@ html.dark .primary,
 body.dark-mode .primary,
 body.dark .primary {
     background: #ffffff !important;
-
     background-color: #ffffff !important;
-
     color: #000000 !important;
-
     border-color: #ffffff !important;
 }
 
@@ -390,9 +583,7 @@ html.dark .primary:hover,
 body.dark-mode .primary:hover,
 body.dark .primary:hover {
     background: #e5e7eb !important;
-
     background-color: #e5e7eb !important;
-
     color: #000000 !important;
 }
 
@@ -400,6 +591,13 @@ body.dark .primary:hover {
 /* =========================================================
    DARK MODE — TABLE
    ========================================================= */
+
+html.dark-mode .table-wrap,
+html.dark .table-wrap,
+body.dark-mode .table-wrap,
+body.dark .table-wrap {
+    border-color: #334155;
+}
 
 html.dark-mode table,
 html.dark table,
@@ -412,8 +610,8 @@ html.dark-mode th,
 html.dark th,
 body.dark-mode th,
 body.dark th {
+    background: #1e293b;
     color: #94a3b8;
-
     border-color: #334155;
 }
 
@@ -422,20 +620,19 @@ html.dark td,
 body.dark-mode td,
 body.dark td {
     color: #cbd5e1;
-
     border-color: #334155;
 }
 
-html.dark-mode tr:hover td,
-html.dark tr:hover td,
-body.dark-mode tr:hover td,
-body.dark tr:hover td {
+html.dark-mode tbody tr:hover td,
+html.dark tbody tr:hover td,
+body.dark-mode tbody tr:hover td,
+body.dark tbody tr:hover td {
     background: #172033;
 }
 
 
 /* =========================================================
-   DARK MODE — VALIDATION STATUS
+   DARK MODE — PASS / FAIL
    ========================================================= */
 
 html.dark-mode .pass,
@@ -454,7 +651,141 @@ body.dark .fail {
 
 
 /* =========================================================
-   SELF-CONTAINED SIDEBAR
+   DARK MODE — COVERAGE
+   ========================================================= */
+
+html.dark-mode .coverage-item,
+html.dark .coverage-item,
+body.dark-mode .coverage-item,
+body.dark .coverage-item {
+    background: #172033;
+    border-color: #334155;
+}
+
+html.dark-mode .coverage-item:hover,
+html.dark .coverage-item:hover,
+body.dark-mode .coverage-item:hover,
+body.dark .coverage-item:hover {
+    background: #1e293b;
+    border-color: #475569;
+    box-shadow: none;
+}
+
+html.dark-mode .coverage-number,
+html.dark .coverage-number,
+body.dark-mode .coverage-number,
+body.dark .coverage-number {
+    background: #1e3a5f;
+    color: #60a5fa;
+}
+
+html.dark-mode .coverage-item h3,
+html.dark .coverage-item h3,
+body.dark-mode .coverage-item h3,
+body.dark .coverage-item h3 {
+    color: #f8fafc;
+}
+
+html.dark-mode .coverage-item p,
+html.dark .coverage-item p,
+body.dark-mode .coverage-item p,
+body.dark .coverage-item p {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DARK MODE — DIMENSIONS
+   ========================================================= */
+
+html.dark-mode .dimension,
+html.dark .dimension,
+body.dark-mode .dimension,
+body.dark .dimension {
+    background: #172033;
+    border-color: #334155;
+}
+
+html.dark-mode .dimension:hover,
+html.dark .dimension:hover,
+body.dark-mode .dimension:hover,
+body.dark .dimension:hover {
+    background: #1e293b;
+    border-color: #475569;
+}
+
+html.dark-mode .dimension strong,
+html.dark .dimension strong,
+body.dark-mode .dimension strong,
+body.dark .dimension strong {
+    color: #f8fafc;
+}
+
+html.dark-mode .dimension span,
+html.dark .dimension span,
+body.dark-mode .dimension span,
+body.dark .dimension span {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   DARK MODE — VALIDATION FLOW
+   ========================================================= */
+
+html.dark-mode .validation-flow div,
+html.dark .validation-flow div,
+body.dark-mode .validation-flow div,
+body.dark .validation-flow div {
+    background: #172033;
+    border-color: #334155;
+    color: #f1f5f9;
+}
+
+html.dark-mode .validation-flow div:hover,
+html.dark .validation-flow div:hover,
+body.dark-mode .validation-flow div:hover,
+body.dark .validation-flow div:hover {
+    background: #1e293b;
+    border-color: #475569;
+}
+
+html.dark-mode .validation-flow b,
+html.dark .validation-flow b,
+body.dark-mode .validation-flow b,
+body.dark .validation-flow b {
+    color: #60a5fa;
+}
+
+
+/* =========================================================
+   DARK MODE — M4 STATUS
+   ========================================================= */
+
+html.dark-mode .validation-status-card h2,
+html.dark .validation-status-card h2,
+body.dark-mode .validation-status-card h2,
+body.dark .validation-status-card h2 {
+    color: #f8fafc;
+}
+
+html.dark-mode .validation-status-card li,
+html.dark .validation-status-card li,
+body.dark-mode .validation-status-card li,
+body.dark .validation-status-card li {
+    color: #cbd5e1;
+}
+
+html.dark-mode .validation-status-card strong,
+html.dark .validation-status-card strong,
+body.dark-mode .validation-status-card strong,
+body.dark .validation-status-card strong {
+    color: #4ade80;
+}
+
+
+/* =========================================================
+   SIDEBAR
    ========================================================= */
 
 .bugai-sidebar {
@@ -469,15 +800,12 @@ body.dark .fail {
     z-index: 1000;
 
     display: flex;
-
     flex-direction: column;
 
     background: #0f172a;
-
     color: #ffffff;
 
-    border-right:
-        1px solid #1e293b;
+    border-right: 1px solid #1e293b;
 
     overflow: hidden;
 }
@@ -489,15 +817,13 @@ body.dark .fail {
 
 .sidebar-brand {
     display: flex;
-
     align-items: center;
 
     gap: 12px;
 
     padding: 22px 18px;
 
-    border-bottom:
-        1px solid #1e293b;
+    border-bottom: 1px solid #1e293b;
 
     flex-shrink: 0;
 }
@@ -507,9 +833,7 @@ body.dark .fail {
     height: 38px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     flex-shrink: 0;
@@ -517,21 +841,16 @@ body.dark .fail {
     border-radius: 10px;
 
     background: #2563eb;
-
     color: #ffffff;
 
     font-size: 20px;
-
     font-weight: 800;
 }
 
 .brand-name {
     color: #ffffff;
-
     font-size: 18px;
-
     font-weight: 800;
-
     line-height: 1.2;
 }
 
@@ -541,7 +860,6 @@ body.dark .fail {
     color: #94a3b8;
 
     font-size: 10px;
-
     line-height: 1.3;
 }
 
@@ -556,7 +874,6 @@ body.dark .fail {
     padding: 16px 12px;
 
     overflow-y: auto;
-
     overflow-x: hidden;
 }
 
@@ -566,7 +883,6 @@ body.dark .fail {
     color: #64748b;
 
     font-size: 10px;
-
     font-weight: 800;
 
     letter-spacing: 0.12em;
@@ -574,13 +890,11 @@ body.dark .fail {
 
 .sidebar-link {
     display: flex;
-
     align-items: center;
 
     gap: 11px;
 
     width: 100%;
-
     min-height: 42px;
 
     margin-bottom: 4px;
@@ -594,7 +908,6 @@ body.dark .fail {
     text-decoration: none;
 
     font-size: 13px;
-
     font-weight: 600;
 
     transition:
@@ -605,15 +918,12 @@ body.dark .fail {
 
 .sidebar-link:hover {
     background: #1e293b;
-
     color: #ffffff;
-
     transform: translateX(2px);
 }
 
 .sidebar-link.active {
     background: #2563eb;
-
     color: #ffffff;
 }
 
@@ -621,9 +931,7 @@ body.dark .fail {
     width: 20px;
 
     display: inline-flex;
-
     align-items: center;
-
     justify-content: center;
 
     flex-shrink: 0;
@@ -643,15 +951,13 @@ body.dark .fail {
 .sidebar-footer {
     padding: 16px;
 
-    border-top:
-        1px solid #1e293b;
+    border-top: 1px solid #1e293b;
 
     flex-shrink: 0;
 }
 
 .sidebar-status {
     display: flex;
-
     align-items: center;
 
     gap: 8px;
@@ -659,7 +965,6 @@ body.dark .fail {
     color: #cbd5e1;
 
     font-size: 11px;
-
     font-weight: 600;
 }
 
@@ -672,8 +977,7 @@ body.dark .fail {
     background: #22c55e;
 
     box-shadow:
-        0 0 0 3px
-        rgba(34, 197, 94, 0.12);
+        0 0 0 3px rgba(34, 197, 94, 0.12);
 
     flex-shrink: 0;
 }
@@ -713,28 +1017,23 @@ body.dark .fail {
     border-radius: 10px;
 
     background: #0f172a;
-
     color: #ffffff;
 
-    border:
-        1px solid #1e293b;
+    border: 1px solid #1e293b;
 
     font-size: 21px;
 
     align-items: center;
-
     justify-content: center;
 
     cursor: pointer;
 
     box-shadow:
-        0 5px 16px
-        rgba(15, 23, 42, 0.2);
+        0 5px 16px rgba(15, 23, 42, 0.2);
 }
 
 .sidebar-menu-button:hover {
     background: #1e293b;
-
     transform: none;
 }
 
@@ -767,9 +1066,7 @@ html.dark .bugai-sidebar,
 body.dark-mode .bugai-sidebar,
 body.dark .bugai-sidebar {
     background: #0f172a;
-
     color: #ffffff;
-
     border-color: #1e293b;
 }
 
@@ -785,7 +1082,6 @@ html.dark .sidebar-link:hover,
 body.dark-mode .sidebar-link:hover,
 body.dark .sidebar-link:hover {
     background: #1e293b;
-
     color: #ffffff;
 }
 
@@ -794,7 +1090,6 @@ html.dark .sidebar-link.active,
 body.dark-mode .sidebar-link.active,
 body.dark .sidebar-link.active {
     background: #2563eb;
-
     color: #ffffff;
 }
 
@@ -803,16 +1098,33 @@ body.dark .sidebar-link.active {
    TABLET
    ========================================================= */
 
-@media (max-width: 1100px) {
+@media (max-width: 1250px) {
 
     main {
         padding: 42px 38px;
     }
 
     .summary-grid {
-        grid-template-columns:
-            repeat(3, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
+
+    .coverage-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+
+/* =========================================================
+   TABLET / SMALL DESKTOP
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .dimension-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
 }
 
 
@@ -823,20 +1135,17 @@ body.dark .sidebar-link.active {
 @media (max-width: 900px) {
 
     .bugai-sidebar {
-        transform:
-            translateX(-100%);
+        transform: translateX(-100%);
 
         transition:
             transform 0.25s ease;
 
         box-shadow:
-            10px 0 30px
-            rgba(0, 0, 0, 0.2);
+            10px 0 30px rgba(0, 0, 0, 0.2);
     }
 
     .bugai-sidebar.open {
-        transform:
-            translateX(0);
+        transform: translateX(0);
     }
 
     .sidebar-menu-button {
@@ -853,13 +1162,17 @@ body.dark .sidebar-link.active {
     }
 
     .summary-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .coverage-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .section-head {
-        gap: 10px;
+        gap: 12px;
     }
+
 }
 
 
@@ -867,26 +1180,37 @@ body.dark .sidebar-link.active {
    SMALL MOBILE
    ========================================================= */
 
-@media (max-width: 600px) {
+@media (max-width: 650px) {
 
     main {
         padding:
             75px
             15px
-            25px;
+            28px;
     }
 
     header h1 {
         font-size: 29px;
     }
 
+    header p {
+        font-size: 14px;
+    }
+
     .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .coverage-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dimension-grid {
         grid-template-columns: 1fr;
     }
 
     .section-head {
         align-items: flex-start;
-
         flex-direction: column;
     }
 
@@ -905,6 +1229,21 @@ body.dark .sidebar-link.active {
         white-space: nowrap;
     }
 
+    .validation-flow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .validation-flow div {
+        width: 100%;
+        text-align: center;
+    }
+
+    .validation-flow b {
+        text-align: center;
+        transform: rotate(90deg);
+    }
+
     .sidebar-menu-button {
         top: 14px;
         left: 14px;
@@ -912,6 +1251,44 @@ body.dark .sidebar-link.active {
         width: 40px;
         height: 40px;
     }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    main {
+        padding:
+            70px
+            12px
+            24px;
+    }
+
+    header h1 {
+        font-size: 26px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .metric {
+        padding: 18px;
+    }
+
+    .metric strong {
+        font-size: 23px;
+    }
+
+    .coverage-item,
+    .dimension {
+        padding: 17px;
+    }
+
 }
 
 
@@ -919,10 +1296,10 @@ body.dark .sidebar-link.active {
    ACCESSIBILITY
    ========================================================= */
 
-button:focus-visible {
+button:focus-visible,
+a:focus-visible {
     outline:
-        3px solid
-        rgba(37, 99, 235, 0.25);
+        3px solid rgba(37, 99, 235, 0.3);
 
     outline-offset: 2px;
 }
@@ -937,6 +1314,7 @@ button:focus-visible {
     *,
     *::before,
     *::after {
+
         animation-duration:
             0.01ms !important;
 
@@ -949,4 +1327,5 @@ button:focus-visible {
         scroll-behavior:
             auto !important;
     }
+
 }

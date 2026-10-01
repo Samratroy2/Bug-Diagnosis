@@ -1,6 +1,10 @@
 /* =========================================================
    BUGAI - DEFECT PATTERN ANALYTICS
-   Self-contained page styles
+   Complete self-contained stylesheet
+   ========================================================= */
+
+/* =========================================================
+   01. GLOBAL
    ========================================================= */
 
 * {
@@ -18,15 +22,29 @@ body {
     color: #172033;
     font-family: Inter, "Segoe UI", Arial, sans-serif;
     line-height: 1.55;
-
     transition:
         background-color 0.25s ease,
         color 0.25s ease;
 }
 
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+}
+
 
 /* =========================================================
-   MAIN CONTENT
+   02. MAIN CONTENT
    ========================================================= */
 
 main {
@@ -38,7 +56,7 @@ main {
 
 
 /* =========================================================
-   PAGE HEADER
+   03. PAGE HEADER
    ========================================================= */
 
 .page-header {
@@ -71,21 +89,16 @@ main {
 
 
 /* =========================================================
-   CARD
+   04. CARD
    ========================================================= */
 
 .card {
     margin-bottom: 24px;
     padding: 24px;
-
     border: 1px solid #e5e7eb;
     border-radius: 14px;
-
     background: #ffffff;
-
-    box-shadow:
-        0 4px 14px rgba(15, 23, 42, 0.04);
-
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
     transition:
         background-color 0.25s ease,
         border-color 0.25s ease,
@@ -108,17 +121,13 @@ main {
 
 
 /* =========================================================
-   ANALYTICS FILTERS
+   05. ANALYTICS FILTERS
    ========================================================= */
 
 .filters {
     display: grid;
-
-    grid-template-columns:
-        repeat(4, minmax(160px, 1fr));
-
+    grid-template-columns: repeat(4, minmax(160px, 1fr));
     gap: 14px;
-
     align-items: center;
 }
 
@@ -126,20 +135,14 @@ main {
 .filters select {
     width: 100%;
     min-height: 42px;
-
     padding: 9px 12px;
-
     border: 1px solid #d7dce5;
     border-radius: 8px;
-
     outline: none;
-
     background: #ffffff;
     color: #172033;
-
     font-family: inherit;
     font-size: 14px;
-
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease,
@@ -150,9 +153,7 @@ main {
 .filters input:focus,
 .filters select:focus {
     border-color: #2563eb;
-
-    box-shadow:
-        0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .filters input::placeholder {
@@ -165,24 +166,19 @@ main {
 
 
 /* =========================================================
-   BUTTONS
+   06. BUTTONS
    ========================================================= */
 
 .primary,
 .secondary {
     min-height: 42px;
-
     padding: 9px 18px;
-
     border: none;
     border-radius: 8px;
-
     font-family: inherit;
     font-size: 14px;
     font-weight: 600;
-
     cursor: pointer;
-
     transition:
         background 0.2s ease,
         color 0.2s ease,
@@ -221,33 +217,23 @@ main {
 
 
 /* =========================================================
-   SUMMARY STATISTICS
+   07. SUMMARY STATISTICS
    ========================================================= */
 
 .stats {
     display: grid;
-
-    grid-template-columns:
-        repeat(4, minmax(180px, 1fr));
-
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
     gap: 18px;
-
     margin-bottom: 24px;
 }
 
 .stat {
     min-width: 0;
-
     padding: 22px;
-
     border: 1px solid #e5e7eb;
     border-radius: 14px;
-
     background: #ffffff;
-
-    box-shadow:
-        0 4px 14px rgba(15, 23, 42, 0.04);
-
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
     transition:
         background-color 0.25s ease,
         border-color 0.25s ease,
@@ -256,43 +242,32 @@ main {
 
 .stat span {
     display: block;
-
     margin-bottom: 8px;
-
     color: #64748b;
-
     font-size: 13px;
     font-weight: 600;
 }
 
 .stat strong {
     display: block;
-
     overflow: hidden;
-
     color: #111827;
-
     font-size: 27px;
     font-weight: 700;
     line-height: 1.25;
-
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 
 /* =========================================================
-   ANALYTICS GRID
+   08. ANALYTICS GRID
    ========================================================= */
 
 .grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
-
     margin-bottom: 24px;
 }
 
@@ -302,7 +277,7 @@ main {
 
 
 /* =========================================================
-   BAR CHARTS
+   09. BAR CHARTS
    ========================================================= */
 
 .bars {
@@ -311,31 +286,23 @@ main {
 
 .bar-chart {
     display: flex;
-
     flex-direction: column;
-
     gap: 13px;
 }
 
 .bar-row {
     display: grid;
-
-    grid-template-columns:
-        145px minmax(0, 1fr) 70px;
-
+    grid-template-columns: 145px minmax(0, 1fr) 70px;
     gap: 12px;
-
     align-items: center;
+    margin-bottom: 13px;
 }
 
 .bar-label {
     overflow: hidden;
-
     color: #374151;
-
     font-size: 13px;
     font-weight: 500;
-
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -343,63 +310,47 @@ main {
 .bar-track {
     width: 100%;
     height: 11px;
-
     overflow: hidden;
-
     border-radius: 999px;
-
     background: #e5e7eb;
 }
 
 .bar-fill {
     height: 100%;
-
     min-width: 2px;
-
     border-radius: 999px;
-
     background: #2563eb;
-
     transition: width 0.4s ease;
 }
 
 .bar-value {
     color: #475569;
-
     font-size: 12px;
     font-weight: 600;
-
     text-align: right;
 }
 
 
 /* =========================================================
-   TIME-BASED ACTIVITY
+   10. TIME-BASED ACTIVITY
    ========================================================= */
 
 .time-table {
     width: 100%;
-
     border-collapse: collapse;
-
     font-size: 13px;
 }
 
 .time-table th,
 .time-table td {
     padding: 11px 12px;
-
-    border-bottom:
-        1px solid #edf0f4;
-
+    border-bottom: 1px solid #edf0f4;
     text-align: left;
 }
 
 .time-table th {
     background: #f8fafc;
-
     color: #475569;
-
     font-weight: 600;
 }
 
@@ -411,33 +362,28 @@ main {
     background: #f8fafc;
 }
 
+#timeChart {
+    min-width: 0;
+}
+
 
 /* =========================================================
-   GROWTH FORM
+   11. KNOWLEDGE BASE GROWTH FORM
    ========================================================= */
 
 .growth-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
-
     margin-bottom: 20px;
 }
 
 .growth-grid label {
     display: flex;
-
     flex-direction: column;
-
     gap: 7px;
-
     min-width: 0;
-
     color: #374151;
-
     font-size: 13px;
     font-weight: 600;
 }
@@ -446,22 +392,15 @@ main {
 .growth-grid select,
 .growth-grid textarea {
     width: 100%;
-
     padding: 10px 12px;
-
     border: 1px solid #d7dce5;
     border-radius: 8px;
-
     outline: none;
-
     background: #ffffff;
     color: #172033;
-
     font-family: inherit;
-
     font-size: 14px;
     font-weight: 400;
-
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease,
@@ -469,15 +408,14 @@ main {
         color 0.2s ease;
 }
 
-.growth-grid input[type="text"] {
+.growth-grid input[type="text"],
+.growth-grid select {
     min-height: 42px;
 }
 
 .growth-grid textarea {
     min-height: 105px;
-
     resize: vertical;
-
     line-height: 1.5;
 }
 
@@ -485,159 +423,153 @@ main {
 .growth-grid select:focus,
 .growth-grid textarea:focus {
     border-color: #2563eb;
-
-    box-shadow:
-        0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .growth-grid input::placeholder,
 .growth-grid textarea::placeholder {
     color: #94a3b8;
-
     font-weight: 400;
 }
 
 
 /* =========================================================
-   CHECKBOXES
+   12. BUG ID SELECT
+   ========================================================= */
+
+#gBugId {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 38px 10px 12px;
+    border: 1px solid #d7dce5;
+    border-radius: 8px;
+    outline: none;
+    background-color: #ffffff;
+    color: #172033;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+#gBugId:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+#gBugId:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background-color: #f8fafc;
+}
+
+#gBugId option {
+    color: #172033;
+    background: #ffffff;
+}
+
+.field-help {
+    display: block;
+    margin-top: 2px;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   13. CHECKBOXES
    ========================================================= */
 
 .checkbox-label {
     display: flex !important;
-
     flex-direction: row !important;
-
     align-items: center;
-
     gap: 9px !important;
-
     min-height: 42px;
-
     padding: 8px 0;
-
     color: #374151;
-
     cursor: pointer;
 }
 
 .checkbox-label input[type="checkbox"] {
     width: 18px;
     height: 18px;
-
     margin: 0;
-
     accent-color: #2563eb;
-
     cursor: pointer;
 }
 
 
 /* =========================================================
-   RESULT AREAS
+   14. RESULT AREAS
    ========================================================= */
 
 #growthResult,
 #e2eResult {
     min-height: 40px;
-
     margin: 18px 0 0;
-
     padding: 16px;
-
     overflow-x: auto;
-
-    border:
-        1px solid #e5e7eb;
-
+    border: 1px solid #e5e7eb;
     border-radius: 10px;
-
     background: #f8fafc;
-
     color: #334155;
-
-    font-family:
-        Consolas,
-        "Courier New",
-        monospace;
-
+    font-family: Consolas, "Courier New", monospace;
     font-size: 12px;
-
     line-height: 1.6;
-
     white-space: pre-wrap;
-
     word-break: break-word;
 }
 
 .result-success {
     border-color: #bbf7d0 !important;
-
     background: #f0fdf4 !important;
-
     color: #166534 !important;
 }
 
 .result-error {
     border-color: #fecaca !important;
-
     background: #fef2f2 !important;
-
     color: #b91c1c !important;
 }
 
 
 /* =========================================================
-   LOADING
+   15. LOADING / EMPTY / ERROR
    ========================================================= */
 
 .loading-state {
     padding: 28px 15px;
-
     color: #64748b;
-
     font-size: 13px;
-
     text-align: center;
 }
-
-
-/* =========================================================
-   EMPTY STATE
-   ========================================================= */
 
 .empty-state {
     padding: 28px 15px;
-
     color: #94a3b8;
-
     font-size: 13px;
-
     text-align: center;
 }
 
-
-/* =========================================================
-   ERROR STATE
-   ========================================================= */
-
 .error-state {
     padding: 14px;
-
-    border:
-        1px solid #fecaca;
-
+    border: 1px solid #fecaca;
     border-radius: 8px;
-
     background: #fef2f2;
-
     color: #b91c1c;
-
     font-size: 13px;
 }
 
 
 /* =========================================================
-   DARK MODE
+   16. DARK MODE - BASE
    ========================================================= */
 
 html.dark-mode,
@@ -652,13 +584,12 @@ html.dark body,
 body.dark-mode,
 body.dark {
     background: #0b1120;
-
     color: #e2e8f0;
 }
 
 
 /* =========================================================
-   DARK MODE — HEADER
+   17. DARK MODE - HEADER
    ========================================================= */
 
 html.dark-mode .eyebrow,
@@ -684,7 +615,7 @@ body.dark .page-header p {
 
 
 /* =========================================================
-   DARK MODE — CARDS
+   18. DARK MODE - CARDS
    ========================================================= */
 
 html.dark-mode .card,
@@ -692,11 +623,8 @@ html.dark .card,
 body.dark-mode .card,
 body.dark .card {
     background: #111827;
-
     border-color: #243244;
-
     color: #e2e8f0;
-
     box-shadow: none;
 }
 
@@ -716,7 +644,7 @@ body.dark .muted {
 
 
 /* =========================================================
-   DARK MODE — FILTERS
+   19. DARK MODE - FILTERS
    ========================================================= */
 
 html.dark-mode .filters input,
@@ -728,9 +656,7 @@ html.dark .filters select,
 body.dark-mode .filters select,
 body.dark .filters select {
     background: #0f172a;
-
     border-color: #334155;
-
     color: #e2e8f0;
 }
 
@@ -750,15 +676,12 @@ html.dark .filters select:focus,
 body.dark-mode .filters select:focus,
 body.dark .filters select:focus {
     border-color: #60a5fa;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(96, 165, 250, 0.12);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.12);
 }
 
 
 /* =========================================================
-   DARK MODE — BUTTONS
+   20. DARK MODE - BUTTONS
    ========================================================= */
 
 html.dark-mode .primary,
@@ -766,11 +689,8 @@ html.dark .primary,
 body.dark-mode .primary,
 body.dark .primary {
     background: #ffffff !important;
-
     background-color: #ffffff !important;
-
     color: #000000 !important;
-
     border-color: #ffffff !important;
 }
 
@@ -779,9 +699,7 @@ html.dark .primary:hover,
 body.dark-mode .primary:hover,
 body.dark .primary:hover {
     background: #e5e7eb !important;
-
     background-color: #e5e7eb !important;
-
     color: #000000 !important;
 }
 
@@ -790,7 +708,6 @@ html.dark .secondary,
 body.dark-mode .secondary,
 body.dark .secondary {
     background: #1e293b;
-
     color: #e2e8f0;
 }
 
@@ -799,13 +716,12 @@ html.dark .secondary:hover,
 body.dark-mode .secondary:hover,
 body.dark .secondary:hover {
     background: #334155;
-
     color: #ffffff;
 }
 
 
 /* =========================================================
-   DARK MODE — STATISTICS
+   21. DARK MODE - STATISTICS
    ========================================================= */
 
 html.dark-mode .stat,
@@ -813,9 +729,7 @@ html.dark .stat,
 body.dark-mode .stat,
 body.dark .stat {
     background: #111827;
-
     border-color: #243244;
-
     box-shadow: none;
 }
 
@@ -835,7 +749,7 @@ body.dark .stat strong {
 
 
 /* =========================================================
-   DARK MODE — BAR CHARTS
+   22. DARK MODE - BARS
    ========================================================= */
 
 html.dark-mode .bar-label,
@@ -868,46 +782,7 @@ body.dark .bar-value {
 
 
 /* =========================================================
-   DARK MODE — TIME TABLE
-   ========================================================= */
-
-html.dark-mode .time-table,
-html.dark .time-table,
-body.dark-mode .time-table,
-body.dark .time-table {
-    background: #111827;
-}
-
-html.dark-mode .time-table th,
-html.dark .time-table th,
-body.dark-mode .time-table th,
-body.dark .time-table th {
-    background: #1e293b;
-
-    color: #cbd5e1;
-
-    border-color: #334155;
-}
-
-html.dark-mode .time-table td,
-html.dark .time-table td,
-body.dark-mode .time-table td,
-body.dark .time-table td {
-    color: #cbd5e1;
-
-    border-color: #334155;
-}
-
-html.dark-mode .time-table tbody tr:hover,
-html.dark .time-table tbody tr:hover,
-body.dark-mode .time-table tbody tr:hover,
-body.dark .time-table tbody tr:hover {
-    background: #172033;
-}
-
-
-/* =========================================================
-   DARK MODE — GROWTH FORM
+   23. DARK MODE - GROWTH FORM
    ========================================================= */
 
 html.dark-mode .growth-grid label,
@@ -928,11 +803,29 @@ body.dark .growth-grid select,
 html.dark-mode .growth-grid textarea,
 html.dark .growth-grid textarea,
 body.dark-mode .growth-grid textarea,
-body.dark .growth-grid textarea {
+body.dark .growth-grid textarea,
+html.dark-mode #gBugId,
+html.dark #gBugId,
+body.dark-mode #gBugId,
+body.dark #gBugId {
     background: #0f172a;
-
     border-color: #334155;
+    color: #e2e8f0;
+}
 
+html.dark-mode #gBugId:disabled,
+html.dark #gBugId:disabled,
+body.dark-mode #gBugId:disabled,
+body.dark #gBugId:disabled {
+    background: #111827;
+    color: #64748b;
+}
+
+html.dark-mode #gBugId option,
+html.dark #gBugId option,
+body.dark-mode #gBugId option,
+body.dark #gBugId option {
+    background: #0f172a;
     color: #e2e8f0;
 }
 
@@ -958,17 +851,25 @@ body.dark .growth-grid select:focus,
 html.dark-mode .growth-grid textarea:focus,
 html.dark .growth-grid textarea:focus,
 body.dark-mode .growth-grid textarea:focus,
-body.dark .growth-grid textarea:focus {
+body.dark .growth-grid textarea:focus,
+html.dark-mode #gBugId:focus,
+html.dark #gBugId:focus,
+body.dark-mode #gBugId:focus,
+body.dark #gBugId:focus {
     border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.12);
+}
 
-    box-shadow:
-        0 0 0 3px
-        rgba(96, 165, 250, 0.12);
+html.dark-mode .field-help,
+html.dark .field-help,
+body.dark-mode .field-help,
+body.dark .field-help {
+    color: #64748b;
 }
 
 
 /* =========================================================
-   DARK MODE — CHECKBOX
+   24. DARK MODE - CHECKBOXES
    ========================================================= */
 
 html.dark-mode .checkbox-label,
@@ -980,7 +881,7 @@ body.dark .checkbox-label {
 
 
 /* =========================================================
-   DARK MODE — RESULT AREAS
+   25. DARK MODE - RESULTS
    ========================================================= */
 
 html.dark-mode #growthResult,
@@ -992,9 +893,7 @@ html.dark #e2eResult,
 body.dark-mode #e2eResult,
 body.dark #e2eResult {
     background: #0f172a;
-
     border-color: #334155;
-
     color: #cbd5e1;
 }
 
@@ -1003,9 +902,7 @@ html.dark .result-success,
 body.dark-mode .result-success,
 body.dark .result-success {
     background: #052e16 !important;
-
     border-color: #166534 !important;
-
     color: #86efac !important;
 }
 
@@ -1014,29 +911,8 @@ html.dark .result-error,
 body.dark-mode .result-error,
 body.dark .result-error {
     background: #450a0a !important;
-
     border-color: #991b1b !important;
-
     color: #fca5a5 !important;
-}
-
-
-/* =========================================================
-   DARK MODE — STATES
-   ========================================================= */
-
-html.dark-mode .loading-state,
-html.dark .loading-state,
-body.dark-mode .loading-state,
-body.dark .loading-state {
-    color: #94a3b8;
-}
-
-html.dark-mode .empty-state,
-html.dark .empty-state,
-body.dark-mode .empty-state,
-body.dark .empty-state {
-    color: #64748b;
 }
 
 html.dark-mode .error-state,
@@ -1044,156 +920,95 @@ html.dark .error-state,
 body.dark-mode .error-state,
 body.dark .error-state {
     background: #450a0a;
-
     border-color: #991b1b;
-
     color: #fca5a5;
 }
 
 
 /* =========================================================
-   BUGAI SELF-CONTAINED SIDEBAR
+   26. SIDEBAR
    ========================================================= */
 
 .bugai-sidebar {
     position: fixed;
-
     top: 0;
     left: 0;
-
     width: 250px;
     height: 100vh;
-
     z-index: 1000;
-
     display: flex;
-
     flex-direction: column;
-
     background: #0f172a;
-
     color: #ffffff;
-
-    border-right:
-        1px solid #1e293b;
-
+    border-right: 1px solid #1e293b;
     overflow: hidden;
 }
 
-
-/* =========================================================
-   SIDEBAR BRAND
-   ========================================================= */
-
 .sidebar-brand {
     display: flex;
-
     align-items: center;
-
     gap: 12px;
-
     padding: 22px 18px;
-
-    border-bottom:
-        1px solid #1e293b;
-
+    border-bottom: 1px solid #1e293b;
     flex-shrink: 0;
 }
 
 .brand-logo {
     width: 38px;
     height: 38px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     border-radius: 10px;
-
     background: #2563eb;
-
     color: #ffffff;
-
     font-size: 20px;
-
     font-weight: 800;
-
     flex-shrink: 0;
 }
 
 .brand-name {
     color: #ffffff;
-
     font-size: 18px;
-
     font-weight: 800;
-
     line-height: 1.2;
 }
 
 .brand-subtitle {
     margin-top: 3px;
-
     color: #94a3b8;
-
     font-size: 10px;
-
     line-height: 1.3;
 }
 
-
-/* =========================================================
-   SIDEBAR NAVIGATION
-   ========================================================= */
-
 .sidebar-navigation {
     flex: 1;
-
     padding: 16px 12px;
-
     overflow-y: auto;
-
     overflow-x: hidden;
 }
 
 .navigation-label {
     margin: 14px 10px 8px;
-
     color: #64748b;
-
     font-size: 10px;
-
     font-weight: 800;
-
     letter-spacing: 0.12em;
 }
 
 .sidebar-link {
     display: flex;
-
     align-items: center;
-
     gap: 11px;
-
     width: 100%;
-
     min-height: 42px;
-
     margin-bottom: 4px;
-
     padding: 10px 12px;
-
     border-radius: 8px;
-
     color: #cbd5e1;
-
     text-decoration: none;
-
     font-size: 13px;
-
     font-weight: 600;
-
     transition:
         background 0.2s ease,
         color 0.2s ease,
@@ -1202,29 +1017,21 @@ body.dark .error-state {
 
 .sidebar-link:hover {
     background: #1e293b;
-
     color: #ffffff;
-
     transform: translateX(2px);
 }
 
 .sidebar-link.active {
     background: #2563eb;
-
     color: #ffffff;
 }
 
 .nav-icon {
     width: 20px;
-
     display: inline-flex;
-
     align-items: center;
-
     justify-content: center;
-
     flex-shrink: 0;
-
     font-size: 16px;
 }
 
@@ -1232,46 +1039,27 @@ body.dark .error-state {
     white-space: nowrap;
 }
 
-
-/* =========================================================
-   SIDEBAR FOOTER
-   ========================================================= */
-
 .sidebar-footer {
     padding: 16px;
-
-    border-top:
-        1px solid #1e293b;
-
+    border-top: 1px solid #1e293b;
     flex-shrink: 0;
 }
 
 .sidebar-status {
     display: flex;
-
     align-items: center;
-
     gap: 8px;
-
     color: #cbd5e1;
-
     font-size: 11px;
-
     font-weight: 600;
 }
 
 .status-dot {
     width: 8px;
     height: 8px;
-
     border-radius: 50%;
-
     background: #22c55e;
-
-    box-shadow:
-        0 0 0 3px
-        rgba(34, 197, 94, 0.12);
-
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
     flex-shrink: 0;
 }
 
@@ -1281,72 +1069,70 @@ body.dark .error-state {
 
 .sidebar-version {
     margin-top: 8px;
-
     color: #64748b;
-
     font-size: 10px;
 }
 
 
 /* =========================================================
-   MOBILE SIDEBAR
+   27. MOBILE SIDEBAR
    ========================================================= */
 
 .sidebar-menu-button {
     display: none;
-
     position: fixed;
-
     top: 16px;
     left: 16px;
-
     z-index: 1100;
-
     width: 44px;
     height: 44px;
-
     padding: 0;
-
+    border: 1px solid #1e293b;
     border-radius: 10px;
-
     background: #0f172a;
-
     color: #ffffff;
-
-    border:
-        1px solid #1e293b;
-
-    font-size: 21px;
-
     align-items: center;
-
     justify-content: center;
-
+    flex-direction: column;
+    gap: 5px;
     cursor: pointer;
+    box-shadow: 0 5px 16px rgba(15, 23, 42, 0.2);
+}
 
-    box-shadow:
-        0 5px 16px
-        rgba(15, 23, 42, 0.2);
+.sidebar-menu-button span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: #ffffff;
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.sidebar-menu-button[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.sidebar-menu-button[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+}
+
+.sidebar-menu-button[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
 }
 
 .sidebar-menu-button:hover {
     background: #1e293b;
-
     transform: none;
 }
 
 .sidebar-overlay {
     display: none;
-
     position: fixed;
-
     inset: 0;
-
     z-index: 900;
-
-    background:
-        rgba(15, 23, 42, 0.55);
-
+    background: rgba(15, 23, 42, 0.55);
     backdrop-filter: blur(2px);
 }
 
@@ -1356,48 +1142,7 @@ body.dark .error-state {
 
 
 /* =========================================================
-   DARK MODE — SIDEBAR
-   ========================================================= */
-
-html.dark-mode .bugai-sidebar,
-html.dark .bugai-sidebar,
-body.dark-mode .bugai-sidebar,
-body.dark .bugai-sidebar {
-    background: #0f172a;
-
-    color: #ffffff;
-
-    border-color: #1e293b;
-}
-
-html.dark-mode .sidebar-link,
-html.dark .sidebar-link,
-body.dark-mode .sidebar-link,
-body.dark .sidebar-link {
-    color: #cbd5e1;
-}
-
-html.dark-mode .sidebar-link:hover,
-html.dark .sidebar-link:hover,
-body.dark-mode .sidebar-link:hover,
-body.dark .sidebar-link:hover {
-    background: #1e293b;
-
-    color: #ffffff;
-}
-
-html.dark-mode .sidebar-link.active,
-html.dark .sidebar-link.active,
-body.dark-mode .sidebar-link.active,
-body.dark .sidebar-link.active {
-    background: #2563eb;
-
-    color: #ffffff;
-}
-
-
-/* =========================================================
-   RESPONSIVE - 1200px
+   28. RESPONSIVE - 1200px
    ========================================================= */
 
 @media (max-width: 1200px) {
@@ -1419,26 +1164,20 @@ body.dark .sidebar-link.active {
 
 
 /* =========================================================
-   RESPONSIVE - 900px
+   29. RESPONSIVE - 900px
    ========================================================= */
 
 @media (max-width: 900px) {
 
     .bugai-sidebar {
-        transform:
-            translateX(-100%);
-
-        transition:
-            transform 0.25s ease;
-
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
         box-shadow:
-            10px 0 30px
-            rgba(0, 0, 0, 0.2);
+            10px 0 30px rgba(0, 0, 0, 0.2);
     }
 
     .bugai-sidebar.open {
-        transform:
-            translateX(0);
+        transform: translateX(0);
     }
 
     .sidebar-menu-button {
@@ -1447,11 +1186,7 @@ body.dark .sidebar-link.active {
 
     main {
         margin-left: 0;
-
-        padding:
-            80px
-            22px
-            30px;
+        padding: 80px 22px 30px;
     }
 
     .grid {
@@ -1470,16 +1205,13 @@ body.dark .sidebar-link.active {
 
 
 /* =========================================================
-   RESPONSIVE - 600px
+   30. RESPONSIVE - 600px
    ========================================================= */
 
 @media (max-width: 600px) {
 
     main {
-        padding:
-            75px
-            15px
-            25px;
+        padding: 75px 15px 25px;
     }
 
     .page-header h1 {
@@ -1514,7 +1246,6 @@ body.dark .sidebar-link.active {
     .bar-row {
         grid-template-columns:
             90px minmax(0, 1fr) 50px;
-
         gap: 8px;
     }
 
@@ -1537,15 +1268,18 @@ body.dark .sidebar-link.active {
     .sidebar-menu-button {
         top: 14px;
         left: 14px;
-
         width: 40px;
         height: 40px;
+    }
+
+    .growth-grid {
+        gap: 14px;
     }
 }
 
 
 /* =========================================================
-   ACCESSIBILITY
+   31. ACCESSIBILITY
    ========================================================= */
 
 button:focus-visible,
@@ -1553,16 +1287,13 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 a:focus-visible {
-    outline:
-        3px solid
-        rgba(37, 99, 235, 0.25);
-
+    outline: 3px solid rgba(37, 99, 235, 0.25);
     outline-offset: 2px;
 }
 
 
 /* =========================================================
-   REDUCED MOTION
+   32. REDUCED MOTION
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1570,16 +1301,9 @@ a:focus-visible {
     *,
     *::before,
     *::after {
-        animation-duration:
-            0.01ms !important;
-
-        animation-iteration-count:
-            1 !important;
-
-        transition-duration:
-            0.01ms !important;
-
-        scroll-behavior:
-            auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }

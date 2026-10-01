@@ -1,5 +1,6 @@
 /* =========================================================
    BUGAI - DEFECT PATTERN ANALYTICS
+   Milestone 4
    ========================================================= */
 
 const API_BASE_URL = "http://127.0.0.1:5000";
@@ -7,6 +8,9 @@ const API_BASE_URL = "http://127.0.0.1:5000";
 let analyticsLoading = false;
 let growthLoading = false;
 let e2eLoading = false;
+
+let submittedBugRecords = [];
+let selectedSubmittedBug = null;
 
 
 /* =========================================================
@@ -51,7 +55,6 @@ async function apiRequest(endpoint, options = {}) {
         return data;
 
     } catch (error) {
-
         if (error instanceof TypeError) {
             throw new Error(
                 "Cannot connect to BugAI backend. " +
@@ -69,10 +72,7 @@ async function apiRequest(endpoint, options = {}) {
    ========================================================= */
 
 function escapeHTML(value) {
-    if (
-        value === null ||
-        value === undefined
-    ) {
+    if (value === null || value === undefined) {
         return "";
     }
 
@@ -99,125 +99,310 @@ function formatNumber(value) {
 function setText(id, value) {
     const element = document.getElementById(id);
 
-    if (element) {
-        element.textContent =
-            value === null ||
-            value === undefined ||
-            value === ""
-                ? "—"
-                : value;
+    if (!element) {
+        return;
     }
+
+    element.textContent =
+        value === null ||
+        value === undefined ||
+        value === ""
+            ? "—"
+            : value;
 }
 
 
-function showLoading(element, message) {
+function showLoading(element, message = "Loading...") {
     if (!element) {
         return;
     }
 
     element.innerHTML = `
         <div class="loading-state">
-            ${escapeHTML(message || "Loading...")}
+            ${escapeHTML(message)}
         </div>
     `;
 }
 
 
-function showError(element, message) {
+function showError(element, message = "Something went wrong.") {
     if (!element) {
         return;
     }
 
     element.innerHTML = `
         <div class="error-state">
-            ${escapeHTML(message || "Something went wrong.")}
+            ${escapeHTML(message)}
         </div>
     `;
 }
 
 
-function addOptions(select, values) {
-    if (
-        !select ||
-        !Array.isArray(values)
-    ) {
-        return;
+/* =========================================================
+   DISTRIBUTION NORMALIZER
+
+   Backend example:
+
+   [
+       {
+           "count": 100,
+           "value": "High"
+       }
+   ]
+
+   Normalized:
+
+   [
+       {
+           label: "High",
+           value: 100
+       }
+   ]
+
+   IMPORTANT:
+   Already-normalized {label,value} objects are preserved.
+   ========================================================= */
+
+function normalizeDistribution(data) {
+    if (!data) {
+        return [];
     }
 
-    const existing = new Set(
-        Array.from(select.options).map(
-            option => option.value
-        )
-    );
+    if (Array.isArray(data)) {
+        return data
+            .map(item => {
+                if (item === null || item === undefined) {
+                    return null;
+                }
 
-    values.forEach(value => {
+                if (typeof item !== "object") {
+                    return {
+                        label: String(item),
+                        value: 1
+                    };
+                }
 
-        if (
-            value === null ||
-            value === undefined ||
-            value === ""
-        ) {
-            return;
-        }
+                /*
+                 * Already normalized.
+                 */
+                if (
+                    Object.prototype.hasOwnProperty.call(item, "label") &&
+                    Object.prototype.hasOwnProperty.call(item, "value") &&
+                    !Object.prototype.hasOwnProperty.call(item, "count") &&
+                    !Object.prototype.hasOwnProperty.call(item, "total") &&
+                    !Object.prototype.hasOwnProperty.call(item, "frequency") &&
+                    !Object.prototype.hasOwnProperty.call(item, "occurrences") &&
+                    !Object.prototype.hasOwnProperty.call(item, "value_count")
+                ) {
+                    return {
+                        label: String(item.label),
+                        value: Number(item.value) || 0
+                    };
+                }
 
-        const stringValue = String(value);
+                const label =
+                    item.value ??
+                    item.label ??
+                    item.name ??
+                    item.project ??
+                    item.component ??
+                    item.affected_component ??
+                    item.severity ??
+                    item.priority ??
+                    item.exception ??
+                    item.exception_type ??
+                    item.source ??
+                    item.root_cause ??
+                    item.error ??
+                    item.error_type ??
+                    item.error_message ??
+                    "Unknown";
 
-        if (existing.has(stringValue)) {
-            return;
-        }
+                const count =
+                    item.count ??
+                    item.total ??
+                    item.frequency ??
+                    item.occurrences ??
+                    item.value_count ??
+                    0;
 
-        const option =
-            document.createElement("option");
+                return {
+                    label: String(label),
+                    value: Number(count) || 0
+                };
+            })
+            .filter(item =>
+                item &&
+                item.label !== "" &&
+                item.value > 0
+            );
+    }
 
-        option.value = stringValue;
-        option.textContent = stringValue;
+    if (typeof data === "object") {
+        return Object.entries(data)
+            .map(([label, value]) => ({
+                label: String(label),
+                value: Number(value) || 0
+            }))
+            .filter(item => item.value > 0);
+    }
 
-        select.appendChild(option);
-        existing.add(stringValue);
-    });
+    return [];
 }
 
 
 /* =========================================================
-   FILTERS
+   TOP DISTRIBUTION
+   ========================================================= */
+
+function getTopDistributionValue(data) {
+    const entries = normalizeDistribution(data)
+        .filter(item => item.value > 0)
+        .sort((a, b) => b.value - a.value);
+
+    if (!entries.length) {
+        return "—";
+    }
+
+    return entries[0].label;
+}
+
+
+function getTopMeaningfulValue(data) {
+    const entries = normalizeDistribution(data)
+        .filter(item => item.value > 0)
+        .sort((a, b) => b.value - a.value);
+
+    if (!entries.length) {
+        return "—";
+    }
+
+    const ignored = new Set([
+        "unknown",
+        "unknown / not detected",
+        "not detected",
+        "n/a",
+        "na",
+        "none",
+        "null",
+        "undefined",
+        "unknown component",
+        "unknown exception",
+        "unknown severity",
+        "unknown / not available",
+        "not available",
+        "unclassified",
+        "uncategorized",
+        "imported defect"
+    ]);
+
+    const meaningful = entries.find(item =>
+        !ignored.has(
+            String(item.label).trim().toLowerCase()
+        )
+    );
+
+    return meaningful
+        ? meaningful.label
+        : entries[0].label;
+}
+
+
+/* =========================================================
+   LIMIT DISTRIBUTION
+   ========================================================= */
+
+function limitDistribution(data, limit = 10) {
+    return normalizeDistribution(data)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, limit);
+}
+
+
+/* =========================================================
+   FILTER OPTIONS
+   ========================================================= */
+
+function addOptions(selectId, values, placeholder) {
+    const select = document.getElementById(selectId);
+
+    if (!select) {
+        return;
+    }
+
+    const currentValue = select.value;
+
+    select.innerHTML = "";
+
+    const firstOption = document.createElement("option");
+    firstOption.value = "";
+    firstOption.textContent = placeholder;
+    select.appendChild(firstOption);
+
+    const uniqueValues = [
+        ...new Set(
+            (Array.isArray(values) ? values : [])
+                .map(value => String(value || "").trim())
+                .filter(Boolean)
+        )
+    ];
+
+    uniqueValues.forEach(value => {
+        const option = document.createElement("option");
+
+        option.value = value;
+        option.textContent = value;
+
+        select.appendChild(option);
+    });
+
+    if (
+        uniqueValues.includes(currentValue)
+    ) {
+        select.value = currentValue;
+    }
+}
+
+
+/* =========================================================
+   LOAD FILTERS
    ========================================================= */
 
 async function loadFilters() {
-
     try {
-
         const data = await apiRequest(
             "/api/analytics/filters"
         );
 
+        if (!data || data.ok === false) {
+            return;
+        }
+
         addOptions(
-            document.getElementById("project"),
-            data.projects || []
+            "project",
+            data.projects,
+            "All projects"
         );
 
         addOptions(
-            document.getElementById("severity"),
-            data.severities || []
+            "severity",
+            data.severities,
+            "All severities"
         );
 
         addOptions(
-            document.getElementById("priority"),
-            data.priorities || []
+            "priority",
+            data.priorities,
+            "All priorities"
         );
 
-        /*
-         * Component and exception_type are text inputs
-         * in the current HTML, so they are not populated
-         * from the filter endpoint.
-         */
-
         addOptions(
-            document.getElementById("source"),
-            data.sources || []
+            "source",
+            data.sources,
+            "All sources"
         );
 
     } catch (error) {
-
         console.error(
             "Failed to load analytics filters:",
             error
@@ -231,9 +416,7 @@ async function loadFilters() {
    ========================================================= */
 
 function buildQuery() {
-
-    const params =
-        new URLSearchParams();
+    const params = new URLSearchParams();
 
     const fields = [
         "project",
@@ -246,20 +429,17 @@ function buildQuery() {
         "end_date"
     ];
 
-    fields.forEach(field => {
-
-        const element =
-            document.getElementById(field);
+    fields.forEach(id => {
+        const element = document.getElementById(id);
 
         if (!element) {
             return;
         }
 
-        const value =
-            element.value.trim();
+        const value = element.value.trim();
 
         if (value) {
-            params.set(field, value);
+            params.set(id, value);
         }
     });
 
@@ -268,11 +448,10 @@ function buildQuery() {
 
 
 /* =========================================================
-   BAR CHART
+   RENDER BAR CHART
    ========================================================= */
 
-function renderBars(elementId, data) {
-
+function renderBars(elementId, data, limit = 10) {
     const container =
         document.getElementById(elementId);
 
@@ -280,97 +459,63 @@ function renderBars(elementId, data) {
         return;
     }
 
-    if (
-        !data ||
-        typeof data !== "object"
-    ) {
+    const normalized =
+        normalizeDistribution(data)
+            .filter(item => item.value > 0)
+            .sort((a, b) => b.value - a.value)
+            .slice(0, limit);
+
+    if (!normalized.length) {
         container.innerHTML = `
             <div class="empty-state">
                 No data available.
             </div>
         `;
-
-        return;
-    }
-
-    const entries =
-        Object.entries(data)
-            .filter(
-                ([, value]) =>
-                    Number(value) > 0
-            )
-            .sort(
-                (a, b) =>
-                    Number(b[1]) -
-                    Number(a[1])
-            );
-
-    if (!entries.length) {
-
-        container.innerHTML = `
-            <div class="empty-state">
-                No data available.
-            </div>
-        `;
-
         return;
     }
 
     const maxValue =
         Math.max(
-            ...entries.map(
-                ([, value]) =>
-                    Number(value)
-            )
+            ...normalized.map(item => item.value)
         );
 
-    container.innerHTML = `
-        <div class="bar-chart">
+    container.innerHTML = normalized
+        .map(item => {
+            const percentage =
+                maxValue > 0
+                    ? Math.max(
+                        4,
+                        (item.value / maxValue) * 100
+                    )
+                    : 0;
 
-            ${entries.map(
-                ([label, value]) => {
+            return `
+                <div class="bar-row">
 
-                    const numericValue =
-                        Number(value);
+                    <div class="bar-label"
+                         title="${escapeHTML(item.label)}">
 
-                    const percentage =
-                        maxValue > 0
-                            ? (
-                                numericValue /
-                                maxValue
-                            ) * 100
-                            : 0;
+                        ${escapeHTML(item.label)}
 
-                    return `
-                        <div class="bar-row">
+                    </div>
 
-                            <div
-                                class="bar-label"
-                                title="${escapeHTML(label)}"
-                            >
-                                ${escapeHTML(label)}
-                            </div>
+                    <div class="bar-track">
 
-                            <div class="bar-track">
+                        <div
+                            class="bar-fill"
+                            style="width:${percentage}%"
+                        ></div>
 
-                                <div
-                                    class="bar-fill"
-                                    style="width: ${percentage}%;"
-                                ></div>
+                    </div>
 
-                            </div>
+                    <div class="bar-value">
+                        ${formatNumber(item.value)}
+                    </div>
 
-                            <div class="bar-value">
-                                ${formatNumber(numericValue)}
-                            </div>
-
-                        </div>
-                    `;
-                }
-            ).join("")}
-
-        </div>
-    `;
+                </div>
+            `;
+        })
+        .join("");
 }
 
 
@@ -379,7 +524,6 @@ function renderBars(elementId, data) {
    ========================================================= */
 
 function renderTimeSeries(rows) {
-
     const container =
         document.getElementById("timeChart");
 
@@ -387,74 +531,81 @@ function renderTimeSeries(rows) {
         return;
     }
 
-    if (
-        !Array.isArray(rows) ||
-        rows.length === 0
-    ) {
+    if (!Array.isArray(rows) || !rows.length) {
         container.innerHTML = `
             <div class="empty-state">
-                No time-based activity available.
+                No time-based data available.
             </div>
         `;
-
         return;
     }
 
-    const normalized =
-        rows.map(row => {
+    const normalized = rows
+        .map(row => ({
+            label:
+                row.date ??
+                row.day ??
+                row.label ??
+                "Unknown",
 
-            return {
-                date:
-                    row.date ??
-                    row.day ??
-                    row.month ??
-                    row.timestamp ??
-                    "-",
-
-                count:
+            value:
+                Number(
                     row.count ??
-                    row.total ??
                     row.value ??
                     0
-            };
-        });
+                ) || 0
+        }))
+        .filter(row => row.value > 0)
+        .slice(-30);
 
-    container.innerHTML = `
-        <div class="time-series">
+    if (!normalized.length) {
+        container.innerHTML = `
+            <div class="empty-state">
+                No time-based data available.
+            </div>
+        `;
+        return;
+    }
 
-            <table class="time-table">
+    const maxValue =
+        Math.max(
+            ...normalized.map(item => item.value)
+        );
 
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Defects</th>
-                    </tr>
-                </thead>
+    container.innerHTML = normalized
+        .map(item => {
+            const percentage =
+                maxValue > 0
+                    ? Math.max(
+                        4,
+                        (item.value / maxValue) * 100
+                    )
+                    : 0;
 
-                <tbody>
+            return `
+                <div class="bar-row">
 
-                    ${normalized.map(
-                        row => `
-                            <tr>
+                    <div class="bar-label">
+                        ${escapeHTML(item.label)}
+                    </div>
 
-                                <td>
-                                    ${escapeHTML(row.date)}
-                                </td>
+                    <div class="bar-track">
 
-                                <td>
-                                    ${formatNumber(row.count)}
-                                </td>
+                        <div
+                            class="bar-fill"
+                            style="width:${percentage}%"
+                        ></div>
 
-                            </tr>
-                        `
-                    ).join("")}
+                    </div>
 
-                </tbody>
+                    <div class="bar-value">
+                        ${formatNumber(item.value)}
+                    </div>
 
-            </table>
-
-        </div>
-    `;
+                </div>
+            `;
+        })
+        .join("");
 }
 
 
@@ -463,102 +614,154 @@ function renderTimeSeries(rows) {
    ========================================================= */
 
 function renderAnalytics(data) {
-
     if (!data) {
         return;
     }
 
-    const summary =
-        data.summary ||
-        data.stats ||
+    if (data.ready === false) {
+        const chartIds = [
+            "severityChart",
+            "componentChart",
+            "exceptionChart",
+            "errorChart",
+            "timeChart"
+        ];
+
+        chartIds.forEach(id => {
+            const element =
+                document.getElementById(id);
+
+            if (element) {
+                element.innerHTML = `
+                    <div class="loading-state">
+                        Analytics database is being prepared...
+                    </div>
+                `;
+            }
+        });
+
+        return;
+    }
+
+    const statistics =
+        data.statistics || {};
+
+    const severityData =
+        statistics.by_severity ||
+        data.severity_distribution ||
         {};
 
+    const componentData =
+        statistics.by_component ||
+        data.component_distribution ||
+        {};
+
+    const exceptionData =
+        statistics.by_exception ||
+        statistics.by_exception_type ||
+        data.exception_distribution ||
+        {};
+
+    const priorityData =
+        statistics.by_priority ||
+        data.priority_distribution ||
+        {};
+
+    const projectData =
+        statistics.by_project ||
+        data.project_distribution ||
+        {};
+
+    const sourceData =
+        statistics.by_source ||
+        data.source_distribution ||
+        {};
+
+    const rootCauseData =
+        statistics.by_root_cause ||
+        data.root_cause_distribution ||
+        {};
+
+    const errorData =
+        data.top_recurring_errors ||
+        statistics.by_error ||
+        statistics.by_error_message ||
+        data.error_distribution ||
+        {};
+
+    const timeSeries =
+        data.time_series ||
+        data.timeSeries ||
+        [];
+
+    /* ---------------------------------------------------------
+       SUMMARY
+       --------------------------------------------------------- */
 
     setText(
         "total",
         formatNumber(
-            summary.total ??
+            data.total_records ??
             data.total ??
-            data.total_analyzed ??
             0
         )
     );
 
-
     setText(
         "topComponent",
-        summary.top_component ??
-        summary.topComponent ??
-        data.top_component ??
-        "—"
+        getTopMeaningfulValue(componentData)
     );
-
 
     setText(
         "topException",
-        summary.top_exception ??
-        summary.topException ??
-        data.top_exception ??
-        "—"
+        getTopMeaningfulValue(exceptionData)
     );
-
 
     setText(
         "topSeverity",
-        summary.top_severity ??
-        summary.topSeverity ??
-        data.top_severity ??
-        "—"
+        getTopMeaningfulValue(severityData)
     );
 
 
-    const distributions =
-        data.distributions ||
-        data.breakdowns ||
-        {};
-
+    /* ---------------------------------------------------------
+       CHARTS
+       --------------------------------------------------------- */
 
     renderBars(
         "severityChart",
-        distributions.severity ||
-        data.severity_distribution ||
-        {}
+        severityData,
+        10
     );
-
 
     renderBars(
         "componentChart",
-        distributions.component ||
-        data.component_distribution ||
-        {}
+        limitDistribution(
+            componentData,
+            10
+        ),
+        10
     );
-
 
     renderBars(
         "exceptionChart",
-        distributions.exception_type ||
-        distributions.exception ||
-        data.exception_distribution ||
-        {}
+        limitDistribution(
+            exceptionData,
+            10
+        ),
+        10
     );
-
 
     renderBars(
         "errorChart",
-        distributions.error_type ||
-        distributions.error ||
-        distributions.root_cause ||
-        data.error_distribution ||
-        data.error_patterns ||
-        {}
+        limitDistribution(
+            errorData,
+            10
+        ),
+        10
     );
 
-
     renderTimeSeries(
-        data.time_series ||
-        data.timeseries ||
-        data.timeline ||
-        []
+        timeSeries
     );
 }
 
@@ -568,13 +771,11 @@ function renderAnalytics(data) {
    ========================================================= */
 
 async function loadAnalytics() {
-
     if (analyticsLoading) {
         return;
     }
 
     analyticsLoading = true;
-
 
     const chartIds = [
         "severityChart",
@@ -584,117 +785,64 @@ async function loadAnalytics() {
         "timeChart"
     ];
 
-
     chartIds.forEach(id => {
+        const element =
+            document.getElementById(id);
 
-        showLoading(
-            document.getElementById(id),
-            "Loading analytics..."
-        );
-
+        if (element) {
+            showLoading(
+                element,
+                "Loading analytics..."
+            );
+        }
     });
 
-
     try {
-
-        const query =
-            buildQuery();
+        const query = buildQuery();
 
         const endpoint =
             query
                 ? `/api/analytics?${query}`
                 : "/api/analytics";
 
-
         const data =
             await apiRequest(endpoint);
 
+        if (data && data.ok === false) {
+            throw new Error(
+                data.error ||
+                "Analytics request failed."
+            );
+        }
 
         renderAnalytics(data);
 
     } catch (error) {
-
         console.error(
             "Analytics loading error:",
             error
         );
 
-
         chartIds.forEach(id => {
+            const element =
+                document.getElementById(id);
 
-            showError(
-                document.getElementById(id),
-                error.message
-            );
-
+            if (element) {
+                showError(
+                    element,
+                    error.message
+                );
+            }
         });
 
-
-        setText("total", "Error");
+        setText("total", "—");
         setText("topComponent", "—");
         setText("topException", "—");
         setText("topSeverity", "—");
 
     } finally {
-
         analyticsLoading = false;
     }
-}
-
-
-/* =========================================================
-   WAIT FOR ANALYTICS SERVICE
-   ========================================================= */
-
-async function waitForAnalytics(
-    attempts = 10,
-    delay = 1000
-) {
-
-    for (
-        let attempt = 0;
-        attempt < attempts;
-        attempt++
-    ) {
-
-        try {
-
-            const status =
-                await apiRequest(
-                    "/api/analytics/status"
-                );
-
-
-            if (
-                status.ready === true ||
-                status.building === false
-            ) {
-
-                await loadAnalytics();
-
-                return;
-            }
-
-        } catch (error) {
-
-            console.warn(
-                "Analytics service not ready:",
-                error.message
-            );
-        }
-
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    delay
-                )
-        );
-    }
-
-
-    await loadAnalytics();
 }
 
 
@@ -703,8 +851,7 @@ async function waitForAnalytics(
    ========================================================= */
 
 function resetFilters() {
-
-    const fields = [
+    const ids = [
         "project",
         "severity",
         "priority",
@@ -715,98 +862,561 @@ function resetFilters() {
         "end_date"
     ];
 
-
-    fields.forEach(id => {
-
+    ids.forEach(id => {
         const element =
             document.getElementById(id);
 
         if (element) {
             element.value = "";
         }
-
     });
-
 
     loadAnalytics();
 }
 
 
 /* =========================================================
-   GROWTH FORM
+   SUBMITTED BUGS
+   =========================================================
+
+   IMPORTANT BACKEND RESPONSE:
+
+   {
+       "ok": true,
+       "total_records": 3,
+       "results": [
+           {...},
+           {...},
+           {...}
+       ]
+   }
+
+   The previous JS incorrectly looked only for:
+       data.records
+
+   This version correctly uses:
+       data.results
+   ========================================================= */
+
+async function loadSubmittedBugs() {
+    const bugIdElement =
+        document.getElementById("gBugId");
+
+    if (!bugIdElement) {
+        return;
+    }
+
+    try {
+        const data =
+            await apiRequest(
+                "/api/analytics/submitted-records"
+            );
+
+        if (!data || data.ok === false) {
+            throw new Error(
+                data?.error ||
+                "Unable to load submitted bugs."
+            );
+        }
+
+        /*
+         * FIX:
+         * Backend returns `results`.
+         *
+         * Keep `records` as fallback in case
+         * the backend is changed later.
+         */
+        submittedBugRecords =
+            Array.isArray(data.results)
+                ? data.results
+                : Array.isArray(data.records)
+                    ? data.records
+                    : Array.isArray(data)
+                        ? data
+                        : [];
+
+        console.log(
+            "BugAI submitted bugs:",
+            submittedBugRecords
+        );
+
+        prepareBugIdSelector();
+        populateBugIdSelector();
+
+    } catch (error) {
+        console.error(
+            "Failed to load submitted bugs:",
+            error
+        );
+
+        const select =
+            document.getElementById("gBugId");
+
+        if (select) {
+            select.innerHTML = `
+                <option value="">
+                    Unable to load submitted bugs
+                </option>
+            `;
+
+            select.disabled = true;
+        }
+    }
+}
+
+
+/* =========================================================
+   PREPARE BUG ID SELECT
+   ========================================================= */
+
+function prepareBugIdSelector() {
+    let element =
+        document.getElementById("gBugId");
+
+    if (!element) {
+        return;
+    }
+
+    /*
+     * If HTML already contains a SELECT,
+     * keep it.
+     */
+    if (element.tagName !== "SELECT") {
+        const select =
+            document.createElement("select");
+
+        select.id = "gBugId";
+        select.name = "bug_id";
+        select.required = true;
+
+        element.replaceWith(select);
+
+        element = select;
+    }
+
+    /*
+     * Avoid duplicate event listeners.
+     */
+    if (
+        element.dataset.listenerAttached !== "true"
+    ) {
+        element.addEventListener(
+            "change",
+            handleSubmittedBugSelection
+        );
+
+        element.dataset.listenerAttached = "true";
+    }
+}
+
+
+/* =========================================================
+   POPULATE BUG ID SELECT
+   ========================================================= */
+
+function populateBugIdSelector() {
+    const select =
+        document.getElementById("gBugId");
+
+    if (!select) {
+        return;
+    }
+
+    select.innerHTML = "";
+
+    const placeholder =
+        document.createElement("option");
+
+    placeholder.value = "";
+    placeholder.textContent =
+        submittedBugRecords.length
+            ? "Select a submitted bug"
+            : "No submitted bugs available";
+
+    placeholder.disabled =
+        submittedBugRecords.length > 0;
+
+    placeholder.selected = true;
+
+    select.appendChild(placeholder);
+
+    const usedIds = new Set();
+
+    submittedBugRecords.forEach(
+        (bug, index) => {
+            const bugId =
+                String(
+                    bug?.bug_id ??
+                    bug?.id ??
+                    ""
+                ).trim();
+
+            if (!bugId || usedIds.has(bugId)) {
+                return;
+            }
+
+            usedIds.add(bugId);
+
+            const option =
+                document.createElement("option");
+
+            option.value = bugId;
+
+            const title =
+                String(
+                    bug?.title ||
+                    "Submitted Bug"
+                ).trim();
+
+            const project =
+                String(
+                    bug?.project ||
+                    ""
+                ).trim();
+
+            option.textContent =
+                project
+                    ? `${bugId} — ${title} (${project})`
+                    : `${bugId} — ${title}`;
+
+            option.dataset.index =
+                String(index);
+
+            select.appendChild(option);
+        }
+    );
+
+    select.disabled =
+        submittedBugRecords.length === 0;
+
+    /*
+     * Make sure no stale bug remains selected.
+     */
+    selectedSubmittedBug = null;
+    clearGrowthFields();
+}
+
+
+/* =========================================================
+   BUG SELECTION
+   ========================================================= */
+
+function handleSubmittedBugSelection(event) {
+    const bugId =
+        String(
+            event.target.value || ""
+        ).trim();
+
+    if (!bugId) {
+        selectedSubmittedBug = null;
+        clearGrowthFields();
+        return;
+    }
+
+    selectedSubmittedBug =
+        submittedBugRecords.find(
+            bug => {
+                const currentId =
+                    String(
+                        bug?.bug_id ??
+                        bug?.id ??
+                        ""
+                    ).trim();
+
+                return currentId === bugId;
+            }
+        ) || null;
+
+    if (!selectedSubmittedBug) {
+        throw new Error(
+            "Selected submitted bug could not be found."
+        );
+    }
+
+    fillGrowthFields(
+        selectedSubmittedBug
+    );
+}
+
+
+/* =========================================================
+   SET GROWTH FIELD
+   ========================================================= */
+
+function setGrowthField(id, value) {
+    const element =
+        document.getElementById(id);
+
+    if (!element) {
+        return;
+    }
+
+    element.value =
+        value === null ||
+        value === undefined
+            ? ""
+            : String(value);
+}
+
+
+/* =========================================================
+   FILL GROWTH FORM
+   ========================================================= */
+
+function fillGrowthFields(bug) {
+    if (!bug) {
+        return;
+    }
+
+    setGrowthField(
+        "gBugId",
+        bug.bug_id ?? bug.id
+    );
+
+    setGrowthField(
+        "gProject",
+        bug.project
+    );
+
+    setGrowthField(
+        "gTitle",
+        bug.title
+    );
+
+    setGrowthField(
+        "gDescription",
+        bug.description
+    );
+
+    setGrowthField(
+        "gComponent",
+        bug.affected_component ??
+        bug.component
+    );
+
+    setGrowthField(
+        "gStack",
+        bug.stack_trace ??
+        bug.error_information ??
+        bug.error_message
+    );
+
+    setGrowthField(
+        "gRoot",
+        bug.root_cause ??
+        bug.hypothesis
+    );
+
+    setGrowthField(
+        "gResolution",
+        bug.resolution ??
+        bug.recommended_fix
+    );
+
+    setGrowthField(
+        "gSeverity",
+        bug.severity
+    );
+
+    setGrowthField(
+        "gPriority",
+        bug.priority
+    );
+
+    /*
+     * These must be manually confirmed.
+     */
+    const confirmed =
+        document.getElementById(
+            "confirmedFix"
+        );
+
+    const approved =
+        document.getElementById(
+            "approved"
+        );
+
+    if (confirmed) {
+        confirmed.checked = false;
+    }
+
+    if (approved) {
+        approved.checked = false;
+    }
+
+    const result =
+        document.getElementById(
+            "growthResult"
+        );
+
+    if (result) {
+        result.className = "";
+        result.textContent =
+            `Selected submitted bug: ${
+                bug.bug_id ?? bug.id ?? ""
+            }\n\n` +
+            "Review the populated information, " +
+            "confirm the fix, approve it for the KB, " +
+            "then click Validate & Add to Knowledge Base.";
+    }
+}
+
+
+/* =========================================================
+   CLEAR GROWTH FIELDS
+   ========================================================= */
+
+function clearGrowthFields() {
+    const ids = [
+        "gProject",
+        "gTitle",
+        "gDescription",
+        "gComponent",
+        "gStack",
+        "gRoot",
+        "gResolution",
+        "gSeverity",
+        "gPriority"
+    ];
+
+    ids.forEach(id => {
+        const element =
+            document.getElementById(id);
+
+        if (element) {
+            element.value = "";
+        }
+    });
+
+    const confirmed =
+        document.getElementById(
+            "confirmedFix"
+        );
+
+    const approved =
+        document.getElementById(
+            "approved"
+        );
+
+    if (confirmed) {
+        confirmed.checked = false;
+    }
+
+    if (approved) {
+        approved.checked = false;
+    }
+}
+
+
+/* =========================================================
+   VERIFY SELECTED BUG
+   ========================================================= */
+
+function verifySelectedSubmittedBug() {
+    if (!selectedSubmittedBug) {
+        throw new Error(
+            "Please select an existing submitted bug first."
+        );
+    }
+
+    const id =
+        String(
+            selectedSubmittedBug.bug_id ??
+            selectedSubmittedBug.id ??
+            ""
+        ).trim();
+
+    if (!id) {
+        throw new Error(
+            "The selected submitted bug does not have a valid Bug ID."
+        );
+    }
+
+    const exists =
+        submittedBugRecords.some(
+            bug =>
+                String(
+                    bug?.bug_id ??
+                    bug?.id ??
+                    ""
+                ).trim() === id
+        );
+
+    if (!exists) {
+        throw new Error(
+            "The selected Bug ID is not present in BugAI submitted records."
+        );
+    }
+
+    return id;
+}
+
+
+/* =========================================================
+   COLLECT GROWTH PAYLOAD
    ========================================================= */
 
 function collectGrowthPayload() {
+    const verifiedBugId =
+        verifySelectedSubmittedBug();
 
     return {
-
-        bug_id:
-            document
-                .getElementById("gBugId")
-                ?.value
-                .trim() || "",
+        bug_id: verifiedBugId,
 
         project:
-            document
-                .getElementById("gProject")
-                ?.value
-                .trim() || "",
+            document.getElementById(
+                "gProject"
+            )?.value.trim() || "",
 
         title:
-            document
-                .getElementById("gTitle")
-                ?.value
-                .trim() || "",
+            document.getElementById(
+                "gTitle"
+            )?.value.trim() || "",
 
         description:
-            document
-                .getElementById("gDescription")
-                ?.value
-                .trim() || "",
+            document.getElementById(
+                "gDescription"
+            )?.value.trim() || "",
 
         component:
-            document
-                .getElementById("gComponent")
-                ?.value
-                .trim() || "",
+            document.getElementById(
+                "gComponent"
+            )?.value.trim() || "",
 
         stack_trace:
-            document
-                .getElementById("gStack")
-                ?.value
-                .trim() || "",
+            document.getElementById(
+                "gStack"
+            )?.value.trim() || "",
 
         root_cause:
-            document
-                .getElementById("gRoot")
-                ?.value
-                .trim() || "",
+            document.getElementById(
+                "gRoot"
+            )?.value.trim() || "",
 
         resolution:
-            document
-                .getElementById("gResolution")
-                ?.value
-                .trim() || "",
+            document.getElementById(
+                "gResolution"
+            )?.value.trim() || "",
 
         severity:
-            document
-                .getElementById("gSeverity")
-                ?.value || "",
+            document.getElementById(
+                "gSeverity"
+            )?.value || "",
 
         priority:
-            document
-                .getElementById("gPriority")
-                ?.value || "",
+            document.getElementById(
+                "gPriority"
+            )?.value || "",
 
         confirmed_fix:
-            document
-                .getElementById("confirmedFix")
-                ?.checked === true,
+            document.getElementById(
+                "confirmedFix"
+            )?.checked === true,
 
         approved:
-            document
-                .getElementById("approved")
-                ?.checked === true
+            document.getElementById(
+                "approved"
+            )?.checked === true
     };
 }
 
@@ -816,7 +1426,6 @@ function collectGrowthPayload() {
    ========================================================= */
 
 async function submitGrowth() {
-
     if (growthLoading) {
         return;
     }
@@ -826,69 +1435,49 @@ async function submitGrowth() {
             "growthResult"
         );
 
-
     growthLoading = true;
 
-
     if (result) {
-
         result.className = "";
-
         result.textContent =
-            "Validating and adding confirmed bug...";
+            "Validating selected submitted bug...";
     }
 
-
     try {
-
         const payload =
             collectGrowthPayload();
 
-
-        /* -------------------------------------------------
-           VALIDATION
-           ------------------------------------------------- */
-
-        if (!payload.bug_id) {
-            throw new Error(
-                "Bug ID is required."
-            );
-        }
-
-        if (!payload.title) {
-            throw new Error(
-                "Title is required."
-            );
-        }
-
-        if (!payload.component) {
-            throw new Error(
+        const required = [
+            [
+                "title",
+                "Title is missing from the selected bug."
+            ],
+            [
+                "component",
                 "Affected Component is required."
-            );
-        }
-
-        if (!payload.description) {
-            throw new Error(
+            ],
+            [
+                "description",
                 "Description is required."
-            );
-        }
-
-        if (!payload.stack_trace) {
-            throw new Error(
+            ],
+            [
+                "stack_trace",
                 "Error Information / Stack Trace is required."
-            );
-        }
-
-        if (!payload.root_cause) {
-            throw new Error(
+            ],
+            [
+                "root_cause",
                 "Confirmed Root Cause is required."
-            );
-        }
-
-        if (!payload.resolution) {
-            throw new Error(
+            ],
+            [
+                "resolution",
                 "Confirmed Resolution / Fix is required."
-            );
+            ]
+        ];
+
+        for (const [field, message] of required) {
+            if (!payload[field]) {
+                throw new Error(message);
+            }
         }
 
         if (!payload.confirmed_fix) {
@@ -903,24 +1492,22 @@ async function submitGrowth() {
             );
         }
 
-
-        /* -------------------------------------------------
-           API REQUEST
-           ------------------------------------------------- */
+        if (result) {
+            result.className = "";
+            result.textContent =
+                `Adding confirmed fix for ${payload.bug_id}...`;
+        }
 
         const response =
             await apiRequest(
                 "/api/knowledge-base/growth",
                 {
                     method: "POST",
-                    body:
-                        JSON.stringify(payload)
+                    body: JSON.stringify(payload)
                 }
             );
 
-
         if (result) {
-
             result.className =
                 "result-success";
 
@@ -932,20 +1519,18 @@ async function submitGrowth() {
                 );
         }
 
-
+        /*
+         * Refresh analytics after KB growth.
+         */
         await loadAnalytics();
 
-
     } catch (error) {
-
         console.error(
             "Knowledge base growth error:",
             error
         );
 
-
         if (result) {
-
             result.className =
                 "result-error";
 
@@ -954,7 +1539,6 @@ async function submitGrowth() {
         }
 
     } finally {
-
         growthLoading = false;
     }
 }
@@ -965,7 +1549,6 @@ async function submitGrowth() {
    ========================================================= */
 
 function renderE2EResult(data) {
-
     const container =
         document.getElementById(
             "e2eResult"
@@ -975,24 +1558,14 @@ function renderE2EResult(data) {
         return;
     }
 
-
     if (!data) {
-
         container.textContent =
             "No E2E result returned.";
 
         return;
     }
 
-
     container.className = "";
-
-
-    /*
-     * Keep the complete backend result visible.
-     * This is useful for the final Milestone 4
-     * documentation/demo.
-     */
 
     container.textContent =
         JSON.stringify(
@@ -1004,23 +1577,18 @@ function renderE2EResult(data) {
 
 
 async function runE2ETests() {
-
     if (e2eLoading) {
         return;
     }
-
 
     const result =
         document.getElementById(
             "e2eResult"
         );
 
-
     e2eLoading = true;
 
-
     if (result) {
-
         result.className = "";
 
         result.textContent =
@@ -1029,28 +1597,21 @@ async function runE2ETests() {
             "runs through the complete BugAI pipeline.";
     }
 
-
     try {
-
         const data =
             await apiRequest(
                 "/api/validation/milestone4"
             );
 
-
         renderE2EResult(data);
 
-
     } catch (error) {
-
         console.error(
             "Milestone 4 E2E error:",
             error
         );
 
-
         if (result) {
-
             result.className =
                 "result-error";
 
@@ -1059,26 +1620,22 @@ async function runE2ETests() {
         }
 
     } finally {
-
         e2eLoading = false;
     }
 }
 
 
 /* =========================================================
-   ENTER KEY SUPPORT FOR FILTER INPUTS
+   FILTER KEYBOARD SUPPORT
    ========================================================= */
 
 function setupFilterKeyboardSupport() {
-
     const filterInputs = [
         "component",
         "exception_type"
     ];
 
-
     filterInputs.forEach(id => {
-
         const element =
             document.getElementById(id);
 
@@ -1086,17 +1643,11 @@ function setupFilterKeyboardSupport() {
             return;
         }
 
-
         element.addEventListener(
             "keydown",
             event => {
-
-                if (
-                    event.key === "Enter"
-                ) {
-
+                if (event.key === "Enter") {
                     event.preventDefault();
-
                     loadAnalytics();
                 }
             }
@@ -1106,12 +1657,16 @@ function setupFilterKeyboardSupport() {
 
 
 /* =========================================================
-   EVENT LISTENERS
+   INITIALIZATION
    ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     () => {
+
+        /* -------------------------------------------------
+           APPLY FILTERS
+           ------------------------------------------------- */
 
         const applyButton =
             document.getElementById(
@@ -1119,7 +1674,6 @@ document.addEventListener(
             );
 
         if (applyButton) {
-
             applyButton.addEventListener(
                 "click",
                 loadAnalytics
@@ -1127,13 +1681,16 @@ document.addEventListener(
         }
 
 
+        /* -------------------------------------------------
+           RESET
+           ------------------------------------------------- */
+
         const resetButton =
             document.getElementById(
                 "reset"
             );
 
         if (resetButton) {
-
             resetButton.addEventListener(
                 "click",
                 resetFilters
@@ -1141,13 +1698,16 @@ document.addEventListener(
         }
 
 
+        /* -------------------------------------------------
+           KNOWLEDGE BASE GROWTH
+           ------------------------------------------------- */
+
         const growthButton =
             document.getElementById(
                 "addGrowth"
             );
 
         if (growthButton) {
-
             growthButton.addEventListener(
                 "click",
                 submitGrowth
@@ -1155,13 +1715,16 @@ document.addEventListener(
         }
 
 
+        /* -------------------------------------------------
+           E2E TEST
+           ------------------------------------------------- */
+
         const e2eButton =
             document.getElementById(
                 "runE2E"
             );
 
         if (e2eButton) {
-
             e2eButton.addEventListener(
                 "click",
                 runE2ETests
@@ -1169,15 +1732,44 @@ document.addEventListener(
         }
 
 
+        /* -------------------------------------------------
+           FILTER ENTER KEY
+           ------------------------------------------------- */
+
         setupFilterKeyboardSupport();
 
 
         /* -------------------------------------------------
-           INITIAL LOAD
+           LOAD FILTERS
            ------------------------------------------------- */
 
         loadFilters();
 
-        waitForAnalytics();
+
+        /* -------------------------------------------------
+           LOAD SUBMITTED BUGS
+
+           IMPORTANT:
+           This now reads:
+
+               data.results
+
+           because Flask returns:
+
+               {
+                   ok: true,
+                   total_records: 3,
+                   results: [...]
+               }
+           ------------------------------------------------- */
+
+        loadSubmittedBugs();
+
+
+        /* -------------------------------------------------
+           LOAD ANALYTICS
+           ------------------------------------------------- */
+
+        loadAnalytics();
     }
 );

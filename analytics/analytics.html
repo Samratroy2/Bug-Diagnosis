@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -16,23 +15,158 @@
         rel="stylesheet"
         href="analytics.css"
     >
-
 </head>
 
 <body>
-
 
     <!-- =========================================================
          BUGAI SIDEBAR
     ========================================================== -->
 
-    <aside id="bugaiSidebar" class="bugai-sidebar">
-  <div class="sidebar-brand"><div class="brand-logo">B</div><div><div class="brand-name">BugAI</div><div class="brand-subtitle">Intelligent Bug Diagnosis</div></div></div>
-  <nav class="sidebar-navigation"><div class="navigation-label">MAIN</div><a class="sidebar-link" href="../Dashboard/dashboard.html"><span class="nav-icon">⌂</span><span class="nav-text">Dashboard</span></a><a class="sidebar-link" href="../Bug-Submission/bug-submission.html"><span class="nav-icon">＋</span><span class="nav-text">Bug Submission</span></a><a class="sidebar-link" href="../Workflow/workflow.html"><span class="nav-icon">↝</span><span class="nav-text">Workflow</span></a><a class="sidebar-link" href="../Architecture/architecture.html"><span class="nav-icon">◈</span><span class="nav-text">Architecture</span></a><div class="navigation-label">INTELLIGENCE</div><a class="sidebar-link" href="../Knowledge-Base/knowledge-base.html"><span class="nav-icon">▣</span><span class="nav-text">Knowledge Base</span></a><a class="sidebar-link" href="../Semantic-Similarity/similarity.html"><span class="nav-icon">⌕</span><span class="nav-text">Semantic Similarity</span></a><a class="sidebar-link" href="../Validation/validation.html"><span class="nav-icon">✓</span><span class="nav-text">Validation</span></a><div class="navigation-label">SYSTEM</div><a class="sidebar-link active" href="../analytics/analytics.html" aria-current="page"><span class="nav-icon">▥</span><span class="nav-text">Analytics</span></a><a class="sidebar-link" href="../Settings/settings.html"><span class="nav-icon">⚙</span><span class="nav-text">Settings</span></a></nav><div class="sidebar-footer"><div class="sidebar-status"><span class="status-dot"></span><span class="status-text">Backend Connected</span></div><div class="sidebar-version">BugAI · Milestone 4</div></div></aside><button id="sidebarMenuButton" class="sidebar-menu-button" type="button" aria-label="Open navigation" aria-controls="bugaiSidebar" aria-expanded="false">☰</button><div id="sidebarOverlay" class="sidebar-overlay"></div>
+    <aside
+        id="bugaiSidebar"
+        class="bugai-sidebar"
+    >
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                B
+            </div>
+
+            <div>
+                <div class="brand-name">
+                    BugAI
+                </div>
+
+                <div class="brand-subtitle">
+                    Intelligent Bug Diagnosis
+                </div>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-navigation">
+
+            <div class="navigation-label">
+                MAIN
+            </div>
+
+            <a
+                class="sidebar-link"
+                href="../Dashboard/dashboard.html"
+            >
+                <span class="nav-icon">⌂</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Bug-Submission/bug-submission.html"
+            >
+                <span class="nav-icon">＋</span>
+                <span class="nav-text">Bug Submission</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Workflow/workflow.html"
+            >
+                <span class="nav-icon">↝</span>
+                <span class="nav-text">Workflow</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Architecture/architecture.html"
+            >
+                <span class="nav-icon">◈</span>
+                <span class="nav-text">Architecture</span>
+            </a>
+
+
+            <div class="navigation-label">
+                INTELLIGENCE
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Knowledge-Base/knowledge-base.html"
+            >
+                <span class="nav-icon">▣</span>
+                <span class="nav-text">Knowledge Base</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Semantic-Similarity/similarity.html"
+            >
+                <span class="nav-icon">⌕</span>
+                <span class="nav-text">Semantic Similarity</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Validation/validation.html"
+            >
+                <span class="nav-icon">✓</span>
+                <span class="nav-text">Validation</span>
+            </a>
+
+
+            <div class="navigation-label">
+                SYSTEM
+            </div>
+
+
+            <a
+                class="sidebar-link active"
+                href="../analytics/analytics.html"
+                aria-current="page"
+            >
+                <span class="nav-icon">▥</span>
+                <span class="nav-text">Analytics</span>
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Settings/settings.html"
+            >
+                <span class="nav-icon">⚙</span>
+                <span class="nav-text">Settings</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <div class="sidebar-status">
+                <span class="status-dot"></span>
+                <span class="status-text">
+                    Backend Connected
+                </span>
+            </div>
+
+            <div class="sidebar-version">
+                BugAI · Milestone 4
+            </div>
+
+        </div>
+
+    </aside>
 
 
     <!-- =========================================================
-         MOBILE MENU BUTTON
+         MOBILE MENU
     ========================================================== -->
 
     <button
@@ -43,17 +177,11 @@
         aria-controls="bugaiSidebar"
         aria-expanded="false"
     >
-
         <span></span>
         <span></span>
         <span></span>
-
     </button>
 
-
-    <!-- =========================================================
-         MOBILE OVERLAY
-    ========================================================== -->
 
     <div
         id="sidebarOverlay"
@@ -66,7 +194,6 @@
     ========================================================== -->
 
     <main>
-
 
         <!-- =====================================================
              PAGE HEADER
@@ -101,33 +228,27 @@
                 Analytics Filters
             </h2>
 
+
             <div class="filters">
 
-
                 <select id="project">
-
                     <option value="">
                         All projects
                     </option>
-
                 </select>
 
 
                 <select id="severity">
-
                     <option value="">
                         All severities
                     </option>
-
                 </select>
 
 
                 <select id="priority">
-
                     <option value="">
                         All priorities
                     </option>
-
                 </select>
 
 
@@ -146,11 +267,9 @@
 
 
                 <select id="source">
-
                     <option value="">
                         All sources
                     </option>
-
                 </select>
 
 
@@ -195,7 +314,6 @@
         ====================================================== -->
 
         <section class="stats">
-
 
             <div class="stat">
 
@@ -256,7 +374,6 @@
         ====================================================== -->
 
         <section class="grid">
-
 
             <!-- Severity -->
 
@@ -353,30 +470,54 @@
             </h2>
 
             <p class="muted">
-                Only approved, resolved bugs with a confirmed
-                fix are eligible for incremental indexing.
+                Select an existing submitted bug, review its
+                diagnosis, confirm the fix and approve it for
+                incremental knowledge-base indexing.
             </p>
 
 
             <div class="growth-grid">
 
 
-                <!-- Bug ID -->
+                <!-- =================================================
+                     BUG ID
+                ================================================== -->
 
                 <label>
 
                     Bug ID *
 
-                    <input
+                    <select
                         id="gBugId"
-                        type="text"
-                        placeholder="e.g. BUG-1001"
+                        name="bug_id"
+                        required
+                        aria-describedby="gBugIdHelp"
                     >
+
+                        <option
+                            value=""
+                            selected
+                            disabled
+                        >
+                            Loading submitted bugs...
+                        </option>
+
+                    </select>
+
+                    <small
+                        id="gBugIdHelp"
+                        class="field-help"
+                    >
+                        Select one of the submitted BugAI analyses.
+                        Bug ID cannot be entered manually.
+                    </small>
 
                 </label>
 
 
-                <!-- Project -->
+                <!-- =================================================
+                     PROJECT
+                ================================================== -->
 
                 <label>
 
@@ -391,7 +532,9 @@
                 </label>
 
 
-                <!-- Title -->
+                <!-- =================================================
+                     TITLE
+                ================================================== -->
 
                 <label>
 
@@ -401,12 +544,15 @@
                         id="gTitle"
                         type="text"
                         placeholder="Bug title"
+                        required
                     >
 
                 </label>
 
 
-                <!-- Component -->
+                <!-- =================================================
+                     COMPONENT
+                ================================================== -->
 
                 <label>
 
@@ -416,12 +562,15 @@
                         id="gComponent"
                         type="text"
                         placeholder="e.g. Database"
+                        required
                     >
 
                 </label>
 
 
-                <!-- Description -->
+                <!-- =================================================
+                     DESCRIPTION
+                ================================================== -->
 
                 <label>
 
@@ -430,12 +579,15 @@
                     <textarea
                         id="gDescription"
                         placeholder="Describe the confirmed bug..."
+                        required
                     ></textarea>
 
                 </label>
 
 
-                <!-- Stack Trace -->
+                <!-- =================================================
+                     STACK TRACE
+                ================================================== -->
 
                 <label>
 
@@ -444,12 +596,15 @@
                     <textarea
                         id="gStack"
                         placeholder="Paste error information or stack trace..."
+                        required
                     ></textarea>
 
                 </label>
 
 
-                <!-- Root Cause -->
+                <!-- =================================================
+                     ROOT CAUSE
+                ================================================== -->
 
                 <label>
 
@@ -458,12 +613,15 @@
                     <textarea
                         id="gRoot"
                         placeholder="Describe the confirmed root cause..."
+                        required
                     ></textarea>
 
                 </label>
 
 
-                <!-- Resolution -->
+                <!-- =================================================
+                     RESOLUTION
+                ================================================== -->
 
                 <label>
 
@@ -472,12 +630,15 @@
                     <textarea
                         id="gResolution"
                         placeholder="Describe the confirmed resolution or fix..."
+                        required
                     ></textarea>
 
                 </label>
 
 
-                <!-- Severity -->
+                <!-- =================================================
+                     SEVERITY
+                ================================================== -->
 
                 <label>
 
@@ -510,7 +671,9 @@
                 </label>
 
 
-                <!-- Priority -->
+                <!-- =================================================
+                     PRIORITY
+                ================================================== -->
 
                 <label>
 
@@ -543,7 +706,9 @@
                 </label>
 
 
-                <!-- Confirmed Fix -->
+                <!-- =================================================
+                     CONFIRMED FIX
+                ================================================== -->
 
                 <label class="checkbox-label">
 
@@ -552,12 +717,16 @@
                         id="confirmedFix"
                     >
 
-                    Confirmed fix
+                    <span>
+                        Confirmed fix
+                    </span>
 
                 </label>
 
 
-                <!-- Approved -->
+                <!-- =================================================
+                     APPROVED
+                ================================================== -->
 
                 <label class="checkbox-label">
 
@@ -566,12 +735,18 @@
                         id="approved"
                     >
 
-                    Approved for KB
+                    <span>
+                        Approved for KB
+                    </span>
 
                 </label>
 
             </div>
 
+
+            <!-- =================================================
+                 GROWTH ACTION
+            ================================================== -->
 
             <button
                 id="addGrowth"
@@ -621,39 +796,239 @@
 
 
     <!-- =========================================================
-         JAVASCRIPT
+         ANALYTICS JAVASCRIPT
     ========================================================== -->
 
     <script src="analytics.js"></script>
 
 
-<script>
-(function(){
-  const SETTINGS_KEY='bugai-settings', LEGACY_KEY='bugai-theme';
-  function getTheme(){
-    try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}'); if(s.theme) return s.theme;}catch(e){}
-    return localStorage.getItem(LEGACY_KEY)||'system';
-  }
-  function applyTheme(){
-    const t=getTheme(), dark=t==='dark'||(t==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
-    document.documentElement.classList.toggle('dark-mode',dark);
-    document.documentElement.classList.toggle('dark',dark);
-    document.body.classList.toggle('dark-mode',dark);
-    document.body.classList.toggle('dark',dark);
-  }
-  function initMenu(){
-    const s=document.getElementById('bugaiSidebar'), b=document.getElementById('sidebarMenuButton'), o=document.getElementById('sidebarOverlay');
-    if(!s||!b||!o)return;
-    const close=()=>{s.classList.remove('open');o.classList.remove('show');b.setAttribute('aria-expanded','false');};
-    b.addEventListener('click',()=>{const open=s.classList.toggle('open');o.classList.toggle('show',open);b.setAttribute('aria-expanded',String(open));});
-    o.addEventListener('click',close); document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
-    window.addEventListener('resize',()=>{if(window.innerWidth>900)close();});
-  }
-  document.addEventListener('DOMContentLoaded',()=>{applyTheme();initMenu();});
-  window.addEventListener('storage',e=>{if(e.key===SETTINGS_KEY||e.key===LEGACY_KEY)applyTheme();});
-  if(window.matchMedia)window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',applyTheme);
-})();
-</script>
+    <!-- =========================================================
+         THEME + MOBILE SIDEBAR
+    ========================================================== -->
+
+    <script>
+
+        (function () {
+
+            const SETTINGS_KEY = "bugai-settings";
+            const LEGACY_KEY = "bugai-theme";
+
+
+            function getTheme() {
+
+                try {
+
+                    const settings =
+                        JSON.parse(
+                            localStorage.getItem(
+                                SETTINGS_KEY
+                            ) || "{}"
+                        );
+
+                    if (settings.theme) {
+                        return settings.theme;
+                    }
+
+                } catch (error) {
+                    console.warn(
+                        "Unable to read BugAI settings.",
+                        error
+                    );
+                }
+
+                return (
+                    localStorage.getItem(
+                        LEGACY_KEY
+                    ) || "system"
+                );
+            }
+
+
+            function applyTheme() {
+
+                const theme = getTheme();
+
+                const dark =
+                    theme === "dark" ||
+                    (
+                        theme === "system" &&
+                        window.matchMedia &&
+                        window.matchMedia(
+                            "(prefers-color-scheme: dark)"
+                        ).matches
+                    );
+
+
+                document.documentElement.classList.toggle(
+                    "dark-mode",
+                    dark
+                );
+
+                document.documentElement.classList.toggle(
+                    "dark",
+                    dark
+                );
+
+                document.body.classList.toggle(
+                    "dark-mode",
+                    dark
+                );
+
+                document.body.classList.toggle(
+                    "dark",
+                    dark
+                );
+            }
+
+
+            function initMenu() {
+
+                const sidebar =
+                    document.getElementById(
+                        "bugaiSidebar"
+                    );
+
+                const button =
+                    document.getElementById(
+                        "sidebarMenuButton"
+                    );
+
+                const overlay =
+                    document.getElementById(
+                        "sidebarOverlay"
+                    );
+
+
+                if (
+                    !sidebar ||
+                    !button ||
+                    !overlay
+                ) {
+                    return;
+                }
+
+
+                function closeMenu() {
+
+                    sidebar.classList.remove(
+                        "open"
+                    );
+
+                    overlay.classList.remove(
+                        "show"
+                    );
+
+                    button.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+                }
+
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const isOpen =
+                            sidebar.classList.toggle(
+                                "open"
+                            );
+
+                        overlay.classList.toggle(
+                            "show",
+                            isOpen
+                        );
+
+                        button.setAttribute(
+                            "aria-expanded",
+                            String(isOpen)
+                        );
+                    }
+                );
+
+
+                overlay.addEventListener(
+                    "click",
+                    closeMenu
+                );
+
+
+                document.addEventListener(
+                    "keydown",
+                    function (event) {
+
+                        if (
+                            event.key === "Escape"
+                        ) {
+                            closeMenu();
+                        }
+                    }
+                );
+
+
+                window.addEventListener(
+                    "resize",
+                    function () {
+
+                        if (
+                            window.innerWidth > 900
+                        ) {
+                            closeMenu();
+                        }
+                    }
+                );
+            }
+
+
+            document.addEventListener(
+                "DOMContentLoaded",
+                function () {
+
+                    applyTheme();
+                    initMenu();
+
+                }
+            );
+
+
+            window.addEventListener(
+                "storage",
+                function (event) {
+
+                    if (
+                        event.key === SETTINGS_KEY ||
+                        event.key === LEGACY_KEY
+                    ) {
+                        applyTheme();
+                    }
+                }
+            );
+
+
+            if (window.matchMedia) {
+
+                const mediaQuery =
+                    window.matchMedia(
+                        "(prefers-color-scheme: dark)"
+                    );
+
+                if (
+                    mediaQuery.addEventListener
+                ) {
+
+                    mediaQuery.addEventListener(
+                        "change",
+                        applyTheme
+                    );
+
+                }
+
+            }
+
+        })();
+
+    </script>
+
 </body>
 
 </html>
