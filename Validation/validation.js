@@ -1,96 +1,485 @@
 /* =========================================================
-   BUGAI — VALIDATION
-   Milestone 2 / 3 + M4 End-to-End Validation
+   BUGAI — MILESTONE 4 VALIDATION
+   Firebase Test Cases
    ========================================================= */
 
-const API = "http://127.0.0.1:5000";
-
-const metrics =
-    document.getElementById("metrics");
-
-const results =
-    document.getElementById("results");
-
-const status =
-    document.getElementById("status");
-
-const runBtn =
-    document.getElementById("runBtn");
+import {
+    auth,
+    db,
+    collection,
+    getDocs,
+    onAuthStateChanged
+} from "../firebase.js";
 
 
 /* =========================================================
-   HTML ESCAPING
+   CONFIGURATION
    ========================================================= */
 
-function esc(value) {
+const COLLECTION_NAME = "bugSubmissions";
 
-    return String(value ?? "").replace(
-        /[&<>"']/g,
-        character => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#039;"
-        }[character])
-    );
 
+/* =========================================================
+   DOM ELEMENTS
+   ========================================================= */
+
+const resultsTable =
+    document.getElementById("results");
+
+const statusElement =
+    document.getElementById("status");
+
+const runButton =
+    document.getElementById("runBtn");
+
+const metricsContainer =
+    document.getElementById("metrics");
+
+
+/* =========================================================
+   FIREBASE DATA
+   ========================================================= */
+
+let submissions = [];
+
+
+/* =========================================================
+   TEST CASES
+   ========================================================= */
+
+const TEST_CASES = [
+
+    {
+        id: "M4-001",
+
+        name: "Triage Analysis",
+
+        expected:
+            "Triage analysis should be available",
+
+        test: (bug) => {
+
+            return Boolean(
+                bug?.analysis?.triage
+            );
+
+        }
+    },
+
+
+    {
+        id: "M4-002",
+
+        name: "Log Analysis",
+
+        expected:
+            "Log analysis should be available",
+
+        test: (bug) => {
+
+            return Boolean(
+                bug?.analysis?.log_analysis
+            );
+
+        }
+    },
+
+
+    {
+        id: "M4-003",
+
+        name: "Exception Detection",
+
+        expected:
+            "Exception information should be detected",
+
+        test: (bug) => {
+
+            const log =
+                bug?.analysis?.log_analysis;
+
+            if (!log) {
+                return false;
+            }
+
+            return Boolean(
+                log.exception_type ||
+                log.exception ||
+                log.error_message ||
+                log.failure_point
+            );
+
+        }
+    },
+
+
+    {
+        id: "M4-004",
+
+        name: "Root Cause Analysis",
+
+        expected:
+            "Root cause analysis should be available",
+
+        test: (bug) => {
+
+            return Boolean(
+                bug?.analysis?.root_cause
+            );
+
+        }
+    },
+
+
+    {
+        id: "M4-005",
+
+        name: "Duplicate Detection",
+
+        expected:
+            "Duplicate detection result should be available",
+
+        test: (bug) => {
+
+            return Boolean(
+                bug?.analysis?.duplicate_detection
+            );
+
+        }
+    },
+
+
+    {
+        id: "M4-006",
+
+        name: "Remediation Recommendation",
+
+        expected:
+            "Remediation recommendation should be available",
+
+        test: (bug) => {
+
+            return Boolean(
+                bug?.analysis?.remediation
+            );
+
+        }
+    },
+
+
+    {
+        id: "M4-007",
+
+        name: "Complete Diagnosis Pipeline",
+
+        expected:
+            "All M2 and M3 analysis stages should exist",
+
+        test: (bug) => {
+
+            const analysis =
+                bug?.analysis;
+
+            if (!analysis) {
+                return false;
+            }
+
+            return Boolean(
+                analysis.triage &&
+                analysis.log_analysis &&
+                analysis.root_cause &&
+                analysis.duplicate_detection &&
+                analysis.remediation
+            );
+
+        }
+    },
+
+
+    {
+        id: "M4-008",
+
+        name: "Triage Confidence",
+
+        expected:
+            "Triage confidence should be between 0 and 100",
+
+        test: (bug) => {
+
+            const triage =
+                bug?.analysis?.triage;
+
+            if (!triage) {
+                return false;
+            }
+
+            const confidence =
+                Number(
+                    triage.confidence
+                );
+
+            return (
+                Number.isFinite(confidence) &&
+                confidence >= 0 &&
+                confidence <= 100
+            );
+
+        }
+    },
+
+
+    {
+        id: "M4-009",
+
+        name: "Root Cause Confidence",
+
+        expected:
+            "Root cause confidence should be between 0 and 100",
+
+        test: (bug) => {
+
+            const rootCause =
+                bug?.analysis?.root_cause;
+
+            if (!rootCause) {
+                return false;
+            }
+
+            const confidence =
+                Number(
+                    rootCause.confidence
+                );
+
+            return (
+                Number.isFinite(confidence) &&
+                confidence >= 0 &&
+                confidence <= 100
+            );
+
+        }
+    },
+
+
+    {
+        id: "M4-010",
+
+        name: "Duplicate Detection Result",
+
+        expected:
+            "Duplicate detection should provide a classification",
+
+        test: (bug) => {
+
+            const duplicate =
+                bug?.analysis?.duplicate_detection;
+
+            if (!duplicate) {
+                return false;
+            }
+
+            return Boolean(
+                duplicate.status ||
+                duplicate.classification ||
+                duplicate.result ||
+                duplicate.label
+            );
+
+        }
+    }
+
+];
+
+
+/* =========================================================
+   LOAD FIREBASE SUBMISSIONS
+   ========================================================= */
+
+async function loadSubmissions() {
+
+    const snapshot =
+        await getDocs(
+            collection(
+                db,
+                COLLECTION_NAME
+            )
+        );
+
+    submissions =
+        snapshot.docs.map(
+            (doc) => ({
+                id: doc.id,
+                ...doc.data()
+            })
+        );
+
+    return submissions;
 }
 
 
 /* =========================================================
-   FETCH JSON
+   RUN TEST CASES
    ========================================================= */
 
-async function fetchJSON(url) {
+function runTestCases() {
 
-    const response = await fetch(
-        url,
-        {
-            cache: "no-store"
+    const results = [];
+
+    TEST_CASES.forEach(
+        (testCase) => {
+
+            let passed = 0;
+
+            let failed = 0;
+
+            let checked = 0;
+
+
+            submissions.forEach(
+                (bug) => {
+
+                    checked++;
+
+                    let result = false;
+
+                    try {
+
+                        result =
+                            Boolean(
+                                testCase.test(
+                                    bug
+                                )
+                            );
+
+                    } catch (error) {
+
+                        result = false;
+
+                    }
+
+
+                    if (result) {
+                        passed++;
+                    } else {
+                        failed++;
+                    }
+
+                }
+            );
+
+
+            const success =
+                checked > 0 &&
+                passed > 0;
+
+
+            results.push({
+
+                id: testCase.id,
+
+                name: testCase.name,
+
+                expected:
+                    testCase.expected,
+
+                actual:
+                    `${passed}/${checked} submissions passed`,
+
+                status:
+                    success
+                        ? "PASS"
+                        : "REVIEW",
+
+                passed,
+
+                failed,
+
+                checked
+
+            });
+
         }
     );
 
 
-    if (!response.ok) {
+    return results;
+}
 
-        throw new Error(
-            `Request failed: ${response.status} ${response.statusText}`
-        );
 
+/* =========================================================
+   RENDER RESULTS
+   ========================================================= */
+
+function renderResults(results) {
+
+    if (!resultsTable) {
+        return;
     }
 
 
-    return response.json();
+    if (!results.length) {
 
-}
+        resultsTable.innerHTML = `
+            <tr>
+                <td colspan="5">
+                    No validation results available.
+                </td>
+            </tr>
+        `;
 
-
-/* =========================================================
-   SAFE NUMBER
-   ========================================================= */
-
-function numberValue(value, fallback = 0) {
-
-    const number = Number(value);
-
-    return Number.isFinite(number)
-        ? number
-        : fallback;
-
-}
+        return;
+    }
 
 
-/* =========================================================
-   FORMAT PERCENTAGE
-   ========================================================= */
+    resultsTable.innerHTML =
+        results.map(
+            (result) => {
 
-function formatPercentage(value) {
+                const statusClass =
+                    result.status === "PASS"
+                        ? "pass"
+                        : "fail";
 
-    const number =
-        numberValue(value);
 
-    return `${number}%`;
+                return `
+                    <tr>
+
+                        <td>
+                            <strong>
+                                ${escapeHTML(result.id)}
+                            </strong>
+
+                            <br>
+
+                            ${escapeHTML(result.name)}
+                        </td>
+
+
+                        <td>
+                            ${escapeHTML(result.expected)}
+                        </td>
+
+
+                        <td>
+                            ${escapeHTML(result.actual)}
+                        </td>
+
+
+                        <td class="${statusClass}">
+                            ${escapeHTML(result.status)}
+                        </td>
+
+
+                        <td>
+                            ${result.passed}
+                            /
+                            ${result.checked}
+                        </td>
+
+                    </tr>
+                `;
+
+            }
+        ).join("");
 
 }
 
@@ -99,224 +488,203 @@ function formatPercentage(value) {
    RENDER METRICS
    ========================================================= */
 
-function renderMetrics(m2, m3) {
+function renderMetrics(results) {
 
-    const m2Metrics =
-        m2?.metrics || {};
-
-    const m3Metrics =
-        m3?.metrics || {};
+    if (!metricsContainer) {
+        return;
+    }
 
 
-    const m3Passed =
-        numberValue(m3?.passed);
-
-    const m3Total =
-        numberValue(m3?.test_cases);
+    const total =
+        results.length;
 
 
-    const m2Triage =
-        numberValue(
-            m2Metrics.triage_severity_accuracy
+    const passed =
+        results.filter(
+            (result) =>
+                result.status === "PASS"
+        ).length;
+
+
+    const percentage =
+        total > 0
+            ? Math.round(
+                (passed / total) * 100
+            )
+            : 0;
+
+
+    const triage =
+        findResult(
+            results,
+            "M4-001"
         );
 
 
-    const m2Exception =
-        numberValue(
-            m2Metrics.log_exception_accuracy
+    const exception =
+        findResult(
+            results,
+            "M4-003"
         );
 
 
-    const m3Classification =
-        numberValue(
-            m3Metrics.classification_accuracy
+    const duplicate =
+        findResult(
+            results,
+            "M4-005"
         );
 
 
-    const allM3Passed =
-        m3Total > 0 &&
-        m3Passed === m3Total;
+    const pipeline =
+        findResult(
+            results,
+            "M4-007"
+        );
 
 
-    const overall =
-        allM3Passed &&
-        m2Triage >= 0 &&
-        m2Exception >= 0;
+    const metrics =
+        metricsContainer.querySelectorAll(
+            ".metric"
+        );
 
 
-    metrics.innerHTML = `
+    if (metrics[0]) {
 
-        <div class="metric">
+        metrics[0].querySelector(
+            "strong"
+        ).textContent =
+            `${percentage}%`;
 
-            <strong>
-                ${overall ? "PASS" : "REVIEW"}
-            </strong>
-
-            <span>
-                Overall Validation
-            </span>
-
-        </div>
+    }
 
 
-        <div class="metric">
+    if (metrics[1]) {
 
-            <strong>
-                ${m3Passed}/${m3Total}
-            </strong>
+        metrics[1].querySelector(
+            "strong"
+        ).textContent =
+            `${passed}/${total}`;
 
-            <span>
-                Tests Passed
-            </span>
-
-        </div>
+    }
 
 
-        <div class="metric">
+    if (metrics[2]) {
 
-            <strong>
-                ${formatPercentage(m2Triage)}
-            </strong>
+        metrics[2].querySelector(
+            "strong"
+        ).textContent =
+            formatCoverage(
+                triage
+            );
 
-            <span>
-                M2 Triage Accuracy
-            </span>
-
-        </div>
-
-
-        <div class="metric">
-
-            <strong>
-                ${formatPercentage(m2Exception)}
-            </strong>
-
-            <span>
-                M2 Exception Detection
-            </span>
-
-        </div>
+    }
 
 
-        <div class="metric">
+    if (metrics[3]) {
 
-            <strong>
-                ${formatPercentage(m3Classification)}
-            </strong>
+        metrics[3].querySelector(
+            "strong"
+        ).textContent =
+            formatCoverage(
+                exception
+            );
 
-            <span>
-                M3 Duplicate Classification
-            </span>
-
-        </div>
+    }
 
 
-        <div class="metric">
+    if (metrics[4]) {
 
-            <strong>
-                ${allM3Passed ? "READY" : "REVIEW"}
-            </strong>
+        metrics[4].querySelector(
+            "strong"
+        ).textContent =
+            formatCoverage(
+                duplicate
+            );
 
-            <span>
-                Pipeline Status
-            </span>
+    }
 
-        </div>
 
-    `;
+    if (metrics[5]) {
+
+        metrics[5].querySelector(
+            "strong"
+        ).textContent =
+            pipeline?.status ||
+            "REVIEW";
+
+    }
 
 }
 
 
 /* =========================================================
-   RENDER RESULTS
+   FIND RESULT
    ========================================================= */
 
-function renderResults(m3) {
+function findResult(
+    results,
+    id
+) {
 
-    const validationResults =
-        Array.isArray(m3?.results)
-            ? m3.results
-            : [];
+    return results.find(
+        (result) =>
+            result.id === id
+    );
+
+}
 
 
-    if (!validationResults.length) {
+/* =========================================================
+   FORMAT COVERAGE
+   ========================================================= */
 
-        results.innerHTML = `
-            <tr>
-                <td colspan="5">
-                    No validation result records returned.
-                </td>
-            </tr>
-        `;
+function formatCoverage(result) {
 
-        return;
+    if (!result) {
+        return "--";
+    }
 
+    if (!result.checked) {
+        return "0%";
     }
 
 
-    results.innerHTML =
-        validationResults
-            .map(result => {
+    return `${Math.round(
+        (result.passed /
+            result.checked) *
+        100
+    )}%`;
 
-                const pass =
-                    Boolean(result?.pass);
-
-
-                const topMatch =
-                    result?.top_match;
+}
 
 
-                const matchId =
-                    topMatch?.bug_id || "—";
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
 
+function escapeHTML(value) {
 
-                const similarity =
-                    topMatch &&
-                    Number.isFinite(
-                        Number(topMatch.similarity)
-                    )
-                        ? ` (${(
-                            Number(topMatch.similarity) * 100
-                        ).toFixed(1)}%)`
-                        : "";
-
-
-                return `
-
-                    <tr>
-
-                        <td>
-                            ${esc(result?.id)}
-                        </td>
-
-                        <td>
-                            ${esc(result?.expected)}
-                        </td>
-
-                        <td>
-                            ${esc(result?.actual)}
-                        </td>
-
-                        <td class="${pass ? "pass" : "fail"}">
-
-                            ${pass ? "PASS" : "REVIEW"}
-
-                        </td>
-
-                        <td>
-
-                            ${esc(matchId)}
-                            ${esc(similarity)}
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            })
-            .join("");
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -327,149 +695,123 @@ function renderResults(m3) {
 
 async function runValidation() {
 
-    if (!runBtn) {
-        return;
-    }
-
-
-    runBtn.disabled = true;
-
-    runBtn.textContent = "Running...";
-
-
-    if (status) {
-
-        status.textContent =
-            "Running M2, M3 and end-to-end validation...";
-
-    }
-
-
-    if (results) {
-
-        results.innerHTML = `
-            <tr>
-                <td colspan="5">
-                    Running validation tests...
-                </td>
-            </tr>
-        `;
-
-    }
-
-
     try {
 
-        /*
-         * Existing backend validation APIs.
-         *
-         * M2:
-         * - Triage extraction
-         * - Log/exception extraction
-         *
-         * M3:
-         * - Duplicate classification
-         * - Historical similarity matching
-         */
+        if (statusElement) {
 
-        const [
-            milestone2,
-            milestone3
-        ] = await Promise.all([
+            statusElement.textContent =
+                "Loading Firebase submissions...";
 
-            fetchJSON(
-                `${API}/api/validation/milestone2`
-            ),
-
-            fetchJSON(
-                `${API}/api/validation/milestone3`
-            )
-
-        ]);
+        }
 
 
-        renderMetrics(
-            milestone2,
-            milestone3
-        );
+        if (runButton) {
+
+            runButton.disabled = true;
+
+            runButton.textContent =
+                "Running...";
+
+        }
+
+
+        await loadSubmissions();
+
+
+        if (!submissions.length) {
+
+            if (statusElement) {
+
+                statusElement.textContent =
+                    "No bug submissions found in Firebase.";
+
+            }
+
+
+            if (resultsTable) {
+
+                resultsTable.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            No Firebase submissions available
+                            for validation.
+                        </td>
+                    </tr>
+                `;
+
+            }
+
+            return;
+        }
+
+
+        const results =
+            runTestCases();
 
 
         renderResults(
-            milestone3
+            results
+        );
+
+
+        renderMetrics(
+            results
         );
 
 
         const passed =
-            numberValue(
-                milestone3?.passed
-            );
+            results.filter(
+                (result) =>
+                    result.status === "PASS"
+            ).length;
 
 
-        const total =
-            numberValue(
-                milestone3?.test_cases
-            );
+        if (statusElement) {
 
-
-        const classification =
-            numberValue(
-                milestone3?.metrics
-                    ?.classification_accuracy
-            );
-
-
-        if (status) {
-
-            status.textContent =
-                `Validation completed: ${passed}/${total} `
-                + `M3 classification cases passed `
-                + `(${classification}% classification accuracy).`;
+            statusElement.textContent =
+                `Validation completed: ${passed}/${results.length} test cases passed.`;
 
         }
-
 
     } catch (error) {
 
         console.error(
-            "BugAI validation error:",
+            "Validation error:",
             error
         );
 
 
-        if (status) {
+        if (statusElement) {
 
-            status.textContent =
-                `Validation failed: ${error.message}`;
+            statusElement.textContent =
+                "Validation failed. Check Firebase connection.";
 
         }
 
 
-        if (results) {
+        if (resultsTable) {
 
-            results.innerHTML = `
-
+            resultsTable.innerHTML = `
                 <tr>
-
-                    <td
-                        colspan="5"
-                        class="fail">
-
-                        ${esc(error.message)}
-
+                    <td colspan="5">
+                        Unable to run validation.
+                        ${escapeHTML(error.message)}
                     </td>
-
                 </tr>
-
             `;
 
         }
 
     } finally {
 
-        runBtn.disabled = false;
+        if (runButton) {
 
-        runBtn.textContent =
-            "Run Validation";
+            runButton.disabled = false;
+
+            runButton.textContent =
+                "Run Validation";
+
+        }
 
     }
 
@@ -477,34 +819,41 @@ async function runValidation() {
 
 
 /* =========================================================
-   BUTTON
+   AUTHENTICATION
    ========================================================= */
 
-if (runBtn) {
+onAuthStateChanged(
+    auth,
+    async (user) => {
 
-    runBtn.addEventListener(
-        "click",
-        runValidation
-    );
+        if (!user) {
 
-}
+            if (statusElement) {
+
+                statusElement.textContent =
+                    "Please sign in to run validation.";
+
+            }
+
+            return;
+        }
+
+
+        await runValidation();
+
+    }
+);
 
 
 /* =========================================================
-   INITIAL RUN
+   MANUAL VALIDATION BUTTON
    ========================================================= */
 
-if (
-    document.readyState === "loading"
-) {
+if (runButton) {
 
-    document.addEventListener(
-        "DOMContentLoaded",
+    runButton.addEventListener(
+        "click",
         runValidation
     );
-
-} else {
-
-    runValidation();
 
 }

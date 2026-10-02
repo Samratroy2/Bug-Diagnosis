@@ -1,731 +1,2121 @@
 /* =========================================================
-   BUGAI - DEFECT PATTERN ANALYTICS
-   Milestone 4
-   ========================================================= */
+   BUGAI — DEFECT ANALYTICS
+   FIREBASE ONLY VERSION
 
-const API_BASE_URL = "http://127.0.0.1:5000";
+   DATA SOURCE
+   ---------------------------------------------------------
+   Firestore:
+       bugSubmissions
 
-let analyticsLoading = false;
-let growthLoading = false;
-let e2eLoading = false;
+   NO DATA IS READ FROM:
+   - Flask analytics API
+   - SQLite
+   - JSON files
+   - JSONL files
+   - localStorage
+   - backend analytics database
 
-let submittedBugRecords = [];
-let selectedSubmittedBug = null;
+   EVERYTHING ON THIS PAGE IS CALCULATED FROM FIREBASE.
+========================================================= */
 
 
 /* =========================================================
-   API REQUEST
-   ========================================================= */
+   FIREBASE IMPORTS
+========================================================= */
 
-async function apiRequest(endpoint, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
+import {
+    auth,
+    db,
+    collection,
+    getDocs,
+    updateDoc,
+    doc,
+    onAuthStateChanged,
+    serverTimestamp
+} from "../firebase.js";
 
-    try {
-        const response = await fetch(url, {
-            cache: "no-store",
-            ...options,
-            headers: {
-                "Content-Type": "application/json",
-                ...(options.headers || {})
-            }
-        });
 
-        const text = await response.text();
+/* =========================================================
+   FIRESTORE CONFIGURATION
+========================================================= */
 
-        let data = {};
+const BUG_COLLECTION =
+    "bugSubmissions";
 
-        if (text.trim()) {
-            try {
-                data = JSON.parse(text);
-            } catch (error) {
-                throw new Error(
-                    `Invalid JSON response from ${endpoint}`
+
+/* =========================================================
+   APPLICATION STATE
+========================================================= */
+
+let firebaseUser =
+    null;
+
+let firebaseBugRecords =
+    [];
+
+let filteredBugRecords =
+    [];
+
+let selectedSubmittedBug =
+    null;
+
+let analyticsLoading =
+    false;
+
+let growthLoading =
+    false;
+
+let e2eLoading =
+    false;
+
+
+/* =========================================================
+   FIREBASE AUTHENTICATION
+========================================================= */
+
+function waitForFirebaseAuth() {
+
+    if (firebaseUser) {
+
+        return Promise.resolve(
+            firebaseUser
+        );
+
+    }
+
+
+    return new Promise(
+        (resolve, reject) => {
+
+            let finished =
+                false;
+
+
+            const unsubscribe =
+                onAuthStateChanged(
+
+                    auth,
+
+                    user => {
+
+                        if (finished) {
+                            return;
+                        }
+
+
+                        finished =
+                            true;
+
+
+                        unsubscribe();
+
+
+                        if (!user) {
+
+                            reject(
+                                new Error(
+                                    "No authenticated Firebase user found."
+                                )
+                            );
+
+                            return;
+
+                        }
+
+
+                        firebaseUser =
+                            user;
+
+
+                        console.log(
+                            "✅ Firebase authentication ready:",
+                            user.uid
+                        );
+
+
+                        resolve(
+                            user
+                        );
+
+                    },
+
+
+                    error => {
+
+                        if (finished) {
+                            return;
+                        }
+
+
+                        finished =
+                            true;
+
+
+                        unsubscribe();
+
+
+                        reject(
+                            error
+                        );
+
+                    }
+
                 );
-            }
+
         }
+    );
 
-        if (!response.ok) {
-            throw new Error(
-                data.error ||
-                data.message ||
-                `Request failed with status ${response.status}`
-            );
-        }
-
-        return data;
-
-    } catch (error) {
-        if (error instanceof TypeError) {
-            throw new Error(
-                "Cannot connect to BugAI backend. " +
-                "Make sure Flask is running on port 5000."
-            );
-        }
-
-        throw error;
-    }
 }
 
 
 /* =========================================================
-   GENERAL HELPERS
-   ========================================================= */
+   FIREBASE STATUS
+========================================================= */
 
-function escapeHTML(value) {
-    if (value === null || value === undefined) {
+function updateFirebaseStatus(
+    message,
+    type = "checking"
+) {
+
+    const possibleIds = [
+
+        "analyticsStatus",
+
+        "statusBadge",
+
+        "firebaseStatus",
+
+        "analyticsStatusBadge"
+
+    ];
+
+
+    let found =
+        false;
+
+
+    possibleIds.forEach(
+        id => {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            if (!element) {
+                return;
+            }
+
+
+            found =
+                true;
+
+
+            element.textContent =
+                message;
+
+
+            element.classList.remove(
+                "success",
+                "error",
+                "warning",
+                "checking"
+            );
+
+
+            element.classList.add(
+                type
+            );
+
+        }
+    );
+
+
+    /*
+       Also support status elements using
+       data attributes.
+    */
+
+    document
+        .querySelectorAll(
+            "[data-analytics-status]"
+        )
+        .forEach(
+            element => {
+
+                found =
+                    true;
+
+
+                element.textContent =
+                    message;
+
+
+                element.classList.remove(
+                    "success",
+                    "error",
+                    "warning",
+                    "checking"
+                );
+
+
+                element.classList.add(
+                    type
+                );
+
+            }
+        );
+
+
+    return found;
+
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHTML(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
         return "";
+
     }
 
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+    return String(
+        value
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
 }
 
 
-function formatNumber(value) {
-    const number = Number(value);
+/* =========================================================
+   TEXT HELPER
+========================================================= */
 
-    if (!Number.isFinite(number)) {
-        return "0";
-    }
+function setText(
+    id,
+    value
+) {
 
-    return number.toLocaleString("en-IN");
-}
+    const element =
+        document.getElementById(
+            id
+        );
 
-
-function setText(id, value) {
-    const element = document.getElementById(id);
 
     if (!element) {
         return;
     }
 
+
     element.textContent =
+
         value === null ||
         value === undefined ||
         value === ""
+
             ? "—"
+
             : value;
-}
 
-
-function showLoading(element, message = "Loading...") {
-    if (!element) {
-        return;
-    }
-
-    element.innerHTML = `
-        <div class="loading-state">
-            ${escapeHTML(message)}
-        </div>
-    `;
-}
-
-
-function showError(element, message = "Something went wrong.") {
-    if (!element) {
-        return;
-    }
-
-    element.innerHTML = `
-        <div class="error-state">
-            ${escapeHTML(message)}
-        </div>
-    `;
 }
 
 
 /* =========================================================
-   DISTRIBUTION NORMALIZER
+   NUMBER FORMAT
+========================================================= */
 
-   Backend example:
+function formatNumber(
+    value
+) {
 
-   [
-       {
-           "count": 100,
-           "value": "High"
-       }
-   ]
-
-   Normalized:
-
-   [
-       {
-           label: "High",
-           value: 100
-       }
-   ]
-
-   IMPORTANT:
-   Already-normalized {label,value} objects are preserved.
-   ========================================================= */
-
-function normalizeDistribution(data) {
-    if (!data) {
-        return [];
-    }
-
-    if (Array.isArray(data)) {
-        return data
-            .map(item => {
-                if (item === null || item === undefined) {
-                    return null;
-                }
-
-                if (typeof item !== "object") {
-                    return {
-                        label: String(item),
-                        value: 1
-                    };
-                }
-
-                /*
-                 * Already normalized.
-                 */
-                if (
-                    Object.prototype.hasOwnProperty.call(item, "label") &&
-                    Object.prototype.hasOwnProperty.call(item, "value") &&
-                    !Object.prototype.hasOwnProperty.call(item, "count") &&
-                    !Object.prototype.hasOwnProperty.call(item, "total") &&
-                    !Object.prototype.hasOwnProperty.call(item, "frequency") &&
-                    !Object.prototype.hasOwnProperty.call(item, "occurrences") &&
-                    !Object.prototype.hasOwnProperty.call(item, "value_count")
-                ) {
-                    return {
-                        label: String(item.label),
-                        value: Number(item.value) || 0
-                    };
-                }
-
-                const label =
-                    item.value ??
-                    item.label ??
-                    item.name ??
-                    item.project ??
-                    item.component ??
-                    item.affected_component ??
-                    item.severity ??
-                    item.priority ??
-                    item.exception ??
-                    item.exception_type ??
-                    item.source ??
-                    item.root_cause ??
-                    item.error ??
-                    item.error_type ??
-                    item.error_message ??
-                    "Unknown";
-
-                const count =
-                    item.count ??
-                    item.total ??
-                    item.frequency ??
-                    item.occurrences ??
-                    item.value_count ??
-                    0;
-
-                return {
-                    label: String(label),
-                    value: Number(count) || 0
-                };
-            })
-            .filter(item =>
-                item &&
-                item.label !== "" &&
-                item.value > 0
-            );
-    }
-
-    if (typeof data === "object") {
-        return Object.entries(data)
-            .map(([label, value]) => ({
-                label: String(label),
-                value: Number(value) || 0
-            }))
-            .filter(item => item.value > 0);
-    }
-
-    return [];
-}
+    const number =
+        Number(
+            value
+        );
 
 
-/* =========================================================
-   TOP DISTRIBUTION
-   ========================================================= */
-
-function getTopDistributionValue(data) {
-    const entries = normalizeDistribution(data)
-        .filter(item => item.value > 0)
-        .sort((a, b) => b.value - a.value);
-
-    if (!entries.length) {
-        return "—";
-    }
-
-    return entries[0].label;
-}
-
-
-function getTopMeaningfulValue(data) {
-    const entries = normalizeDistribution(data)
-        .filter(item => item.value > 0)
-        .sort((a, b) => b.value - a.value);
-
-    if (!entries.length) {
-        return "—";
-    }
-
-    const ignored = new Set([
-        "unknown",
-        "unknown / not detected",
-        "not detected",
-        "n/a",
-        "na",
-        "none",
-        "null",
-        "undefined",
-        "unknown component",
-        "unknown exception",
-        "unknown severity",
-        "unknown / not available",
-        "not available",
-        "unclassified",
-        "uncategorized",
-        "imported defect"
-    ]);
-
-    const meaningful = entries.find(item =>
-        !ignored.has(
-            String(item.label).trim().toLowerCase()
+    if (
+        !Number.isFinite(
+            number
         )
+    ) {
+
+        return "0";
+
+    }
+
+
+    return number.toLocaleString(
+        "en-IN"
     );
 
-    return meaningful
-        ? meaningful.label
-        : entries[0].label;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+function showLoading(
+    element,
+    message = "Loading..."
+) {
+
+    if (!element) {
+        return;
+    }
+
+
+    element.innerHTML = `
+
+        <div class="loading-state">
+
+            ${escapeHTML(
+                message
+            )}
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+function showError(
+    element,
+    message
+) {
+
+    if (!element) {
+        return;
+    }
+
+
+    element.innerHTML = `
+
+        <div class="error-state">
+
+            ${escapeHTML(
+                message ||
+                "Something went wrong."
+            )}
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+function showEmpty(
+    element,
+    message = "No data available."
+) {
+
+    if (!element) {
+        return;
+    }
+
+
+    element.innerHTML = `
+
+        <div class="empty-state">
+
+            ${escapeHTML(
+                message
+            )}
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   GENERIC VALUE READER
+========================================================= */
+
+function firstValue(
+    object,
+    keys,
+    fallback = ""
+) {
+
+    if (
+        !object ||
+        typeof object !== "object"
+    ) {
+
+        return fallback;
+
+    }
+
+
+    for (
+        const key of keys
+    ) {
+
+        const value =
+            object[key];
+
+
+        if (
+            value !== null &&
+            value !== undefined &&
+            String(value).trim() !== ""
+        ) {
+
+            return value;
+
+        }
+
+    }
+
+
+    return fallback;
+
+}
+
+
+/* =========================================================
+   ANALYSIS OBJECT
+========================================================= */
+
+function getAnalysis(
+    bug
+) {
+
+    return (
+        bug?.analysis ||
+        {}
+    );
+
+}
+
+
+/* =========================================================
+   TRIAGE
+========================================================= */
+
+function getTriage(
+    bug
+) {
+
+    return (
+        getAnalysis(
+            bug
+        ).triage ||
+        {}
+    );
+
+}
+
+
+/* =========================================================
+   LOG ANALYSIS
+========================================================= */
+
+function getLogAnalysis(
+    bug
+) {
+
+    return (
+        getAnalysis(
+            bug
+        ).log_analysis ||
+        {}
+    );
+
+}
+
+
+/* =========================================================
+   ROOT CAUSE
+========================================================= */
+
+function getRootCause(
+    bug
+) {
+
+    return (
+        getAnalysis(
+            bug
+        ).root_cause ||
+        {}
+    );
+
+}
+
+
+/* =========================================================
+   DUPLICATE DETECTION
+========================================================= */
+
+function getDuplicateDetection(
+    bug
+) {
+
+    return (
+        getAnalysis(
+            bug
+        ).duplicate_detection ||
+        {}
+    );
+
+}
+
+
+/* =========================================================
+   REMEDIATION
+========================================================= */
+
+function getRemediation(
+    bug
+) {
+
+    return (
+        getAnalysis(
+            bug
+        ).remediation ||
+        {}
+    );
+
+}
+
+
+/* =========================================================
+   BUG ID
+========================================================= */
+
+function getBugId(
+    bug
+) {
+
+    return String(
+
+        firstValue(
+            bug,
+
+            [
+                "bug_id",
+                "bugId",
+                "id"
+            ],
+
+            ""
+        )
+
+    ).trim();
+
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+function getBugTitle(
+    bug
+) {
+
+    return String(
+
+        firstValue(
+            bug,
+
+            [
+                "title",
+                "bug_title",
+                "summary"
+            ],
+
+            "Submitted Bug"
+        )
+
+    ).trim();
+
+}
+
+
+/* =========================================================
+   PROJECT
+========================================================= */
+
+function getBugProject(
+    bug
+) {
+
+    return String(
+
+        firstValue(
+            bug,
+
+            [
+                "project",
+                "project_name"
+            ],
+
+            "Custom Project"
+        )
+
+    ).trim();
+
+}
+
+
+/* =========================================================
+   SEVERITY
+========================================================= */
+
+function getBugSeverity(
+    bug
+) {
+
+    const triage =
+        getTriage(
+            bug
+        );
+
+
+    return String(
+
+        firstValue(
+            triage,
+
+            [
+                "severity"
+            ],
+
+            firstValue(
+                bug,
+                [
+                    "severity",
+                    "bugSeverity"
+                ],
+                "Unknown"
+            )
+        )
+
+    ).trim();
+
+}
+
+
+/* =========================================================
+   PRIORITY
+========================================================= */
+
+function getBugPriority(
+    bug
+) {
+
+    const triage =
+        getTriage(
+            bug
+        );
+
+
+    return String(
+
+        firstValue(
+            triage,
+
+            [
+                "priority"
+            ],
+
+            firstValue(
+                bug,
+                [
+                    "priority",
+                    "bugPriority"
+                ],
+                "Unknown"
+            )
+        )
+
+    ).trim();
+
+}
+
+
+/* =========================================================
+   COMPONENT
+========================================================= */
+
+function getBugComponent(
+    bug
+) {
+
+    const triage =
+        getTriage(
+            bug
+        );
+
+
+    return String(
+
+        firstValue(
+            triage,
+
+            [
+                "affected_component",
+                "component"
+            ],
+
+            firstValue(
+                bug,
+
+                [
+                    "affected_component",
+                    "component"
+                ],
+
+                "Unknown"
+            )
+
+        )
+
+    ).trim();
+
+}
+
+
+/* =========================================================
+   EXCEPTION
+========================================================= */
+
+function getBugException(
+    bug
+) {
+
+    const log =
+        getLogAnalysis(
+            bug
+        );
+
+
+    return String(
+
+        firstValue(
+            log,
+
+            [
+                "exception_type",
+                "exception"
+            ],
+
+            "Unknown / Not Detected"
+        )
+
+    ).trim();
+
+}
+
+
+/* =========================================================
+   ERROR MESSAGE
+========================================================= */
+
+function getBugError(
+    bug
+) {
+
+    const log =
+        getLogAnalysis(
+            bug
+        );
+
+
+    return String(
+
+        firstValue(
+            log,
+
+            [
+                "error_message",
+                "error",
+                "message"
+            ],
+
+            firstValue(
+                bug,
+
+                [
+                    "error_message",
+                    "error_information"
+                ],
+
+                getBugTitle(
+                    bug
+                )
+
+            )
+
+        )
+
+    ).trim();
+
+}
+
+
+/* =========================================================
+   ROOT CAUSE VALUE
+========================================================= */
+
+function getBugRootCause(
+    bug
+) {
+
+    const root =
+        getRootCause(
+            bug
+        );
+
+
+    return String(
+
+        firstValue(
+            root,
+
+            [
+                "root_cause",
+                "primary_hypothesis",
+                "hypothesis"
+            ],
+
+            "Insufficient evidence"
+        )
+
+    ).trim();
+
+}
+
+
+/* =========================================================
+   RESOLUTION
+========================================================= */
+
+function getBugResolution(
+    bug
+) {
+
+    const remediation =
+        getRemediation(
+            bug
+        );
+
+
+    return String(
+
+        firstValue(
+            remediation,
+
+            [
+                "recommended_fix",
+                "resolution"
+            ],
+
+            firstValue(
+                bug,
+
+                [
+                    "resolution",
+                    "recommended_fix"
+                ],
+
+                ""
+            )
+
+        )
+
+    ).trim();
+
+}
+
+
+/* =========================================================
+   SOURCE
+========================================================= */
+
+function getBugSource(
+    bug
+) {
+
+    /*
+       Firebase submissions are treated as
+       submitted records.
+
+       We do NOT read the backend "source"
+       dataset because that is local/backend data.
+    */
+
+    return "submitted";
+
+}
+
+
+/* =========================================================
+   FIREBASE TIMESTAMP
+========================================================= */
+
+function getFirebaseDateValue(
+    value
+) {
+
+    if (!value) {
+        return null;
+    }
+
+
+    if (
+        value &&
+        typeof value.toDate ===
+            "function"
+    ) {
+
+        return value.toDate();
+
+    }
+
+
+    if (
+        value instanceof Date
+    ) {
+
+        return value;
+
+    }
+
+
+    if (
+        typeof value === "object" &&
+        typeof value.seconds ===
+            "number"
+    ) {
+
+        return new Date(
+            value.seconds * 1000
+        );
+
+    }
+
+
+    const date =
+        new Date(
+            value
+        );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return null;
+
+    }
+
+
+    return date;
+
+}
+
+
+/* =========================================================
+   GET BUG DATE
+========================================================= */
+
+function getBugDate(
+    bug
+) {
+
+    const value =
+
+        bug?.createdAt ??
+
+        bug?.created_at ??
+
+        bug?.submittedAt ??
+
+        bug?.submitted_at ??
+
+        bug?.updatedAt ??
+
+        bug?.updated_at;
+
+
+    return getFirebaseDateValue(
+        value
+    );
+
+}
+
+
+/* =========================================================
+   LOCAL DATE KEY
+========================================================= */
+
+function getDateKey(
+    date
+) {
+
+    if (!date) {
+        return null;
+    }
+
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/* =========================================================
+   FIREBASE DATA LOADING
+========================================================= */
+
+async function loadFirebaseRecords() {
+
+    await waitForFirebaseAuth();
+
+
+    updateFirebaseStatus(
+        "Loading Firebase...",
+        "checking"
+    );
+
+
+    console.log(
+        "🔥 Reading bugSubmissions from Firestore..."
+    );
+
+
+    const snapshot =
+        await getDocs(
+            collection(
+                db,
+                BUG_COLLECTION
+            )
+        );
+
+
+    firebaseBugRecords =
+        snapshot.docs.map(
+            documentSnapshot => ({
+
+                firestoreId:
+                    documentSnapshot.id,
+
+                ...documentSnapshot.data()
+
+            })
+        );
+
+
+    console.log(
+        "🔥 Firebase records:",
+        firebaseBugRecords.length
+    );
+
+
+    updateFirebaseStatus(
+        `Firebase Connected · ${firebaseBugRecords.length} records`,
+        "success"
+    );
+
+
+    return firebaseBugRecords;
+
+}
+
+
+/* =========================================================
+   FILTER RECORDS
+========================================================= */
+
+function applyFirebaseFilters(
+    records
+) {
+
+    const project =
+        document.getElementById(
+            "project"
+        )?.value
+            ?.trim()
+            .toLowerCase() || "";
+
+
+    const severity =
+        document.getElementById(
+            "severity"
+        )?.value
+            ?.trim()
+            .toLowerCase() || "";
+
+
+    const priority =
+        document.getElementById(
+            "priority"
+        )?.value
+            ?.trim()
+            .toLowerCase() || "";
+
+
+    const component =
+        document.getElementById(
+            "component"
+        )?.value
+            ?.trim()
+            .toLowerCase() || "";
+
+
+    const exceptionType =
+        document.getElementById(
+            "exception_type"
+        )?.value
+            ?.trim()
+            .toLowerCase() || "";
+
+
+    const source =
+        document.getElementById(
+            "source"
+        )?.value
+            ?.trim()
+            .toLowerCase() || "";
+
+
+    const startDate =
+        document.getElementById(
+            "start_date"
+        )?.value || "";
+
+
+    const endDate =
+        document.getElementById(
+            "end_date"
+        )?.value || "";
+
+
+    return records.filter(
+        bug => {
+
+            const bugProject =
+                getBugProject(
+                    bug
+                ).toLowerCase();
+
+
+            const bugSeverity =
+                getBugSeverity(
+                    bug
+                ).toLowerCase();
+
+
+            const bugPriority =
+                getBugPriority(
+                    bug
+                ).toLowerCase();
+
+
+            const bugComponent =
+                getBugComponent(
+                    bug
+                ).toLowerCase();
+
+
+            const bugException =
+                getBugException(
+                    bug
+                ).toLowerCase();
+
+
+            const bugSource =
+                getBugSource(
+                    bug
+                ).toLowerCase();
+
+
+            if (
+                project &&
+                bugProject !== project
+            ) {
+
+                return false;
+
+            }
+
+
+            if (
+                severity &&
+                bugSeverity !== severity
+            ) {
+
+                return false;
+
+            }
+
+
+            if (
+                priority &&
+                bugPriority !== priority
+            ) {
+
+                return false;
+
+            }
+
+
+            if (
+                component &&
+                !bugComponent.includes(
+                    component
+                )
+            ) {
+
+                return false;
+
+            }
+
+
+            if (
+                exceptionType &&
+                !bugException.includes(
+                    exceptionType
+                )
+            ) {
+
+                return false;
+
+            }
+
+
+            if (
+                source &&
+                bugSource !== source
+            ) {
+
+                return false;
+
+            }
+
+
+            const bugDate =
+                getBugDate(
+                    bug
+                );
+
+
+            if (
+                startDate &&
+                bugDate
+            ) {
+
+                const start =
+                    new Date(
+                        `${startDate}T00:00:00`
+                    );
+
+
+                if (
+                    bugDate < start
+                ) {
+
+                    return false;
+
+                }
+
+            }
+
+
+            if (
+                endDate &&
+                bugDate
+            ) {
+
+                const end =
+                    new Date(
+                        `${endDate}T23:59:59.999`
+                    );
+
+
+                if (
+                    bugDate > end
+                ) {
+
+                    return false;
+
+                }
+
+            }
+
+
+            /*
+               If a date filter is supplied but
+               the Firebase document has no date,
+               do not include it.
+            */
+
+            if (
+                (
+                    startDate ||
+                    endDate
+                ) &&
+                !bugDate
+            ) {
+
+                return false;
+
+            }
+
+
+            return true;
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   DISTRIBUTION COUNTER
+========================================================= */
+
+function createDistribution(
+    records,
+    getter
+) {
+
+    const counts =
+        {};
+
+
+    records.forEach(
+        bug => {
+
+            const value =
+                String(
+                    getter(
+                        bug
+                    ) ||
+                    "Unknown"
+                ).trim();
+
+
+            const key =
+                value ||
+                "Unknown";
+
+
+            counts[key] =
+                (
+                    counts[key] ||
+                    0
+                ) + 1;
+
+        }
+    );
+
+
+    return Object.entries(
+        counts
+    )
+
+        .map(
+            ([label, value]) => ({
+
+                label,
+
+                value
+
+            })
+        )
+
+        .sort(
+            (a, b) =>
+                b.value - a.value
+        );
+
 }
 
 
 /* =========================================================
    LIMIT DISTRIBUTION
-   ========================================================= */
+========================================================= */
 
-function limitDistribution(data, limit = 10) {
-    return normalizeDistribution(data)
-        .sort((a, b) => b.value - a.value)
-        .slice(0, limit);
+function limitDistribution(
+    data,
+    limit = 10
+) {
+
+    return data
+        .slice(
+            0,
+            limit
+        );
+
 }
 
 
 /* =========================================================
-   FILTER OPTIONS
-   ========================================================= */
+   TOP VALUE
+========================================================= */
 
-function addOptions(selectId, values, placeholder) {
-    const select = document.getElementById(selectId);
-
-    if (!select) {
-        return;
-    }
-
-    const currentValue = select.value;
-
-    select.innerHTML = "";
-
-    const firstOption = document.createElement("option");
-    firstOption.value = "";
-    firstOption.textContent = placeholder;
-    select.appendChild(firstOption);
-
-    const uniqueValues = [
-        ...new Set(
-            (Array.isArray(values) ? values : [])
-                .map(value => String(value || "").trim())
-                .filter(Boolean)
-        )
-    ];
-
-    uniqueValues.forEach(value => {
-        const option = document.createElement("option");
-
-        option.value = value;
-        option.textContent = value;
-
-        select.appendChild(option);
-    });
+function getTopValue(
+    data
+) {
 
     if (
-        uniqueValues.includes(currentValue)
+        !data ||
+        !data.length
     ) {
-        select.value = currentValue;
+
+        return "—";
+
     }
-}
 
 
-/* =========================================================
-   LOAD FILTERS
-   ========================================================= */
+    return data[0].label;
 
-async function loadFilters() {
-    try {
-        const data = await apiRequest(
-            "/api/analytics/filters"
-        );
-
-        if (!data || data.ok === false) {
-            return;
-        }
-
-        addOptions(
-            "project",
-            data.projects,
-            "All projects"
-        );
-
-        addOptions(
-            "severity",
-            data.severities,
-            "All severities"
-        );
-
-        addOptions(
-            "priority",
-            data.priorities,
-            "All priorities"
-        );
-
-        addOptions(
-            "source",
-            data.sources,
-            "All sources"
-        );
-
-    } catch (error) {
-        console.error(
-            "Failed to load analytics filters:",
-            error
-        );
-    }
-}
-
-
-/* =========================================================
-   BUILD ANALYTICS QUERY
-   ========================================================= */
-
-function buildQuery() {
-    const params = new URLSearchParams();
-
-    const fields = [
-        "project",
-        "severity",
-        "priority",
-        "component",
-        "exception_type",
-        "source",
-        "start_date",
-        "end_date"
-    ];
-
-    fields.forEach(id => {
-        const element = document.getElementById(id);
-
-        if (!element) {
-            return;
-        }
-
-        const value = element.value.trim();
-
-        if (value) {
-            params.set(id, value);
-        }
-    });
-
-    return params.toString();
 }
 
 
 /* =========================================================
    RENDER BAR CHART
-   ========================================================= */
+========================================================= */
 
-function renderBars(elementId, data, limit = 10) {
+function renderBars(
+    elementId,
+    data,
+    limit = 10
+) {
+
     const container =
-        document.getElementById(elementId);
+        document.getElementById(
+            elementId
+        );
+
 
     if (!container) {
         return;
     }
 
-    const normalized =
-        normalizeDistribution(data)
-            .filter(item => item.value > 0)
-            .sort((a, b) => b.value - a.value)
-            .slice(0, limit);
 
-    if (!normalized.length) {
-        container.innerHTML = `
-            <div class="empty-state">
-                No data available.
-            </div>
-        `;
-        return;
-    }
-
-    const maxValue =
-        Math.max(
-            ...normalized.map(item => item.value)
+    const values =
+        limitDistribution(
+            data || [],
+            limit
         );
 
-    container.innerHTML = normalized
-        .map(item => {
-            const percentage =
-                maxValue > 0
-                    ? Math.max(
-                        4,
-                        (item.value / maxValue) * 100
-                    )
-                    : 0;
 
-            return `
-                <div class="bar-row">
+    if (!values.length) {
 
-                    <div class="bar-label"
-                         title="${escapeHTML(item.label)}">
+        showEmpty(
+            container
+        );
 
-                        ${escapeHTML(item.label)}
+        return;
 
-                    </div>
+    }
 
-                    <div class="bar-track">
 
-                        <div
-                            class="bar-fill"
-                            style="width:${percentage}%"
-                        ></div>
+    const maximum =
+        Math.max(
+            ...values.map(
+                item =>
+                    item.value
+            )
+        );
 
-                    </div>
 
-                    <div class="bar-value">
-                        ${formatNumber(item.value)}
-                    </div>
+    container.innerHTML =
 
-                </div>
-            `;
-        })
-        .join("");
+        values
+            .map(
+                item => {
+
+                    const width =
+
+                        maximum > 0
+
+                            ? Math.max(
+                                4,
+                                (
+                                    item.value /
+                                    maximum
+                                ) * 100
+                            )
+
+                            : 0;
+
+
+                    return `
+
+                        <div class="bar-row">
+
+                            <div
+                                class="bar-label"
+                                title="${escapeHTML(
+                                    item.label
+                                )}"
+                            >
+
+                                ${escapeHTML(
+                                    item.label
+                                )}
+
+                            </div>
+
+
+                            <div class="bar-track">
+
+                                <div
+                                    class="bar-fill"
+                                    style="width:${width}%"
+                                ></div>
+
+                            </div>
+
+
+                            <div class="bar-value">
+
+                                ${formatNumber(
+                                    item.value
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
 }
 
 
 /* =========================================================
-   TIME SERIES
-   ========================================================= */
+   TIME-BASED ACTIVITY
+========================================================= */
 
-function renderTimeSeries(rows) {
+function buildTimeSeries(
+    records
+) {
+
+    const counts =
+        {};
+
+
+    records.forEach(
+        bug => {
+
+            const date =
+                getBugDate(
+                    bug
+                );
+
+
+            const key =
+                getDateKey(
+                    date
+                );
+
+
+            if (!key) {
+                return;
+            }
+
+
+            counts[key] =
+                (
+                    counts[key] ||
+                    0
+                ) + 1;
+
+        }
+    );
+
+
+    return Object.entries(
+        counts
+    )
+
+        .sort(
+            ([a], [b]) =>
+                a.localeCompare(
+                    b
+                )
+        )
+
+        .map(
+            ([date, count]) => ({
+
+                date,
+
+                count
+
+            })
+        );
+
+}
+
+
+/* =========================================================
+   RENDER TIME-BASED ACTIVITY
+========================================================= */
+
+function renderTimeSeries(
+    records
+) {
+
     const container =
-        document.getElementById("timeChart");
+        document.getElementById(
+            "timeChart"
+        );
+
 
     if (!container) {
         return;
     }
 
-    if (!Array.isArray(rows) || !rows.length) {
-        container.innerHTML = `
-            <div class="empty-state">
-                No time-based data available.
-            </div>
-        `;
-        return;
-    }
 
-    const normalized = rows
-        .map(row => ({
-            label:
-                row.date ??
-                row.day ??
-                row.label ??
-                "Unknown",
-
-            value:
-                Number(
-                    row.count ??
-                    row.value ??
-                    0
-                ) || 0
-        }))
-        .filter(row => row.value > 0)
-        .slice(-30);
-
-    if (!normalized.length) {
-        container.innerHTML = `
-            <div class="empty-state">
-                No time-based data available.
-            </div>
-        `;
-        return;
-    }
-
-    const maxValue =
-        Math.max(
-            ...normalized.map(item => item.value)
+    const series =
+        buildTimeSeries(
+            records
         );
 
-    container.innerHTML = normalized
-        .map(item => {
-            const percentage =
-                maxValue > 0
-                    ? Math.max(
-                        4,
-                        (item.value / maxValue) * 100
-                    )
-                    : 0;
 
-            return `
-                <div class="bar-row">
+    if (!series.length) {
 
-                    <div class="bar-label">
-                        ${escapeHTML(item.label)}
-                    </div>
+        showEmpty(
+            container,
+            "No Firebase submission dates available."
+        );
 
-                    <div class="bar-track">
+        return;
 
-                        <div
-                            class="bar-fill"
-                            style="width:${percentage}%"
-                        ></div>
+    }
 
-                    </div>
 
-                    <div class="bar-value">
-                        ${formatNumber(item.value)}
-                    </div>
+    const visible =
+        series.slice(
+            -30
+        );
 
-                </div>
-            `;
-        })
-        .join("");
+
+    const maximum =
+        Math.max(
+            ...visible.map(
+                item =>
+                    item.count
+            )
+        );
+
+
+    container.innerHTML =
+
+        visible
+
+            .map(
+                item => {
+
+                    const width =
+
+                        maximum > 0
+
+                            ? Math.max(
+                                4,
+                                (
+                                    item.count /
+                                    maximum
+                                ) * 100
+                            )
+
+                            : 0;
+
+
+                    return `
+
+                        <div class="bar-row">
+
+                            <div
+                                class="bar-label"
+                                title="${escapeHTML(
+                                    item.date
+                                )}"
+                            >
+
+                                ${escapeHTML(
+                                    item.date
+                                )}
+
+                            </div>
+
+
+                            <div class="bar-track">
+
+                                <div
+                                    class="bar-fill"
+                                    style="width:${width}%"
+                                ></div>
+
+                            </div>
+
+
+                            <div class="bar-value">
+
+                                ${formatNumber(
+                                    item.count
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+
+            .join("");
+
+}
+
+
+/* =========================================================
+   FILTER OPTIONS
+========================================================= */
+
+function getUniqueValues(
+    records,
+    getter
+) {
+
+    return [
+
+        ...new Set(
+
+            records
+
+                .map(
+                    bug =>
+                        String(
+                            getter(
+                                bug
+                            ) || ""
+                        ).trim()
+                )
+
+                .filter(Boolean)
+
+        )
+
+    ].sort(
+        (a, b) =>
+            a.localeCompare(
+                b
+            )
+    );
+
+}
+
+
+/* =========================================================
+   ADD SELECT OPTIONS
+========================================================= */
+
+function addOptions(
+    id,
+    values,
+    placeholder
+) {
+
+    const select =
+        document.getElementById(
+            id
+        );
+
+
+    if (!select) {
+        return;
+    }
+
+
+    const currentValue =
+        select.value;
+
+
+    select.innerHTML =
+        "";
+
+
+    const first =
+        document.createElement(
+            "option"
+        );
+
+
+    first.value =
+        "";
+
+
+    first.textContent =
+        placeholder;
+
+
+    select.appendChild(
+        first
+    );
+
+
+    values.forEach(
+        value => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                value;
+
+
+            option.textContent =
+                value;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    if (
+        values.includes(
+            currentValue
+        )
+    ) {
+
+        select.value =
+            currentValue;
+
+    }
+
+}
+
+
+/* =========================================================
+   LOAD FILTERS FROM FIREBASE
+========================================================= */
+
+function loadFirebaseFilters(
+    records
+) {
+
+    addOptions(
+        "project",
+
+        getUniqueValues(
+            records,
+            getBugProject
+        ),
+
+        "All projects"
+    );
+
+
+    addOptions(
+        "severity",
+
+        getUniqueValues(
+            records,
+            getBugSeverity
+        ),
+
+        "All severities"
+    );
+
+
+    addOptions(
+        "priority",
+
+        getUniqueValues(
+            records,
+            getBugPriority
+        ),
+
+        "All priorities"
+    );
+
+
+    addOptions(
+        "source",
+
+        getUniqueValues(
+            records,
+            getBugSource
+        ),
+
+        "All sources"
+    );
+
 }
 
 
 /* =========================================================
    RENDER ANALYTICS
-   ========================================================= */
+========================================================= */
 
-function renderAnalytics(data) {
-    if (!data) {
-        return;
-    }
+function renderFirebaseAnalytics(
+    records
+) {
 
-    if (data.ready === false) {
-        const chartIds = [
-            "severityChart",
-            "componentChart",
-            "exceptionChart",
-            "errorChart",
-            "timeChart"
-        ];
+    filteredBugRecords =
+        applyFirebaseFilters(
+            records
+        );
 
-        chartIds.forEach(id => {
-            const element =
-                document.getElementById(id);
-
-            if (element) {
-                element.innerHTML = `
-                    <div class="loading-state">
-                        Analytics database is being prepared...
-                    </div>
-                `;
-            }
-        });
-
-        return;
-    }
-
-    const statistics =
-        data.statistics || {};
 
     const severityData =
-        statistics.by_severity ||
-        data.severity_distribution ||
-        {};
+        createDistribution(
+            filteredBugRecords,
+            getBugSeverity
+        );
+
 
     const componentData =
-        statistics.by_component ||
-        data.component_distribution ||
-        {};
+        createDistribution(
+            filteredBugRecords,
+            getBugComponent
+        );
+
 
     const exceptionData =
-        statistics.by_exception ||
-        statistics.by_exception_type ||
-        data.exception_distribution ||
-        {};
+        createDistribution(
+            filteredBugRecords,
+            getBugException
+        );
 
-    const priorityData =
-        statistics.by_priority ||
-        data.priority_distribution ||
-        {};
-
-    const projectData =
-        statistics.by_project ||
-        data.project_distribution ||
-        {};
-
-    const sourceData =
-        statistics.by_source ||
-        data.source_distribution ||
-        {};
-
-    const rootCauseData =
-        statistics.by_root_cause ||
-        data.root_cause_distribution ||
-        {};
 
     const errorData =
-        data.top_recurring_errors ||
-        statistics.by_error ||
-        statistics.by_error_message ||
-        data.error_distribution ||
-        {};
+        createDistribution(
+            filteredBugRecords,
+            getBugError
+        );
 
-    const timeSeries =
-        data.time_series ||
-        data.timeSeries ||
-        [];
 
-    /* ---------------------------------------------------------
+    /* =====================================================
        SUMMARY
-       --------------------------------------------------------- */
+    ===================================================== */
 
     setText(
         "total",
         formatNumber(
-            data.total_records ??
-            data.total ??
-            0
+            filteredBugRecords.length
         )
     );
 
+
     setText(
         "topComponent",
-        getTopMeaningfulValue(componentData)
+        getTopValue(
+            componentData
+        )
     );
+
 
     setText(
         "topException",
-        getTopMeaningfulValue(exceptionData)
+        getTopValue(
+            exceptionData
+        )
     );
+
 
     setText(
         "topSeverity",
-        getTopMeaningfulValue(severityData)
+        getTopValue(
+            severityData
+        )
     );
 
 
-    /* ---------------------------------------------------------
-       CHARTS
-       --------------------------------------------------------- */
+    /* =====================================================
+       DISTRIBUTIONS
+    ===================================================== */
 
     renderBars(
         "severityChart",
@@ -733,1043 +2123,1959 @@ function renderAnalytics(data) {
         10
     );
 
+
     renderBars(
         "componentChart",
-        limitDistribution(
-            componentData,
-            10
-        ),
+        componentData,
         10
     );
+
 
     renderBars(
         "exceptionChart",
-        limitDistribution(
-            exceptionData,
-            10
-        ),
+        exceptionData,
         10
     );
+
 
     renderBars(
         "errorChart",
-        limitDistribution(
-            errorData,
-            10
-        ),
+        errorData,
         10
     );
 
+
+    /* =====================================================
+       TIME ACTIVITY
+
+       DIRECTLY FROM FIREBASE
+    ===================================================== */
+
     renderTimeSeries(
-        timeSeries
+        filteredBugRecords
     );
+
+
+    console.log(
+        "📊 Firebase Analytics:",
+        {
+            total:
+                filteredBugRecords.length,
+
+            severity:
+                severityData,
+
+            components:
+                componentData,
+
+            exceptions:
+                exceptionData,
+
+            errors:
+                errorData,
+
+            timeSeries:
+                buildTimeSeries(
+                    filteredBugRecords
+                )
+        }
+    );
+
 }
 
 
 /* =========================================================
-   LOAD ANALYTICS
-   ========================================================= */
+   LOAD ALL FIREBASE ANALYTICS
+========================================================= */
 
 async function loadAnalytics() {
+
     if (analyticsLoading) {
         return;
     }
 
-    analyticsLoading = true;
+
+    analyticsLoading =
+        true;
+
 
     const chartIds = [
+
         "severityChart",
+
         "componentChart",
+
         "exceptionChart",
+
         "errorChart",
+
         "timeChart"
+
     ];
 
-    chartIds.forEach(id => {
-        const element =
-            document.getElementById(id);
 
-        if (element) {
-            showLoading(
-                element,
-                "Loading analytics..."
-            );
+    chartIds.forEach(
+        id => {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            if (element) {
+
+                showLoading(
+                    element,
+                    "Loading Firebase data..."
+                );
+
+            }
+
         }
-    });
+    );
+
 
     try {
-        const query = buildQuery();
 
-        const endpoint =
-            query
-                ? `/api/analytics?${query}`
-                : "/api/analytics";
+        const records =
+            await loadFirebaseRecords();
 
-        const data =
-            await apiRequest(endpoint);
 
-        if (data && data.ok === false) {
-            throw new Error(
-                data.error ||
-                "Analytics request failed."
-            );
-        }
+        loadFirebaseFilters(
+            records
+        );
 
-        renderAnalytics(data);
+
+        renderFirebaseAnalytics(
+            records
+        );
+
 
     } catch (error) {
+
         console.error(
-            "Analytics loading error:",
+            "❌ Firebase Analytics error:",
             error
         );
 
-        chartIds.forEach(id => {
-            const element =
-                document.getElementById(id);
 
-            if (element) {
-                showError(
-                    element,
-                    error.message
-                );
+        updateFirebaseStatus(
+            "Firebase Error",
+            "error"
+        );
+
+
+        chartIds.forEach(
+            id => {
+
+                const element =
+                    document.getElementById(
+                        id
+                    );
+
+
+                if (element) {
+
+                    showError(
+                        element,
+                        error.message
+                    );
+
+                }
+
             }
-        });
+        );
 
-        setText("total", "—");
-        setText("topComponent", "—");
-        setText("topException", "—");
-        setText("topSeverity", "—");
+
+        setText(
+            "total",
+            "—"
+        );
+
+
+        setText(
+            "topComponent",
+            "—"
+        );
+
+
+        setText(
+            "topException",
+            "—"
+        );
+
+
+        setText(
+            "topSeverity",
+            "—"
+        );
+
 
     } finally {
-        analyticsLoading = false;
+
+        analyticsLoading =
+            false;
+
     }
+
 }
 
 
 /* =========================================================
    RESET FILTERS
-   ========================================================= */
+========================================================= */
 
 function resetFilters() {
+
     const ids = [
+
         "project",
+
         "severity",
+
         "priority",
+
         "component",
+
         "exception_type",
+
         "source",
+
         "start_date",
+
         "end_date"
+
     ];
 
-    ids.forEach(id => {
-        const element =
-            document.getElementById(id);
 
-        if (element) {
-            element.value = "";
+    ids.forEach(
+        id => {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            if (element) {
+
+                element.value =
+                    "";
+
+            }
+
         }
-    });
+    );
 
-    loadAnalytics();
+
+    renderFirebaseAnalytics(
+        firebaseBugRecords
+    );
+
 }
 
 
 /* =========================================================
-   SUBMITTED BUGS
-   =========================================================
-
-   IMPORTANT BACKEND RESPONSE:
-
-   {
-       "ok": true,
-       "total_records": 3,
-       "results": [
-           {...},
-           {...},
-           {...}
-       ]
-   }
-
-   The previous JS incorrectly looked only for:
-       data.records
-
-   This version correctly uses:
-       data.results
-   ========================================================= */
-
-async function loadSubmittedBugs() {
-    const bugIdElement =
-        document.getElementById("gBugId");
-
-    if (!bugIdElement) {
-        return;
-    }
-
-    try {
-        const data =
-            await apiRequest(
-                "/api/analytics/submitted-records"
-            );
-
-        if (!data || data.ok === false) {
-            throw new Error(
-                data?.error ||
-                "Unable to load submitted bugs."
-            );
-        }
-
-        /*
-         * FIX:
-         * Backend returns `results`.
-         *
-         * Keep `records` as fallback in case
-         * the backend is changed later.
-         */
-        submittedBugRecords =
-            Array.isArray(data.results)
-                ? data.results
-                : Array.isArray(data.records)
-                    ? data.records
-                    : Array.isArray(data)
-                        ? data
-                        : [];
-
-        console.log(
-            "BugAI submitted bugs:",
-            submittedBugRecords
-        );
-
-        prepareBugIdSelector();
-        populateBugIdSelector();
-
-    } catch (error) {
-        console.error(
-            "Failed to load submitted bugs:",
-            error
-        );
-
-        const select =
-            document.getElementById("gBugId");
-
-        if (select) {
-            select.innerHTML = `
-                <option value="">
-                    Unable to load submitted bugs
-                </option>
-            `;
-
-            select.disabled = true;
-        }
-    }
-}
-
-
-/* =========================================================
-   PREPARE BUG ID SELECT
-   ========================================================= */
-
-function prepareBugIdSelector() {
-    let element =
-        document.getElementById("gBugId");
-
-    if (!element) {
-        return;
-    }
-
-    /*
-     * If HTML already contains a SELECT,
-     * keep it.
-     */
-    if (element.tagName !== "SELECT") {
-        const select =
-            document.createElement("select");
-
-        select.id = "gBugId";
-        select.name = "bug_id";
-        select.required = true;
-
-        element.replaceWith(select);
-
-        element = select;
-    }
-
-    /*
-     * Avoid duplicate event listeners.
-     */
-    if (
-        element.dataset.listenerAttached !== "true"
-    ) {
-        element.addEventListener(
-            "change",
-            handleSubmittedBugSelection
-        );
-
-        element.dataset.listenerAttached = "true";
-    }
-}
-
-
-/* =========================================================
-   POPULATE BUG ID SELECT
-   ========================================================= */
+   BUG ID SELECTOR
+========================================================= */
 
 function populateBugIdSelector() {
+
     const select =
-        document.getElementById("gBugId");
+        document.getElementById(
+            "gBugId"
+        );
+
 
     if (!select) {
         return;
     }
 
-    select.innerHTML = "";
+
+    select.innerHTML =
+        "";
+
 
     const placeholder =
-        document.createElement("option");
+        document.createElement(
+            "option"
+        );
 
-    placeholder.value = "";
+
+    placeholder.value =
+        "";
+
+
     placeholder.textContent =
-        submittedBugRecords.length
+
+        firebaseBugRecords.length
+
             ? "Select a submitted bug"
+
             : "No submitted bugs available";
 
+
     placeholder.disabled =
-        submittedBugRecords.length > 0;
+        firebaseBugRecords.length > 0;
 
-    placeholder.selected = true;
 
-    select.appendChild(placeholder);
+    placeholder.selected =
+        true;
 
-    const usedIds = new Set();
 
-    submittedBugRecords.forEach(
-        (bug, index) => {
-            const bugId =
-                String(
-                    bug?.bug_id ??
-                    bug?.id ??
-                    ""
-                ).trim();
+    select.appendChild(
+        placeholder
+    );
 
-            if (!bugId || usedIds.has(bugId)) {
+
+    const used =
+        new Set();
+
+
+    firebaseBugRecords.forEach(
+        bug => {
+
+            const id =
+                getBugId(
+                    bug
+                );
+
+
+            if (
+                !id ||
+                used.has(id)
+            ) {
+
                 return;
+
             }
 
-            usedIds.add(bugId);
+
+            used.add(
+                id
+            );
+
 
             const option =
-                document.createElement("option");
+                document.createElement(
+                    "option"
+                );
 
-            option.value = bugId;
+
+            option.value =
+                id;
+
 
             const title =
-                String(
-                    bug?.title ||
-                    "Submitted Bug"
-                ).trim();
+                getBugTitle(
+                    bug
+                );
+
 
             const project =
-                String(
-                    bug?.project ||
-                    ""
-                ).trim();
+                getBugProject(
+                    bug
+                );
+
 
             option.textContent =
+
                 project
-                    ? `${bugId} — ${title} (${project})`
-                    : `${bugId} — ${title}`;
 
-            option.dataset.index =
-                String(index);
+                    ? `${id} — ${title} (${project})`
 
-            select.appendChild(option);
+                    : `${id} — ${title}`;
+
+
+            select.appendChild(
+                option
+            );
+
         }
     );
 
-    select.disabled =
-        submittedBugRecords.length === 0;
 
-    /*
-     * Make sure no stale bug remains selected.
-     */
-    selectedSubmittedBug = null;
-    clearGrowthFields();
+    select.disabled =
+        firebaseBugRecords.length === 0;
+
 }
 
 
 /* =========================================================
-   BUG SELECTION
-   ========================================================= */
+   FIND FIREBASE BUG
+========================================================= */
 
-function handleSubmittedBugSelection(event) {
-    const bugId =
-        String(
-            event.target.value || ""
-        ).trim();
+function findFirebaseBug(
+    bugId
+) {
 
-    if (!bugId) {
-        selectedSubmittedBug = null;
-        clearGrowthFields();
-        return;
-    }
+    return firebaseBugRecords.find(
+        bug =>
+            getBugId(
+                bug
+            ) ===
+            String(
+                bugId
+            ).trim()
+    ) || null;
 
-    selectedSubmittedBug =
-        submittedBugRecords.find(
-            bug => {
-                const currentId =
-                    String(
-                        bug?.bug_id ??
-                        bug?.id ??
-                        ""
-                    ).trim();
-
-                return currentId === bugId;
-            }
-        ) || null;
-
-    if (!selectedSubmittedBug) {
-        throw new Error(
-            "Selected submitted bug could not be found."
-        );
-    }
-
-    fillGrowthFields(
-        selectedSubmittedBug
-    );
 }
 
 
 /* =========================================================
    SET GROWTH FIELD
-   ========================================================= */
+========================================================= */
 
-function setGrowthField(id, value) {
+function setGrowthField(
+    id,
+    value
+) {
+
     const element =
-        document.getElementById(id);
+        document.getElementById(
+            id
+        );
+
 
     if (!element) {
         return;
     }
 
+
     element.value =
+
         value === null ||
         value === undefined
+
             ? ""
+
             : String(value);
+
 }
 
 
 /* =========================================================
    FILL GROWTH FORM
-   ========================================================= */
+========================================================= */
 
-function fillGrowthFields(bug) {
+function fillGrowthFields(
+    bug
+) {
+
     if (!bug) {
         return;
     }
 
+
+    const triage =
+        getTriage(
+            bug
+        );
+
+
+    const log =
+        getLogAnalysis(
+            bug
+        );
+
+
     setGrowthField(
         "gBugId",
-        bug.bug_id ?? bug.id
+        getBugId(
+            bug
+        )
     );
+
 
     setGrowthField(
         "gProject",
-        bug.project
+        getBugProject(
+            bug
+        )
     );
+
 
     setGrowthField(
         "gTitle",
-        bug.title
+        getBugTitle(
+            bug
+        )
     );
+
 
     setGrowthField(
         "gDescription",
-        bug.description
+
+        firstValue(
+            bug,
+
+            [
+                "description",
+                "bug_description"
+            ],
+
+            ""
+        )
     );
+
 
     setGrowthField(
         "gComponent",
-        bug.affected_component ??
-        bug.component
+        getBugComponent(
+            bug
+        )
     );
+
 
     setGrowthField(
         "gStack",
-        bug.stack_trace ??
-        bug.error_information ??
-        bug.error_message
+
+        firstValue(
+            bug,
+
+            [
+                "stack_trace",
+                "error_information",
+                "error_message"
+            ],
+
+            firstValue(
+                log,
+
+                [
+                    "error_message"
+                ],
+
+                ""
+            )
+        )
     );
+
 
     setGrowthField(
         "gRoot",
-        bug.root_cause ??
-        bug.hypothesis
+        getBugRootCause(
+            bug
+        )
     );
+
 
     setGrowthField(
         "gResolution",
-        bug.resolution ??
-        bug.recommended_fix
+        getBugResolution(
+            bug
+        )
     );
+
 
     setGrowthField(
         "gSeverity",
-        bug.severity
+        getBugSeverity(
+            bug
+        )
     );
+
 
     setGrowthField(
         "gPriority",
-        bug.priority
+        getBugPriority(
+            bug
+        )
     );
 
-    /*
-     * These must be manually confirmed.
-     */
+
     const confirmed =
         document.getElementById(
             "confirmedFix"
         );
+
 
     const approved =
         document.getElementById(
             "approved"
         );
 
+
     if (confirmed) {
-        confirmed.checked = false;
+
+        confirmed.checked =
+            bug.confirmed_fix === true ||
+            bug.confirmedFix === true;
+
     }
 
+
     if (approved) {
-        approved.checked = false;
+
+        approved.checked =
+            bug.approved === true ||
+            bug.approvedForKB === true;
+
     }
+
 
     const result =
         document.getElementById(
             "growthResult"
         );
 
+
     if (result) {
-        result.className = "";
+
+        result.className =
+            "";
+
+
         result.textContent =
-            `Selected submitted bug: ${
-                bug.bug_id ?? bug.id ?? ""
+
+            `Firebase record selected: ${
+                getBugId(
+                    bug
+                )
             }\n\n` +
-            "Review the populated information, " +
-            "confirm the fix, approve it for the KB, " +
-            "then click Validate & Add to Knowledge Base.";
+
+            "Review the diagnosis, confirm the fix " +
+
+            "and approve it for the Knowledge Base.";
+
     }
+
 }
 
 
 /* =========================================================
-   CLEAR GROWTH FIELDS
-   ========================================================= */
+   CLEAR GROWTH FORM
+========================================================= */
 
 function clearGrowthFields() {
-    const ids = [
+
+    const fields = [
+
         "gProject",
+
         "gTitle",
+
         "gDescription",
+
         "gComponent",
+
         "gStack",
+
         "gRoot",
+
         "gResolution",
+
         "gSeverity",
+
         "gPriority"
+
     ];
 
-    ids.forEach(id => {
-        const element =
-            document.getElementById(id);
 
-        if (element) {
-            element.value = "";
+    fields.forEach(
+        id => {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            if (element) {
+
+                element.value =
+                    "";
+
+            }
+
         }
-    });
+    );
+
 
     const confirmed =
         document.getElementById(
             "confirmedFix"
         );
 
+
     const approved =
         document.getElementById(
             "approved"
         );
 
+
     if (confirmed) {
-        confirmed.checked = false;
+
+        confirmed.checked =
+            false;
+
     }
+
 
     if (approved) {
-        approved.checked = false;
+
+        approved.checked =
+            false;
+
     }
+
 }
 
 
 /* =========================================================
-   VERIFY SELECTED BUG
-   ========================================================= */
+   BUG SELECT CHANGE
+========================================================= */
 
-function verifySelectedSubmittedBug() {
-    if (!selectedSubmittedBug) {
-        throw new Error(
-            "Please select an existing submitted bug first."
-        );
+function handleBugSelection(
+    event
+) {
+
+    const bugId =
+        event.target.value;
+
+
+    if (!bugId) {
+
+        selectedSubmittedBug =
+            null;
+
+
+        clearGrowthFields();
+
+
+        return;
+
     }
 
-    const id =
-        String(
-            selectedSubmittedBug.bug_id ??
-            selectedSubmittedBug.id ??
-            ""
-        ).trim();
 
-    if (!id) {
-        throw new Error(
-            "The selected submitted bug does not have a valid Bug ID."
+    selectedSubmittedBug =
+        findFirebaseBug(
+            bugId
         );
+
+
+    if (
+        !selectedSubmittedBug
+    ) {
+
+        clearGrowthFields();
+
+
+        return;
+
     }
 
-    const exists =
-        submittedBugRecords.some(
-            bug =>
-                String(
-                    bug?.bug_id ??
-                    bug?.id ??
-                    ""
-                ).trim() === id
-        );
 
-    if (!exists) {
-        throw new Error(
-            "The selected Bug ID is not present in BugAI submitted records."
-        );
-    }
+    fillGrowthFields(
+        selectedSubmittedBug
+    );
 
-    return id;
 }
 
 
 /* =========================================================
-   COLLECT GROWTH PAYLOAD
-   ========================================================= */
+   VALIDATE GROWTH FORM
+========================================================= */
 
-function collectGrowthPayload() {
-    const verifiedBugId =
-        verifySelectedSubmittedBug();
+function validateGrowthForm(
+    bug
+) {
 
-    return {
-        bug_id: verifiedBugId,
+    if (!bug) {
 
-        project:
-            document.getElementById(
-                "gProject"
-            )?.value.trim() || "",
+        throw new Error(
+            "Please select a submitted Firebase bug."
+        );
 
-        title:
-            document.getElementById(
-                "gTitle"
-            )?.value.trim() || "",
+    }
 
-        description:
-            document.getElementById(
-                "gDescription"
-            )?.value.trim() || "",
 
-        component:
-            document.getElementById(
-                "gComponent"
-            )?.value.trim() || "",
+    const title =
+        document.getElementById(
+            "gTitle"
+        )?.value.trim() || "";
 
-        stack_trace:
-            document.getElementById(
-                "gStack"
-            )?.value.trim() || "",
 
-        root_cause:
-            document.getElementById(
-                "gRoot"
-            )?.value.trim() || "",
+    const description =
+        document.getElementById(
+            "gDescription"
+        )?.value.trim() || "";
 
-        resolution:
-            document.getElementById(
-                "gResolution"
-            )?.value.trim() || "",
 
-        severity:
-            document.getElementById(
-                "gSeverity"
-            )?.value || "",
+    const component =
+        document.getElementById(
+            "gComponent"
+        )?.value.trim() || "";
 
-        priority:
-            document.getElementById(
-                "gPriority"
-            )?.value || "",
 
-        confirmed_fix:
-            document.getElementById(
-                "confirmedFix"
-            )?.checked === true,
+    const stack =
+        document.getElementById(
+            "gStack"
+        )?.value.trim() || "";
 
-        approved:
-            document.getElementById(
-                "approved"
-            )?.checked === true
-    };
+
+    const root =
+        document.getElementById(
+            "gRoot"
+        )?.value.trim() || "";
+
+
+    const resolution =
+        document.getElementById(
+            "gResolution"
+        )?.value.trim() || "";
+
+
+    if (!title) {
+
+        throw new Error(
+            "Title is required."
+        );
+
+    }
+
+
+    if (!description) {
+
+        throw new Error(
+            "Description is required."
+        );
+
+    }
+
+
+    if (!component) {
+
+        throw new Error(
+            "Affected Component is required."
+        );
+
+    }
+
+
+    if (!stack) {
+
+        throw new Error(
+            "Error Information / Stack Trace is required."
+        );
+
+    }
+
+
+    if (!root) {
+
+        throw new Error(
+            "Confirmed Root Cause is required."
+        );
+
+    }
+
+
+    if (!resolution) {
+
+        throw new Error(
+            "Confirmed Resolution / Fix is required."
+        );
+
+    }
+
+
+    const confirmed =
+        document.getElementById(
+            "confirmedFix"
+        )?.checked === true;
+
+
+    const approved =
+        document.getElementById(
+            "approved"
+        )?.checked === true;
+
+
+    if (!confirmed) {
+
+        throw new Error(
+            "Please confirm the fix."
+        );
+
+    }
+
+
+    if (!approved) {
+
+        throw new Error(
+            "Please approve the fix for the Knowledge Base."
+        );
+
+    }
+
 }
 
 
 /* =========================================================
-   SUBMIT KNOWLEDGE BASE GROWTH
-   ========================================================= */
+   SAVE KB GROWTH DIRECTLY TO FIREBASE
+========================================================= */
 
 async function submitGrowth() {
+
     if (growthLoading) {
         return;
     }
 
+
+    growthLoading =
+        true;
+
+
+    const button =
+        document.getElementById(
+            "addGrowth"
+        );
+
+
     const result =
         document.getElementById(
             "growthResult"
         );
 
-    growthLoading = true;
 
-    if (result) {
-        result.className = "";
-        result.textContent =
-            "Validating selected submitted bug...";
+    if (button) {
+
+        button.disabled =
+            true;
+
+
+        button.textContent =
+            "Saving to Firebase...";
+
     }
 
+
     try {
-        const payload =
-            collectGrowthPayload();
 
-        const required = [
-            [
-                "title",
-                "Title is missing from the selected bug."
-            ],
-            [
-                "component",
-                "Affected Component is required."
-            ],
-            [
-                "description",
-                "Description is required."
-            ],
-            [
-                "stack_trace",
-                "Error Information / Stack Trace is required."
-            ],
-            [
-                "root_cause",
-                "Confirmed Root Cause is required."
-            ],
-            [
-                "resolution",
-                "Confirmed Resolution / Fix is required."
-            ]
-        ];
+        await waitForFirebaseAuth();
 
-        for (const [field, message] of required) {
-            if (!payload[field]) {
-                throw new Error(message);
+
+        if (
+            !selectedSubmittedBug
+        ) {
+
+            throw new Error(
+                "Please select a submitted Firebase bug."
+            );
+
+        }
+
+
+        validateGrowthForm(
+            selectedSubmittedBug
+        );
+
+
+        const documentId =
+            selectedSubmittedBug.firestoreId;
+
+
+        if (!documentId) {
+
+            throw new Error(
+                "Firebase document ID is missing."
+            );
+
+        }
+
+
+        const confirmedFix =
+            document.getElementById(
+                "confirmedFix"
+            )?.checked === true;
+
+
+        const approved =
+            document.getElementById(
+                "approved"
+            )?.checked === true;
+
+
+        const kbGrowth = {
+
+            confirmedFix,
+
+            approved,
+
+            confirmedTitle:
+
+                document.getElementById(
+                    "gTitle"
+                )?.value.trim() || "",
+
+            confirmedDescription:
+
+                document.getElementById(
+                    "gDescription"
+                )?.value.trim() || "",
+
+            confirmedComponent:
+
+                document.getElementById(
+                    "gComponent"
+                )?.value.trim() || "",
+
+            confirmedStackTrace:
+
+                document.getElementById(
+                    "gStack"
+                )?.value.trim() || "",
+
+            confirmedRootCause:
+
+                document.getElementById(
+                    "gRoot"
+                )?.value.trim() || "",
+
+            confirmedResolution:
+
+                document.getElementById(
+                    "gResolution"
+                )?.value.trim() || "",
+
+            confirmedSeverity:
+
+                document.getElementById(
+                    "gSeverity"
+                )?.value || "",
+
+            confirmedPriority:
+
+                document.getElementById(
+                    "gPriority"
+                )?.value || "",
+
+            updatedAt:
+                serverTimestamp()
+
+        };
+
+
+        await updateDoc(
+
+            doc(
+                db,
+
+                BUG_COLLECTION,
+
+                documentId
+            ),
+
+            {
+
+                confirmed_fix:
+                    true,
+
+                approved:
+                    true,
+
+                kbGrowth:
+                    kbGrowth,
+
+                status:
+                    "KB Confirmed",
+
+                updatedAt:
+                    serverTimestamp()
+
             }
-        }
 
-        if (!payload.confirmed_fix) {
-            throw new Error(
-                "The 'Confirmed fix' checkbox must be selected."
-            );
-        }
+        );
 
-        if (!payload.approved) {
-            throw new Error(
-                "The 'Approved for KB' checkbox must be selected."
+
+        /*
+           Update local in-memory Firebase copy
+           so the page immediately reflects the
+           Firestore change without another source.
+        */
+
+        selectedSubmittedBug =
+            {
+
+                ...selectedSubmittedBug,
+
+                confirmed_fix:
+                    true,
+
+                approved:
+                    true,
+
+                kbGrowth,
+
+                status:
+                    "KB Confirmed"
+
+            };
+
+
+        firebaseBugRecords =
+            firebaseBugRecords.map(
+                bug =>
+
+                    bug.firestoreId ===
+                    documentId
+
+                        ? selectedSubmittedBug
+
+                        : bug
             );
-        }
+
 
         if (result) {
-            result.className = "";
-            result.textContent =
-                `Adding confirmed fix for ${payload.bug_id}...`;
-        }
 
-        const response =
-            await apiRequest(
-                "/api/knowledge-base/growth",
-                {
-                    method: "POST",
-                    body: JSON.stringify(payload)
-                }
-            );
-
-        if (result) {
             result.className =
                 "result-success";
 
+
             result.textContent =
-                JSON.stringify(
-                    response,
-                    null,
-                    2
-                );
+
+                "✓ Confirmed fix saved successfully to Firebase.\n\n" +
+
+                `Bug ID: ${
+                    getBugId(
+                        selectedSubmittedBug
+                    )
+                }\n` +
+
+                "Status: KB Confirmed\n" +
+
+                "Approved: Yes";
+
         }
 
+
         /*
-         * Refresh analytics after KB growth.
-         */
-        await loadAnalytics();
+           Refresh Firebase analytics.
+        */
+
+        renderFirebaseAnalytics(
+            applyFirebaseFilters(
+                firebaseBugRecords
+            )
+        );
+
 
     } catch (error) {
+
         console.error(
-            "Knowledge base growth error:",
+            "❌ Firebase KB Growth error:",
             error
         );
 
+
         if (result) {
+
             result.className =
                 "result-error";
 
+
             result.textContent =
                 error.message;
+
         }
 
+
     } finally {
-        growthLoading = false;
+
+        growthLoading =
+            false;
+
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+
+            button.textContent =
+                "Validate & Add to Knowledge Base";
+
+        }
+
     }
+
 }
 
 
 /* =========================================================
-   MILESTONE 4 E2E TEST
-   ========================================================= */
+   FIREBASE E2E VALIDATION
+   ---------------------------------------------------------
+   This does NOT call the Flask validation API.
 
-function renderE2EResult(data) {
-    const container =
-        document.getElementById(
-            "e2eResult"
-        );
-
-    if (!container) {
-        return;
-    }
-
-    if (!data) {
-        container.textContent =
-            "No E2E result returned.";
-
-        return;
-    }
-
-    container.className = "";
-
-    container.textContent =
-        JSON.stringify(
-            data,
-            null,
-            2
-        );
-}
-
+   It validates the analysis records already stored
+   in Firebase.
+========================================================= */
 
 async function runE2ETests() {
+
     if (e2eLoading) {
         return;
     }
+
+
+    e2eLoading =
+        true;
+
+
+    const button =
+        document.getElementById(
+            "runE2E"
+        );
+
 
     const result =
         document.getElementById(
             "e2eResult"
         );
 
-    e2eLoading = true;
 
-    if (result) {
-        result.className = "";
+    if (button) {
 
-        result.textContent =
-            "Running Milestone 4 end-to-end tests...\n\n" +
-            "This may take some time because each case " +
-            "runs through the complete BugAI pipeline.";
+        button.disabled =
+            true;
+
+
+        button.textContent =
+            "Checking Firebase...";
+
     }
 
+
+    if (result) {
+
+        result.className =
+            "";
+
+
+        result.textContent =
+            "Validating Firebase analysis records...";
+
+    }
+
+
     try {
-        const data =
-            await apiRequest(
-                "/api/validation/milestone4"
+
+        await waitForFirebaseAuth();
+
+
+        const records =
+            await loadFirebaseRecords();
+
+
+        const total =
+            records.length;
+
+
+        const analyzed =
+            records.filter(
+                bug =>
+                    bug?.analysis
             );
 
-        renderE2EResult(data);
+
+        const complete =
+            analyzed.filter(
+                bug => {
+
+                    const analysis =
+                        getAnalysis(
+                            bug
+                        );
+
+
+                    return (
+
+                        !!analysis.triage &&
+
+                        !!analysis.log_analysis &&
+
+                        !!analysis.root_cause &&
+
+                        !!analysis.duplicate_detection &&
+
+                        !!analysis.remediation
+
+                    );
+
+                }
+            );
+
+
+        const incomplete =
+            total -
+            complete.length;
+
+
+        const report = {
+
+            source:
+                "Firebase Firestore",
+
+            collection:
+                BUG_COLLECTION,
+
+            total_records:
+                total,
+
+            analyzed_records:
+                analyzed.length,
+
+            complete_analysis_records:
+                complete.length,
+
+            incomplete_records:
+                incomplete,
+
+            checks: {
+
+                firebase_connected:
+                    true,
+
+                bug_submissions_available:
+                    total > 0,
+
+                analysis_available:
+                    analyzed.length > 0,
+
+                triage_available:
+                    complete.filter(
+                        bug =>
+                            !!getTriage(
+                                bug
+                            )
+                    ).length,
+
+                log_analysis_available:
+                    complete.filter(
+                        bug =>
+                            !!getLogAnalysis(
+                                bug
+                            )
+                    ).length,
+
+                root_cause_available:
+                    complete.filter(
+                        bug =>
+                            !!getRootCause(
+                                bug
+                            )
+                    ).length,
+
+                duplicate_detection_available:
+                    complete.filter(
+                        bug =>
+                            !!getDuplicateDetection(
+                                bug
+                            )
+                    ).length,
+
+                remediation_available:
+                    complete.filter(
+                        bug =>
+                            !!getRemediation(
+                                bug
+                            )
+                    ).length
+
+            },
+
+            status:
+
+                incomplete === 0 &&
+                total > 0
+
+                    ? "PASS"
+
+                    : "REVIEW REQUIRED"
+
+        };
+
+
+        if (result) {
+
+            result.className =
+                report.status === "PASS"
+
+                    ? "result-success"
+
+                    : "result-error";
+
+
+            result.textContent =
+                JSON.stringify(
+                    report,
+                    null,
+                    2
+                );
+
+        }
+
 
     } catch (error) {
+
         console.error(
-            "Milestone 4 E2E error:",
+            "❌ Firebase E2E validation error:",
             error
         );
 
+
         if (result) {
+
             result.className =
                 "result-error";
 
+
             result.textContent =
                 error.message;
+
         }
 
     } finally {
-        e2eLoading = false;
-    }
-}
+
+        e2eLoading =
+            false;
 
 
-/* =========================================================
-   FILTER KEYBOARD SUPPORT
-   ========================================================= */
+        if (button) {
 
-function setupFilterKeyboardSupport() {
-    const filterInputs = [
-        "component",
-        "exception_type"
-    ];
+            button.disabled =
+                false;
 
-    filterInputs.forEach(id => {
-        const element =
-            document.getElementById(id);
 
-        if (!element) {
-            return;
+            button.textContent =
+                "Run Firebase E2E Validation";
+
         }
 
-        element.addEventListener(
-            "keydown",
-            event => {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    loadAnalytics();
-                }
-            }
-        );
-    });
+    }
+
 }
 
 
 /* =========================================================
-   INITIALIZATION
-   ========================================================= */
+   KEYBOARD FILTER SUPPORT
+========================================================= */
+
+function setupFilterKeyboardSupport() {
+
+    const fields = [
+
+        "component",
+
+        "exception_type"
+
+    ];
+
+
+    fields.forEach(
+        id => {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            if (!element) {
+                return;
+            }
+
+
+            element.addEventListener(
+                "keydown",
+
+                event => {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+
+                        renderFirebaseAnalytics(
+                            firebaseBugRecords
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   MOBILE SIDEBAR
+========================================================= */
+
+function setupMobileSidebar() {
+
+    const sidebar =
+        document.getElementById(
+            "bugaiSidebar"
+        );
+
+
+    const menuButton =
+        document.getElementById(
+            "sidebarMenuButton"
+        );
+
+
+    const overlay =
+        document.getElementById(
+            "sidebarOverlay"
+        );
+
+
+    if (
+        !sidebar ||
+        !menuButton ||
+        !overlay
+    ) {
+
+        return;
+
+    }
+
+
+    function closeSidebar() {
+
+        sidebar.classList.remove(
+            "open"
+        );
+
+
+        overlay.classList.remove(
+            "open"
+        );
+
+
+        overlay.classList.remove(
+            "show"
+        );
+
+
+        menuButton.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+    }
+
+
+    function openSidebar() {
+
+        sidebar.classList.add(
+            "open"
+        );
+
+
+        overlay.classList.add(
+            "open"
+        );
+
+
+        overlay.classList.add(
+            "show"
+        );
+
+
+        menuButton.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+    }
+
+
+    menuButton.addEventListener(
+        "click",
+
+        () => {
+
+            if (
+                sidebar.classList.contains(
+                    "open"
+                )
+            ) {
+
+                closeSidebar();
+
+            } else {
+
+                openSidebar();
+
+            }
+
+        }
+    );
+
+
+    overlay.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+    sidebar
+        .querySelectorAll(
+            ".sidebar-link"
+        )
+        .forEach(
+            link => {
+
+                link.addEventListener(
+                    "click",
+                    closeSidebar
+                );
+
+            }
+        );
+
+
+    document.addEventListener(
+        "keydown",
+
+        event => {
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                closeSidebar();
+
+            }
+
+        }
+    );
+
+
+    window.addEventListener(
+        "resize",
+
+        () => {
+
+            if (
+                window.innerWidth >
+                900
+            ) {
+
+                closeSidebar();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SETUP FILTERS
+========================================================= */
+
+function setupFilters() {
+
+    const apply =
+        document.getElementById(
+            "apply"
+        );
+
+
+    if (apply) {
+
+        apply.addEventListener(
+            "click",
+
+            () => {
+
+                renderFirebaseAnalytics(
+                    firebaseBugRecords
+                );
+
+            }
+
+        );
+
+    }
+
+
+    const reset =
+        document.getElementById(
+            "reset"
+        );
+
+
+    if (reset) {
+
+        reset.addEventListener(
+            "click",
+            resetFilters
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SETUP BUG SELECTOR
+========================================================= */
+
+function setupBugSelector() {
+
+    const select =
+        document.getElementById(
+            "gBugId"
+        );
+
+
+    if (!select) {
+        return;
+    }
+
+
+    select.addEventListener(
+        "change",
+        handleBugSelection
+    );
+
+}
+
+
+/* =========================================================
+   SETUP GROWTH
+========================================================= */
+
+function setupGrowth() {
+
+    const button =
+        document.getElementById(
+            "addGrowth"
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    button.addEventListener(
+        "click",
+        submitGrowth
+    );
+
+}
+
+
+/* =========================================================
+   SETUP E2E
+========================================================= */
+
+function setupE2E() {
+
+    const button =
+        document.getElementById(
+            "runE2E"
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    button.addEventListener(
+        "click",
+        runE2ETests
+    );
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    () => {
 
-        /* -------------------------------------------------
-           APPLY FILTERS
-           ------------------------------------------------- */
+    async () => {
 
-        const applyButton =
-            document.getElementById(
-                "apply"
-            );
-
-        if (applyButton) {
-            applyButton.addEventListener(
-                "click",
-                loadAnalytics
-            );
-        }
+        console.log(
+            "🚀 BugAI Firebase Analytics loading..."
+        );
 
 
         /* -------------------------------------------------
-           RESET
-           ------------------------------------------------- */
+           MOBILE
+        ------------------------------------------------- */
 
-        const resetButton =
-            document.getElementById(
-                "reset"
-            );
-
-        if (resetButton) {
-            resetButton.addEventListener(
-                "click",
-                resetFilters
-            );
-        }
+        setupMobileSidebar();
 
 
         /* -------------------------------------------------
-           KNOWLEDGE BASE GROWTH
-           ------------------------------------------------- */
+           FILTERS
+        ------------------------------------------------- */
 
-        const growthButton =
-            document.getElementById(
-                "addGrowth"
-            );
+        setupFilters();
 
-        if (growthButton) {
-            growthButton.addEventListener(
-                "click",
-                submitGrowth
-            );
-        }
-
-
-        /* -------------------------------------------------
-           E2E TEST
-           ------------------------------------------------- */
-
-        const e2eButton =
-            document.getElementById(
-                "runE2E"
-            );
-
-        if (e2eButton) {
-            e2eButton.addEventListener(
-                "click",
-                runE2ETests
-            );
-        }
-
-
-        /* -------------------------------------------------
-           FILTER ENTER KEY
-           ------------------------------------------------- */
 
         setupFilterKeyboardSupport();
 
 
         /* -------------------------------------------------
-           LOAD FILTERS
-           ------------------------------------------------- */
+           BUG SELECTOR
+        ------------------------------------------------- */
 
-        loadFilters();
-
-
-        /* -------------------------------------------------
-           LOAD SUBMITTED BUGS
-
-           IMPORTANT:
-           This now reads:
-
-               data.results
-
-           because Flask returns:
-
-               {
-                   ok: true,
-                   total_records: 3,
-                   results: [...]
-               }
-           ------------------------------------------------- */
-
-        loadSubmittedBugs();
+        setupBugSelector();
 
 
         /* -------------------------------------------------
-           LOAD ANALYTICS
-           ------------------------------------------------- */
+           KNOWLEDGE BASE GROWTH
+        ------------------------------------------------- */
 
-        loadAnalytics();
+        setupGrowth();
+
+
+        /* -------------------------------------------------
+           E2E
+        ------------------------------------------------- */
+
+        setupE2E();
+
+
+        /* -------------------------------------------------
+           INITIAL STATUS
+        ------------------------------------------------- */
+
+        updateFirebaseStatus(
+            "Connecting to Firebase...",
+            "checking"
+        );
+
+
+        try {
+
+            /* ---------------------------------------------
+               AUTH
+            --------------------------------------------- */
+
+            await waitForFirebaseAuth();
+
+
+            /* ---------------------------------------------
+               FIREBASE DATA
+            --------------------------------------------- */
+
+            await loadFirebaseRecords();
+
+
+            /* ---------------------------------------------
+               FILTERS
+            --------------------------------------------- */
+
+            loadFirebaseFilters(
+                firebaseBugRecords
+            );
+
+
+            /* ---------------------------------------------
+               BUG SELECTOR
+            --------------------------------------------- */
+
+            populateBugIdSelector();
+
+
+            /* ---------------------------------------------
+               ANALYTICS
+            --------------------------------------------- */
+
+            renderFirebaseAnalytics(
+                firebaseBugRecords
+            );
+
+
+            /* ---------------------------------------------
+               FINAL STATUS
+            --------------------------------------------- */
+
+            updateFirebaseStatus(
+                `Firebase Connected · ${firebaseBugRecords.length} records`,
+                "success"
+            );
+
+
+            console.log(
+                "✅ BugAI Firebase Analytics initialized."
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "❌ Firebase Analytics initialization failed:",
+                error
+            );
+
+
+            updateFirebaseStatus(
+                "Firebase Connection Error",
+                "error"
+            );
+
+
+            const chartIds = [
+
+                "severityChart",
+
+                "componentChart",
+
+                "exceptionChart",
+
+                "errorChart",
+
+                "timeChart"
+
+            ];
+
+
+            chartIds.forEach(
+                id => {
+
+                    const element =
+                        document.getElementById(
+                            id
+                        );
+
+
+                    if (element) {
+
+                        showError(
+                            element,
+                            error.message
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
     }
 );

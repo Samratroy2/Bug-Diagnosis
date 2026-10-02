@@ -1,11 +1,28 @@
+import {
+    db,
+    collection,
+    addDoc,
+    doc,
+    setDoc,
+    serverTimestamp
+} from "../firebase.js";
+
+
 /* ============================================================
-   BugAI - Bug Submission
-   Milestone 3 + M4 compatible frontend
+   BUGAI — BUG SUBMISSION
+   Firebase + Flask Analysis Integration
    ============================================================ */
 
-const API_BASE_URL = "http://127.0.0.1:5000";
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
+/* ============================================================
+   CONFIGURATION
+   ============================================================ */
+
+const API_BASE_URL =
+    "http://127.0.0.1:5000";
+
+const MAX_FILE_SIZE =
+    10 * 1024 * 1024;
 
 const ALLOWED_EXTENSIONS = [
     "txt",
@@ -19,62 +36,19 @@ const ALLOWED_EXTENSIONS = [
    DOM ELEMENTS
    ============================================================ */
 
-const bugForm =
-    document.getElementById("bugForm");
-
-const bugTitle =
-    document.getElementById("bugTitle");
-
-const project =
-    document.getElementById("project");
-
-const description =
-    document.getElementById("description");
-
-const stackTrace =
-    document.getElementById("stackTrace");
-
-
-/*
- * Optional explicit triage fields.
- *
- * The frontend supports multiple possible IDs so that it works
- * with the existing BugAI HTML versions.
- */
-
-const severityField =
-    document.getElementById("severity") ||
-    document.getElementById("bugSeverity");
-
-const priorityField =
-    document.getElementById("priority") ||
-    document.getElementById("bugPriority");
-
-const componentField =
-    document.getElementById("component") ||
-    document.getElementById("affectedComponent") ||
-    document.getElementById("bugComponent");
-
-
-const dropZone =
-    document.getElementById("dropZone");
-
-const logFile =
-    document.getElementById("logFile");
-
-const fileInfo =
-    document.getElementById("fileInfo");
-
-const resetBtn =
-    document.getElementById("resetBtn");
-
-const result =
-    document.getElementById("result");
-
-const submitButton =
-    bugForm
-        ? bugForm.querySelector(".primary")
-        : null;
+let bugForm;
+let bugTitle;
+let project;
+let description;
+let stackTrace;
+let severity;
+let priority;
+let component;
+let dropZone;
+let logFile;
+let fileInfo;
+let resetBtn;
+let result;
 
 
 /* ============================================================
@@ -82,6 +56,7 @@ const submitButton =
    ============================================================ */
 
 let selectedFile = null;
+let submissionDocumentId = null;
 
 
 /* ============================================================
@@ -92,117 +67,266 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
+        initializeElements();
+
+        initializeEvents();
+
         console.log(
-            "BugAI Milestone 3 Bug Submission JS ready."
+            "BugAI Bug Submission initialized."
         );
 
-        initializeFileUpload();
     }
 );
+
+
+/* ============================================================
+   INITIALIZE DOM ELEMENTS
+   ============================================================ */
+
+function initializeElements() {
+
+    bugForm =
+        document.getElementById(
+            "bugForm"
+        );
+
+    bugTitle =
+        document.getElementById(
+            "bugTitle"
+        );
+
+    project =
+        document.getElementById(
+            "project"
+        );
+
+    description =
+        document.getElementById(
+            "description"
+        );
+
+    stackTrace =
+        document.getElementById(
+            "stackTrace"
+        );
+
+    severity =
+        document.getElementById(
+            "severity"
+        ) ||
+        document.getElementById(
+            "bugSeverity"
+        );
+
+    priority =
+        document.getElementById(
+            "priority"
+        ) ||
+        document.getElementById(
+            "bugPriority"
+        );
+
+    component =
+        document.getElementById(
+            "component"
+        ) ||
+        document.getElementById(
+            "affectedComponent"
+        ) ||
+        document.getElementById(
+            "bugComponent"
+        );
+
+    dropZone =
+        document.getElementById(
+            "dropZone"
+        );
+
+    logFile =
+        document.getElementById(
+            "logFile"
+        );
+
+    fileInfo =
+        document.getElementById(
+            "fileInfo"
+        );
+
+    resetBtn =
+        document.getElementById(
+            "resetBtn"
+        );
+
+    result =
+        document.getElementById(
+            "result"
+        );
+}
+
+
+/* ============================================================
+   INITIALIZE EVENTS
+   ============================================================ */
+function initializeEvents() {
+
+    if (bugForm) {
+        bugForm.addEventListener(
+            "submit",
+            handleSubmit
+        );
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener(
+            "click",
+            resetForm
+        );
+    }
+
+    if (logFile) {
+        logFile.addEventListener(
+            "change",
+            handleFileSelection
+        );
+    }
+
+    if (dropZone) {
+        dropZone.addEventListener(
+            "dragover",
+            handleDragOver
+        );
+
+        dropZone.addEventListener(
+            "dragleave",
+            handleDragLeave
+        );
+
+        dropZone.addEventListener(
+            "drop",
+            handleFileDrop
+        );
+
+        dropZone.addEventListener(
+            "click",
+            handleUploadZoneClick
+        );
+    }
+
+    /* READ MORE / READ LESS */
+    document.addEventListener(
+        "click",
+        handleReadMoreClick
+    );
+}
 
 
 /* ============================================================
    FILE UPLOAD
    ============================================================ */
 
-function initializeFileUpload() {
+function handleUploadZoneClick(event) {
 
-    if (!dropZone || !logFile) {
+    if (
+        event.target === logFile
+    ) {
         return;
     }
 
-    logFile.addEventListener(
-        "change",
-        () => {
+    if (logFile) {
+        logFile.click();
+    }
 
-            if (
-                logFile.files &&
-                logFile.files.length > 0
-            ) {
-
-                handleFile(
-                    logFile.files[0]
-                );
-            }
-        }
-    );
-
-
-    dropZone.addEventListener(
-        "click",
-        (event) => {
-
-            if (
-                event.target === logFile
-            ) {
-                return;
-            }
-
-            logFile.click();
-        }
-    );
-
-
-    dropZone.addEventListener(
-        "dragover",
-        (event) => {
-
-            event.preventDefault();
-
-            dropZone.classList.add(
-                "drag-over"
-            );
-        }
-    );
-
-
-    dropZone.addEventListener(
-        "dragleave",
-        () => {
-
-            dropZone.classList.remove(
-                "drag-over"
-            );
-        }
-    );
-
-
-    dropZone.addEventListener(
-        "drop",
-        (event) => {
-
-            event.preventDefault();
-
-            dropZone.classList.remove(
-                "drag-over"
-            );
-
-            const files =
-                event.dataTransfer.files;
-
-            if (
-                files &&
-                files.length > 0
-            ) {
-
-                handleFile(
-                    files[0]
-                );
-            }
-        }
-    );
 }
 
 
-/* ============================================================
-   HANDLE FILE
-   ============================================================ */
+function handleDragOver(event) {
 
-function handleFile(file) {
+    event.preventDefault();
+
+    if (dropZone) {
+
+        dropZone.classList.add(
+            "drag-over"
+        );
+
+    }
+
+}
+
+
+function handleDragLeave(event) {
+
+    event.preventDefault();
+
+    if (dropZone) {
+
+        dropZone.classList.remove(
+            "drag-over"
+        );
+
+    }
+
+}
+
+
+function handleFileDrop(event) {
+
+    event.preventDefault();
+
+    if (dropZone) {
+
+        dropZone.classList.remove(
+            "drag-over"
+        );
+
+    }
+
+    const files =
+        event.dataTransfer?.files;
+
+    if (
+        !files ||
+        files.length === 0
+    ) {
+        return;
+    }
+
+    const file =
+        files[0];
+
+    processSelectedFile(
+        file
+    );
+
+}
+
+
+function handleFileSelection(event) {
+
+    const file =
+        event.target.files?.[0];
+
+    if (!file) {
+
+        selectedFile = null;
+
+        updateFileInfo();
+
+        return;
+
+    }
+
+    processSelectedFile(
+        file
+    );
+
+}
+
+
+function processSelectedFile(file) {
 
     const validation =
         validateFile(file);
-
 
     if (!validation.valid) {
 
@@ -217,62 +341,18 @@ function handleFile(file) {
         );
 
         return;
-    }
 
+    }
 
     selectedFile = file;
 
+    updateFileInfo();
 
-    const sizeMB =
-        (
-            file.size /
-            (1024 * 1024)
-        ).toFixed(2);
-
-
-    if (fileInfo) {
-
-        fileInfo.innerHTML = `
-            <div class="file-success">
-
-                <strong>
-                    ✓ ${escapeHtml(file.name)}
-                </strong>
-
-                <span>
-                    ${sizeMB} MB
-                </span>
-
-                <button
-                    type="button"
-                    id="removeFile"
-                >
-                    Remove
-                </button>
-
-            </div>
-        `;
-    }
-
-
-    const removeButton =
-        document.getElementById(
-            "removeFile"
-        );
-
-
-    if (removeButton) {
-
-        removeButton.addEventListener(
-            "click",
-            removeFile
-        );
-    }
 }
 
 
 /* ============================================================
-   VALIDATE FILE
+   FILE VALIDATION
    ============================================================ */
 
 function validateFile(file) {
@@ -281,33 +361,10 @@ function validateFile(file) {
 
         return {
             valid: false,
-            message: "No file selected."
-        };
-    }
-
-
-    const fileName =
-        file.name || "";
-
-
-    const extension =
-        fileName
-            .split(".")
-            .pop()
-            .toLowerCase();
-
-
-    if (
-        !ALLOWED_EXTENSIONS.includes(
-            extension
-        )
-    ) {
-
-        return {
-            valid: false,
             message:
-                "Invalid file type. Please upload TXT, LOG, JSON or CSV."
+                "Please select a file."
         };
+
     }
 
 
@@ -319,8 +376,29 @@ function validateFile(file) {
         return {
             valid: false,
             message:
-                "File is too large. Maximum allowed size is 10 MB."
+                "File size must not exceed 10 MB."
         };
+
+    }
+
+
+    const extension =
+        getFileExtension(
+            file.name
+        );
+
+    if (
+        !ALLOWED_EXTENSIONS.includes(
+            extension
+        )
+    ) {
+
+        return {
+            valid: false,
+            message:
+                "Only TXT, LOG, JSON and CSV files are allowed."
+        };
+
     }
 
 
@@ -328,26 +406,134 @@ function validateFile(file) {
         valid: true,
         message: ""
     };
+
+}
+
+
+function getFileExtension(
+    filename
+) {
+
+    const name =
+        String(
+            filename || ""
+        ).toLowerCase();
+
+    const parts =
+        name.split(".");
+
+    if (
+        parts.length < 2
+    ) {
+        return "";
+    }
+
+    return parts
+        .pop()
+        .trim();
+
 }
 
 
 /* ============================================================
-   REMOVE FILE
+   FILE INFORMATION
    ============================================================ */
 
-function removeFile() {
+function updateFileInfo() {
 
-    selectedFile = null;
-
-
-    if (logFile) {
-        logFile.value = "";
+    if (!fileInfo) {
+        return;
     }
 
+    if (!selectedFile) {
 
-    if (fileInfo) {
         fileInfo.innerHTML = "";
+
+        return;
     }
+
+    fileInfo.innerHTML = `
+        <div class="selected-file">
+
+            <strong>
+                ${escapeHtml(
+                    selectedFile.name
+                )}
+            </strong>
+
+            <span>
+                ${formatFileSize(
+                    selectedFile.size
+                )}
+            </span>
+
+        </div>
+    `;
+
+}
+
+
+function formatFileSize(
+    bytes
+) {
+
+    if (
+        !Number.isFinite(bytes) ||
+        bytes <= 0
+    ) {
+        return "0 Bytes";
+    }
+
+    const units = [
+        "Bytes",
+        "KB",
+        "MB",
+        "GB"
+    ];
+
+    const index =
+        Math.min(
+            Math.floor(
+                Math.log(bytes) /
+                Math.log(1024)
+            ),
+            units.length - 1
+        );
+
+    const value =
+        bytes /
+        Math.pow(
+            1024,
+            index
+        );
+
+    return `${value.toFixed(
+        index === 0 ? 0 : 2
+    )} ${units[index]}`;
+
+}
+
+
+/* ============================================================
+   FILE ERRORS
+   ============================================================ */
+
+function showFileError(
+    message
+) {
+
+    if (!fileInfo) {
+        return;
+    }
+
+    fileInfo.innerHTML = `
+        <div class="file-error">
+            ${escapeHtml(
+                message
+            )}
+        </div>
+    `;
+
 }
 
 
@@ -355,316 +541,469 @@ function removeFile() {
    FORM SUBMISSION
    ============================================================ */
 
-if (bugForm) {
+async function handleSubmit(
+    event
+) {
 
-    bugForm.addEventListener(
-        "submit",
-        async (event) => {
+    event.preventDefault();
 
-            event.preventDefault();
+    clearResult();
 
+    if (
+        !validateForm()
+    ) {
+        return;
+    }
 
-            if (!validateForm()) {
-                return;
-            }
+    const submitButton =
+        bugForm?.querySelector(
+            'button[type="submit"]'
+        );
 
+    const originalText =
+        submitButton?.textContent ||
+        "Analyze Bug";
 
-            const originalButtonText =
-                submitButton
-                    ? submitButton.textContent
-                    : "Analyze Bug";
+    try {
 
+        if (submitButton) {
 
-            if (submitButton) {
+            submitButton.disabled =
+                true;
 
-                submitButton.disabled = true;
+            submitButton.textContent =
+                "Analyzing...";
 
-                submitButton.textContent =
-                    "Analyzing...";
-            }
+        }
 
 
-            hideResult();
+        const bugData =
+            await buildBugData();
 
 
-            try {
+        /* ----------------------------------------------------
+           SAVE INITIAL SUBMISSION TO FIREBASE
+           ---------------------------------------------------- */
 
-                /*
-                 * Explicit triage fields are sent to Flask.
-                 */
+        submissionDocumentId =
+            await saveBugSubmission(
+                bugData
+            );
 
-                const bugData = {
 
-                    title:
-                        bugTitle
-                            ? bugTitle.value.trim()
-                            : "",
+        console.log(
+            "Firebase submission ID:",
+            submissionDocumentId
+        );
 
-                    project:
-                        project
-                            ? project.value
-                            : "",
 
-                    description:
-                        description
-                            ? description.value.trim()
-                            : "",
+        /* ----------------------------------------------------
+           SEND BUG TO FLASK
+           ---------------------------------------------------- */
 
-                    stack_trace:
-                        stackTrace
-                            ? stackTrace.value.trim()
-                            : "",
+        const response =
+            await fetch(
+                `${API_BASE_URL}/api/analyze`,
+                {
+                    method: "POST",
 
-                    severity:
-                        severityField
-                            ? severityField.value.trim()
-                            : "",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-                    priority:
-                        priorityField
-                            ? priorityField.value.trim()
-                            : "",
-
-                    component:
-                        componentField
-                            ? componentField.value.trim()
-                            : ""
-                };
-
-
-                /* ------------------------------------------------
-                   ATTACHED FILE
-                   ------------------------------------------------ */
-
-                if (selectedFile) {
-
-                    try {
-
-                        const fileText =
-                            await selectedFile.text();
-
-
-                        if (fileText.trim()) {
-
-                            if (
-                                bugData.stack_trace.trim()
-                            ) {
-
-                                bugData.stack_trace +=
-                                    "\n\n--- Attached File: " +
-                                    selectedFile.name +
-                                    " ---\n\n" +
-                                    fileText;
-
-                            } else {
-
-                                bugData.stack_trace =
-                                    "--- Attached File: " +
-                                    selectedFile.name +
-                                    " ---\n\n" +
-                                    fileText;
-                            }
-                        }
-
-
-                    } catch (fileError) {
-
-                        console.warn(
-                            "Unable to read attached file:",
-                            fileError
-                        );
-                    }
-                }
-
-
-                console.log(
-                    "Sending bug to BugAI:",
-                    bugData
-                );
-
-
-                /* ------------------------------------------------
-                   API REQUEST
-                   ------------------------------------------------ */
-
-                const response =
-                    await fetch(
-                        `${API_BASE_URL}/api/analyze`,
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    bugData
-                                )
-                        }
-                    );
-
-
-                /*
-                 * Read response as text first.
-                 *
-                 * This prevents:
-                 * "Unexpected end of JSON input"
-                 */
-
-                const responseText =
-                    await response.text();
-
-
-                console.log(
-                    "BugAI raw response:",
-                    responseText
-                );
-
-
-                let data = {};
-
-
-                if (
-                    responseText &&
-                    responseText.trim()
-                ) {
-
-                    try {
-
-                        data =
-                            JSON.parse(
-                                responseText
-                            );
-
-                    } catch (jsonError) {
-
-                        console.error(
-                            "JSON parsing error:",
-                            jsonError
-                        );
-
-                        throw new Error(
-                            "Backend returned an invalid JSON response."
-                        );
-                    }
-                }
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.error ||
-                        data.message ||
-                        `Server returned HTTP ${response.status}`
-                    );
-                }
-
-
-                if (
-                    data.ok === false
-                ) {
-
-                    throw new Error(
-                        data.error ||
-                        "Bug analysis failed."
-                    );
-                }
-
-
-                console.log(
-                    "BugAI analysis completed:",
-                    data
-                );
-
-
-                displayAnalysis(data);
-
-
-                /* =================================================
-                   DASHBOARD UPDATE NOTIFICATION
-                   =================================================
-
-                   Notify Dashboard that a new analysis has been
-                   successfully completed.
-
-                   localStorage:
-                   - Works between different HTML pages/tabs.
-
-                   CustomEvent:
-                   - Supports same-document listeners.
-
-                   IMPORTANT:
-                   - This only refreshes Total Analyses and
-                     Recent Analyses.
-                   - It does NOT refresh Historical Defects.
-                   ================================================= */
-
-                try {
-
-                    const updateTime =
-                        String(Date.now());
-
-
-                    localStorage.setItem(
-                        "bugai-analysis-updated",
-                        updateTime
-                    );
-
-
-                    window.dispatchEvent(
-                        new CustomEvent(
-                            "bugai-analysis-updated",
-                            {
-                                detail: {
-                                    timestamp:
-                                        updateTime
-                                }
-                            }
+                    body:
+                        JSON.stringify(
+                            bugData
                         )
-                    );
-
-
-                    console.log(
-                        "✅ Dashboard refresh notification sent."
-                    );
-
-                } catch (storageError) {
-
-                    console.warn(
-                        "⚠️ Unable to notify Dashboard:",
-                        storageError
-                    );
                 }
+            );
 
 
-            } catch (error) {
+        const rawText =
+            await response.text();
 
-                console.error(
-                    "BugAI analysis error:",
-                    error
+
+        let data;
+
+        try {
+
+            data =
+                rawText
+                    ? JSON.parse(
+                        rawText
+                    )
+                    : {};
+
+        } catch (parseError) {
+
+            throw new Error(
+                `Backend returned invalid JSON. HTTP ${response.status}.`
+            );
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data?.error ||
+                data?.message ||
+                `Analysis failed with HTTP ${response.status}.`
+            );
+
+        }
+
+
+        if (
+            data?.ok === false
+        ) {
+
+            throw new Error(
+                data?.error ||
+                data?.message ||
+                "Bug analysis failed."
+            );
+
+        }
+
+
+        /* ----------------------------------------------------
+           DISPLAY ANALYSIS
+           ---------------------------------------------------- */
+
+        displayAnalysis(
+            data
+        );
+
+
+        /* ----------------------------------------------------
+           UPDATE FIREBASE DOCUMENT
+           ---------------------------------------------------- */
+
+        await updateBugSubmissionAnalysis(
+            submissionDocumentId,
+            data
+        );
+
+
+        /* ----------------------------------------------------
+           DASHBOARD REFRESH SIGNAL
+           ---------------------------------------------------- */
+
+        notifyDashboard();
+
+
+    } catch (error) {
+
+        console.error(
+            "BugAI submission error:",
+            error
+        );
+
+        showError(
+            error?.message ||
+            "Something went wrong while analyzing the bug."
+        );
+
+    } finally {
+
+        if (submitButton) {
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                originalText;
+
+        }
+
+    }
+
+}
+
+
+/* ============================================================
+   BUILD BUG DATA
+   ============================================================ */
+
+async function buildBugData() {
+
+    let uploadedFileText =
+        "";
+
+    let uploadedFileMetadata =
+        null;
+
+
+    if (selectedFile) {
+
+        uploadedFileText =
+            await readFileAsText(
+                selectedFile
+            );
+
+        uploadedFileMetadata = {
+
+            name:
+                selectedFile.name,
+
+            size:
+                selectedFile.size,
+
+            type:
+                selectedFile.type,
+
+            extension:
+                getFileExtension(
+                    selectedFile.name
+                )
+
+        };
+
+    }
+
+
+    const manualStackTrace =
+        getElementValue(
+            stackTrace
+        );
+
+
+    let combinedStackTrace =
+        manualStackTrace;
+
+
+    if (uploadedFileText) {
+
+        combinedStackTrace =
+            manualStackTrace
+                ? `${manualStackTrace}\n\n${uploadedFileText}`
+                : uploadedFileText;
+
+    }
+
+
+    return {
+
+        title:
+            getElementValue(
+                bugTitle
+            ),
+
+        project:
+            getElementValue(
+                project
+            ),
+
+        description:
+            getElementValue(
+                description
+            ),
+
+        stack_trace:
+            combinedStackTrace,
+
+        severity:
+            getElementValue(
+                severity
+            ),
+
+        priority:
+            getElementValue(
+                priority
+            ),
+
+        component:
+            getElementValue(
+                component
+            ),
+
+        attached_file:
+            uploadedFileMetadata,
+
+        attached_file_content:
+            uploadedFileText &&
+            uploadedFileText.length <= 700000
+                ? uploadedFileText
+                : uploadedFileText
+                    ? "[File content omitted because it exceeds the Firestore storage limit used by this page.]"
+                    : "",
+
+        submitted_from:
+            "Bug Submission",
+
+        client_timestamp:
+            new Date().toISOString()
+
+    };
+
+}
+
+
+/* ============================================================
+   READ FILE
+   ============================================================ */
+
+function readFileAsText(
+    file
+) {
+
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+
+            const reader =
+                new FileReader();
+
+            reader.onload = () => {
+
+                resolve(
+                    String(
+                        reader.result || ""
+                    )
                 );
 
+            };
 
-                showError(
-                    error.message ||
-                    "Unable to connect to the BugAI backend."
+            reader.onerror = () => {
+
+                reject(
+                    new Error(
+                        "Unable to read the selected file."
+                    )
                 );
 
-            } finally {
+            };
 
-                if (submitButton) {
+            reader.readAsText(
+                file
+            );
 
-                    submitButton.disabled =
-                        false;
-
-                    submitButton.textContent =
-                        originalButtonText;
-                }
-            }
         }
     );
+
+}
+
+
+/* ============================================================
+   FIREBASE — SAVE SUBMISSION
+   ============================================================ */
+
+async function saveBugSubmission(
+    bugData,
+    analysisData = null
+) {
+
+    const submission = {
+
+        title:
+            bugData.title || "",
+
+        project:
+            bugData.project || "",
+
+        description:
+            bugData.description || "",
+
+        stack_trace:
+            bugData.stack_trace || "",
+
+        severity:
+            bugData.severity || "",
+
+        priority:
+            bugData.priority || "",
+
+        component:
+            bugData.component || "",
+
+        analysis:
+            analysisData || null,
+
+        attached_file:
+            bugData.attached_file || null,
+
+        attached_file_content:
+            bugData.attached_file_content || "",
+
+        status:
+            analysisData
+                ? "Analyzed"
+                : "Submitted",
+
+        createdAt:
+            serverTimestamp(),
+
+        updatedAt:
+            serverTimestamp()
+
+    };
+
+
+    const docRef =
+        await addDoc(
+            collection(
+                db,
+                "bugSubmissions"
+            ),
+            submission
+        );
+
+
+    return docRef.id;
+
+}
+
+
+/* ============================================================
+   FIREBASE — UPDATE ANALYSIS
+   ============================================================ */
+
+async function updateBugSubmissionAnalysis(
+    documentId,
+    analysisData
+) {
+
+    if (!documentId) {
+
+        console.warn(
+            "No Firebase document ID available for analysis update."
+        );
+
+        return;
+
+    }
+
+
+    const submissionRef =
+        doc(
+            db,
+            "bugSubmissions",
+            documentId
+        );
+
+
+    await setDoc(
+        submissionRef,
+        {
+            analysis:
+                analysisData || null,
+
+            status:
+                "Analyzed",
+
+            updatedAt:
+                serverTimestamp()
+
+        },
+        {
+            merge: true
+        }
+    );
+
 }
 
 
@@ -675,15 +1014,14 @@ if (bugForm) {
 function validateForm() {
 
     const title =
-        bugTitle
-            ? bugTitle.value.trim()
-            : "";
-
+        getElementValue(
+            bugTitle
+        ).trim();
 
     const desc =
-        description
-            ? description.value.trim()
-            : "";
+        getElementValue(
+            description
+        ).trim();
 
 
     if (!title) {
@@ -692,13 +1030,12 @@ function validateForm() {
             "Please enter a bug title."
         );
 
-
         if (bugTitle) {
             bugTitle.focus();
         }
 
-
         return false;
+
     }
 
 
@@ -708,13 +1045,12 @@ function validateForm() {
             "Please enter a bug description."
         );
 
-
         if (description) {
             description.focus();
         }
 
-
         return false;
+
     }
 
 
@@ -725,20 +1061,21 @@ function validateForm() {
                 selectedFile
             );
 
-
         if (!validation.valid) {
 
             showFileError(
                 validation.message
             );
 
-
             return false;
+
         }
+
     }
 
 
     return true;
+
 }
 
 
@@ -746,33 +1083,79 @@ function validateForm() {
    DISPLAY COMPLETE ANALYSIS
    ============================================================ */
 
-function displayAnalysis(data) {
+function displayAnalysis(
+    data
+) {
 
     const triage =
-        data.triage || {};
+        data?.triage || {};
 
     const log =
-        data.log_analysis || {};
+        data?.log_analysis || {};
 
     const rootCause =
-        data.root_cause || {};
+        data?.root_cause || {};
 
     const duplicate =
-        data.duplicate_detection || {};
+        data?.duplicate_detection || {};
 
     const remediation =
-        data.remediation || {};
+        data?.remediation || {};
 
     const retrieval =
-        data.retrieval || {};
+        data?.retrieval || {};
 
     const orchestration =
-        data.orchestration || {};
+        data?.orchestration || {};
 
 
     if (!result) {
         return;
     }
+
+
+    const componentValue =
+        triage.affected_component ||
+        triage.component ||
+        getElementValue(
+            component
+        ) ||
+        bugDataComponentFallback(
+            data
+        ) ||
+        "Not classified";
+
+
+    const rootHypothesis =
+        rootCause.primary_hypothesis ||
+        rootCause.hypothesis ||
+        rootCause.root_cause ||
+        "Insufficient evidence";
+
+
+    const matches =
+        Array.isArray(
+            duplicate.matches
+        )
+            ? duplicate.matches
+            : [];
+
+
+    const duplicateStatus =
+        getDuplicateDisplayStatus(
+            duplicate,
+            matches
+        );
+
+
+    /*
+     * submissionDocumentId is the actual
+     * Firebase Firestore document ID.
+     */
+
+    const documentId =
+        submissionDocumentId ||
+        "Not available";
 
 
     result.classList.remove(
@@ -782,125 +1165,119 @@ function displayAnalysis(data) {
 
     result.innerHTML = `
 
+        <!-- ====================================================
+             RESULT HEADER
+             ==================================================== -->
+
         <div class="result-header">
 
             <div>
 
                 <h2>
-                    Bug Analysis Result
+                    Bug Analysis Results
                 </h2>
 
                 <p>
-                    BugAI Milestone 3 analysis completed.
+                    BugAI intelligent diagnosis completed successfully.
                 </p>
 
             </div>
 
             <span class="status-badge">
-
-                ${escapeHtml(
-                    orchestration.status ||
-                    "Completed"
-                )}
-
+                Analysis Complete
             </span>
 
         </div>
 
 
-        <!-- =================================================
-             TRIAGE
-             ================================================= -->
+        <!-- ====================================================
+             SUBMISSION SUMMARY
+             ==================================================== -->
 
         <div class="result-section">
 
             <h3>
-                Triage Analysis
+                Submission Summary
             </h3>
 
             <div class="analysis-grid">
 
-                <div class="analysis-item">
+                ${renderSummaryItem(
+                    "Severity",
+                    triage.severity ||
+                    "Not classified"
+                )}
 
-                    <span class="label">
-                        Severity
-                    </span>
+                ${renderSummaryItem(
+                    "Priority",
+                    triage.priority ||
+                    "Not classified"
+                )}
 
-                    <strong
-                        class="${getSeverityClass(
-                            triage.severity
-                        )}"
-                    >
+                ${renderSummaryItem(
+                    "Component",
+                    componentValue
+                )}
 
-                        ${escapeHtml(
-                            triage.severity ||
-                            "Not determined"
-                        )}
-
-                    </strong>
-
-                </div>
-
-
-                <div class="analysis-item">
-
-                    <span class="label">
-                        Priority
-                    </span>
-
-                    <strong>
-
-                        ${escapeHtml(
-                            triage.priority ||
-                            "Not determined"
-                        )}
-
-                    </strong>
-
-                </div>
-
-
-                <div class="analysis-item">
-
-                    <span class="label">
-                        Affected Component
-                    </span>
-
-                    <strong>
-
-                        ${escapeHtml(
-                            triage.affected_component ||
-                            "Unknown / Unclassified"
-                        )}
-
-                    </strong>
-
-                </div>
-
-
-                <div class="analysis-item">
-
-                    <span class="label">
-                        Confidence
-                    </span>
-
-                    <strong>
-
-                        ${formatConfidence(
-                            triage.confidence
-                        )}
-
-                    </strong>
-
-                </div>
+                ${renderSummaryItem(
+                    "Firebase Document",
+                    documentId
+                )}
 
             </div>
 
+        </div>
+
+
+        <!-- ====================================================
+             TRIAGE AGENT
+             ==================================================== -->
+
+        <div class="result-section">
+
+            <div class="section-heading-row">
+
+                <h3>
+                    Triage Agent
+                </h3>
+
+                <span class="agent-status">
+                    COMPLETED
+                </span>
+
+            </div>
+
+            <div class="analysis-grid">
+
+                ${renderSummaryItem(
+                    "Severity",
+                    triage.severity ||
+                    "Not classified"
+                )}
+
+                ${renderSummaryItem(
+                    "Priority",
+                    triage.priority ||
+                    "Not classified"
+                )}
+
+                ${renderSummaryItem(
+                    "Component",
+                    componentValue
+                )}
+
+                ${renderSummaryItem(
+                    "Confidence",
+                    formatConfidence(
+                        triage.confidence
+                    )
+                )}
+
+            </div>
 
             ${
                 triage.reasoning
                     ? `
-
                         <div class="reasoning-box">
 
                             <strong>
@@ -914,7 +1291,6 @@ function displayAnalysis(data) {
                             </p>
 
                         </div>
-
                     `
                     : ""
             }
@@ -922,89 +1298,93 @@ function displayAnalysis(data) {
         </div>
 
 
-        <!-- =================================================
-             LOG ANALYSIS
-             ================================================= -->
+        <!-- ====================================================
+             LOG ANALYSIS AGENT
+             ==================================================== -->
 
         <div class="result-section">
 
-            <h3>
-                Log Analysis
-            </h3>
+            <div class="section-heading-row">
 
-            <div class="analysis-grid">
+                <h3>
+                    Log Analysis Agent
+                </h3>
 
-                <div class="analysis-item">
-
-                    <span class="label">
-                        Exception Type
-                    </span>
-
-                    <strong>
-
-                        ${escapeHtml(
-                            log.exception_type ||
-                            "Unknown / Not Detected"
-                        )}
-
-                    </strong>
-
-                </div>
-
-
-                <div class="analysis-item">
-
-                    <span class="label">
-                        Confidence
-                    </span>
-
-                    <strong>
-
-                        ${formatConfidence(
-                            log.confidence
-                        )}
-
-                    </strong>
-
-                </div>
-
-
-                <div class="analysis-item">
-
-                    <span class="label">
-                        Failure Point
-                    </span>
-
-                    <strong>
-
-                        ${formatFailurePoint(
-                            log.failure_point
-                        )}
-
-                    </strong>
-
-                </div>
-
-
-                <div class="analysis-item">
-
-                    <span class="label">
-                        Error Message
-                    </span>
-
-                    <strong>
-
-                        ${escapeHtml(
-                            log.error_message ||
-                            "Not detected"
-                        )}
-
-                    </strong>
-
-                </div>
+                <span class="agent-status">
+                    COMPLETED
+                </span>
 
             </div>
 
+            <div class="analysis-grid">
+
+                ${renderSummaryItem(
+                    "Exception Type",
+                    log.exception_type ||
+                    "Not detected"
+                )}
+
+                ${renderSummaryItem(
+                    "Confidence",
+                    formatConfidence(
+                        log.confidence
+                    )
+                )}
+
+                ${renderSummaryItem(
+                    "Failure Point",
+                    formatFailurePoint(
+                        log.failure_point
+                    )
+                )}
+
+                ${renderSummaryItem(
+                    "Error Message",
+                    log.error_message ||
+                    "Not detected"
+                )}
+
+            </div>
+
+            ${
+                log.failure_point_summary
+                    ? `
+                        <div class="reasoning-box">
+
+                            <strong>
+                                Failure Point Summary
+                            </strong>
+
+                            <p>
+                                ${escapeHtml(
+                                    log.failure_point_summary
+                                )}
+                            </p>
+
+                        </div>
+                    `
+                    : ""
+            }
+
+            ${
+                log.summary
+                    ? `
+                        <div class="reasoning-box">
+
+                            <strong>
+                                Analysis Summary
+                            </strong>
+
+                            <p>
+                                ${escapeHtml(
+                                    log.summary
+                                )}
+                            </p>
+
+                        </div>
+                    `
+                    : ""
+            }
 
             ${renderPatterns(
                 log.patterns
@@ -1013,27 +1393,23 @@ function displayAnalysis(data) {
         </div>
 
 
-        <!-- =================================================
-             ROOT CAUSE
-             ================================================= -->
+        <!-- ====================================================
+             ROOT CAUSE ANALYSIS
+             ==================================================== -->
 
         <div class="result-section">
 
-            <h3>
-                Root Cause Analysis
-            </h3>
+            <div class="section-heading-row">
 
-            <div class="status-line">
+                <h3>
+                    Root Cause Analysis
+                </h3>
 
-                <span class="status-label">
-                    Status
-                </span>
-
-                <span class="status-value">
+                <span class="analysis-badge">
 
                     ${escapeHtml(
                         rootCause.status ||
-                        "Not determined"
+                        "Evidence Supported"
                     )}
 
                 </span>
@@ -1043,51 +1419,59 @@ function displayAnalysis(data) {
 
             <div class="root-cause-box">
 
-                <strong>
-                    Primary Hypothesis
-                </strong>
+                <div>
 
-                <p>
+                    <span class="root-cause-label">
+                        Probable Root Cause
+                    </span>
 
-                    ${escapeHtml(
-                        rootCause.primary_hypothesis ||
-                        "No root cause hypothesis available."
+                    ${renderReadMore(
+                        rootHypothesis,
+                        240
                     )}
 
-                </p>
+                </div>
+
+
+                <div class="root-confidence">
+
+                    <strong>
+                        Confidence
+                    </strong>
+
+                    <span>
+
+                        ${formatConfidence(
+                            rootCause.confidence
+                        )}
+
+                    </span>
+
+                </div>
 
             </div>
 
 
-            <div class="confidence-row">
-
-                <span>
-                    Confidence
-                </span>
-
-                <strong>
-
-                    ${formatConfidence(
-                        rootCause.confidence
-                    )}
-
-                </strong>
-
-            </div>
+            ${renderSupportingEvidence(
+                rootCause.supporting_evidence
+            )}
 
 
             ${
                 rootCause.reasoning_boundary
                     ? `
+                        <div class="boundary-note">
 
-                        <small class="boundary-note">
+                            <strong>
+                                Reasoning Boundary
+                            </strong>
 
-                            ${escapeHtml(
-                                rootCause.reasoning_boundary
+                            ${renderReadMore(
+                                rootCause.reasoning_boundary,
+                                240
                             )}
 
-                        </small>
-
+                        </div>
                     `
                     : ""
             }
@@ -1095,95 +1479,133 @@ function displayAnalysis(data) {
         </div>
 
 
-        <!-- =================================================
+        <!-- ====================================================
              DUPLICATE DETECTION
-             ================================================= -->
+             ==================================================== -->
 
         <div class="result-section">
 
-            <h3>
-                Duplicate Detection
-            </h3>
+            <div class="section-heading-row">
 
-            <div class="duplicate-status">
+                <h3>
+                    Duplicate Detection
+                </h3>
 
-                <strong>
+                <span class="analysis-badge">
 
                     ${escapeHtml(
-                        duplicate.status ||
-                        "New / Unmatched"
+                        duplicateStatus
                     )}
 
-                </strong>
-
-                ${
-                    duplicate.likely_duplicate
-                        ? `
-
-                            <span class="duplicate-badge">
-                                Possible Duplicate
-                            </span>
-
-                        `
-                        : ""
-                }
+                </span>
 
             </div>
 
 
-            ${renderSimilarDefects(
-                duplicate.matches
-            )}
+            ${
+                matches.length
+                    ? renderSimilarDefects(
+                        matches
+                    )
+                    : `
+                        <div class="empty-state">
 
-        </div>
+                            No similar historical defects
+                            were retrieved.
 
-
-        <!-- =================================================
-             REMEDIATION
-             ================================================= -->
-
-        <div class="result-section">
-
-            <h3>
-                Recommended Fix
-            </h3>
+                        </div>
+                    `
+            }
 
 
             ${
-                remediation.status
+                duplicate.reasoning
                     ? `
+                        <div class="reasoning-box">
 
-                        <div class="status-line">
+                            <strong>
+                                Detection Reasoning
+                            </strong>
 
-                            <span class="status-label">
-                                Recommendation Status
-                            </span>
-
-                            <span class="status-value">
-
+                            <p>
                                 ${escapeHtml(
-                                    remediation.status
+                                    duplicate.reasoning
                                 )}
-
-                            </span>
+                            </p>
 
                         </div>
-
                     `
                     : ""
             }
 
+        </div>
 
-            ${renderRecommendations(
-                remediation.recommendations
+
+        <!-- ====================================================
+             REMEDIATION AGENT
+             ==================================================== -->
+
+        <div class="result-section">
+
+            <div class="section-heading-row">
+
+                <h3>
+                    Remediation Agent
+                </h3>
+
+                <span class="analysis-badge">
+
+                    ${escapeHtml(
+                        remediation.status ||
+                        "Recommendation"
+                    )}
+
+                </span>
+
+            </div>
+
+
+            ${renderRecommendationsRobust(
+                remediation
             )}
 
         </div>
 
 
-        <!-- =================================================
-             KNOWLEDGE BASE
-             ================================================= -->
+        <!-- ====================================================
+             AGENT ORCHESTRATION
+             ==================================================== -->
+
+        <div class="result-section">
+
+            <div class="section-heading-row">
+
+                <h3>
+                    Agent Orchestration
+                </h3>
+
+                <span class="analysis-badge">
+
+                    ${escapeHtml(
+                        orchestration.status ||
+                        "Completed"
+                    )}
+
+                </span>
+
+            </div>
+
+
+            ${renderOrchestration(
+                orchestration
+            )}
+
+        </div>
+
+
+        <!-- ====================================================
+             KNOWLEDGE BASE EVIDENCE
+             ==================================================== -->
 
         <div class="result-section">
 
@@ -1197,7 +1619,9 @@ function displayAnalysis(data) {
 
                 <strong>
                     ${Number(
-                        retrieval.count || 0
+                        retrieval.count ||
+                        matches.length ||
+                        0
                     )}
                 </strong>
 
@@ -1214,112 +1638,1030 @@ function displayAnalysis(data) {
         behavior: "smooth",
         block: "start"
     });
+
 }
+
+
 /* ============================================================
-   SIMILAR DEFECTS
+   SUMMARY ITEM
    ============================================================ */
 
-function renderSimilarDefects(matches) {
+function renderSummaryItem(
+    label,
+    value
+) {
+
+    return `
+
+        <div class="analysis-item">
+
+            <span class="label">
+
+                ${escapeHtml(
+                    label
+                )}
+
+            </span>
+
+            <strong>
+
+                ${escapeHtml(
+                    value
+                )}
+
+            </strong>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ============================================================
+   COMPONENT FALLBACK
+   ============================================================ */
+
+function bugDataComponentFallback(
+    data
+) {
+
+    const query =
+        String(
+            data?.orchestration?.retrieval_query ||
+            ""
+        ).toLowerCase();
+
+    const log =
+        data?.log_analysis || {};
+
+    const exception =
+        String(
+            log.exception_type ||
+            ""
+        ).toLowerCase();
+
+    const error =
+        String(
+            log.error_message ||
+            ""
+        ).toLowerCase();
+
 
     if (
-        !matches ||
-        !Array.isArray(matches) ||
-        matches.length === 0
+
+        query.includes("mysql") ||
+
+        query.includes("database") ||
+
+        exception.includes("sql") ||
+
+        exception.includes("mysql") ||
+
+        error.includes("mysql") ||
+
+        error.includes("database") ||
+
+        error.includes("connection refused")
+
+    ) {
+
+        return "Database / MySQL";
+
+    }
+
+
+    return "";
+
+}
+
+
+/* ============================================================
+   READ MORE / READ LESS
+   ============================================================ */
+
+function renderReadMore(
+    text,
+    maxLength = 240
+) {
+
+    const value =
+        String(text || "").trim();
+
+
+    if (!value) {
+        return "";
+    }
+
+
+    /*
+     * Short text does not need a button.
+     */
+
+    if (
+        value.length <= maxLength
     ) {
 
         return `
-            <div class="empty-state">
-                No similar defects were retrieved.
+
+            <div class="read-more-text">
+
+                ${escapeHtml(
+                    value
+                )}
+
             </div>
+
         `;
+
+    }
+
+
+    const shortText =
+        value
+            .slice(
+                0,
+                maxLength
+            )
+            .trim();
+
+
+    return `
+
+        <div class="read-more-container">
+
+            <div
+                class="read-more-text"
+                data-full-text="${escapeHtml(
+                    value
+                )}"
+                data-short-text="${escapeHtml(
+                    shortText
+                )}"
+            >
+
+                ${escapeHtml(
+                    shortText
+                )}...
+
+            </div>
+
+
+            <button
+                type="button"
+                class="read-more-button"
+            >
+
+                Read more
+
+            </button>
+
+        </div>
+
+    `;
+
+}
+
+
+function handleReadMoreClick(event) {
+
+    const button =
+        event.target.closest(
+            ".read-more-button"
+        );
+
+    if (!button) {
+        return;
+    }
+
+    event.preventDefault();
+
+    toggleReadMore(button);
+}
+
+
+/* ============================================================
+   TOGGLE READ MORE
+   ============================================================ */
+function toggleReadMore(
+    button
+) {
+
+    const container =
+        button.closest(
+            ".read-more-container"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    const textElement =
+        container.querySelector(
+            ".read-more-text"
+        );
+
+    if (!textElement) {
+        return;
+    }
+
+    const fullText =
+        textElement.dataset.fullText || "";
+
+    const shortText =
+        textElement.dataset.shortText || "";
+
+    if (
+        textElement.classList.contains(
+            "expanded"
+        )
+    ) {
+
+        textElement.textContent =
+            `${shortText}...`;
+
+        textElement.classList.remove(
+            "expanded"
+        );
+
+        button.textContent =
+            "Read more";
+
+        return;
+    }
+
+    textElement.textContent =
+        fullText;
+
+    textElement.classList.add(
+        "expanded"
+    );
+
+    button.textContent =
+        "Read less";
+}
+
+
+/* Make function available to inline onclick */
+window.toggleReadMore = toggleReadMore;
+
+
+/* ============================================================
+   ROOT CAUSE — SUPPORTING EVIDENCE
+   ============================================================ */
+
+function renderSupportingEvidence(
+    evidence
+) {
+
+    if (
+        !Array.isArray(evidence) ||
+        evidence.length === 0
+    ) {
+
+        return `
+
+            <div class="supporting-evidence">
+
+                <strong>
+                    Supporting Evidence
+                </strong>
+
+                <p>
+                    No supporting historical evidence available.
+                </p>
+
+            </div>
+
+        `;
+
     }
 
 
     return `
-        <div class="similar-defects">
 
-            ${matches
-                .slice(0, 5)
-                .map(
-                    (match, index) => `
+        <div class="supporting-evidence">
 
-                        <div class="defect-card">
+            <strong>
+                Supporting Evidence
+            </strong>
 
-                            <div class="defect-card-header">
 
-                                <strong>
+            ${
+                evidence
+                    .slice(0, 5)
+                    .map(
+                        item => {
 
-                                    #${index + 1}
+                            /*
+                             * STRING EVIDENCE
+                             */
+
+                            if (
+                                typeof item ===
+                                "string"
+                            ) {
+
+                                return `
+
+                                    <div class="evidence-item">
+
+                                        ${renderReadMore(
+                                            item,
+                                            220
+                                        )}
+
+                                    </div>
+
+                                `;
+
+                            }
+
+
+                            /*
+                             * OBJECT EVIDENCE
+                             */
+
+                            const text =
+                                item?.description ||
+                                item?.title ||
+                                item?.evidence ||
+                                item?.reason ||
+                                "Historical evidence";
+
+
+                            const similarity =
+                                item?.similarity !==
+                                undefined
+
+                                    ? `
+
+                                        <span class="evidence-similarity">
+
+                                            Similarity:
+
+                                            ${formatConfidence(
+                                                item.similarity
+                                            )}
+
+                                        </span>
+
+                                    `
+
+                                    : "";
+
+
+                            return `
+
+                                <div class="evidence-item">
+
+                                    ${renderReadMore(
+                                        text,
+                                        220
+                                    )}
+
+                                    ${similarity}
+
+                                </div>
+
+                            `;
+
+                        }
+                    )
+                    .join("")
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* ============================================================
+   REMEDIATION ROBUST RENDERER
+   ============================================================ */
+
+function renderRecommendationsRobust(
+    remediation
+) {
+
+    console.log(
+        "BUGAI Remediation data:",
+        remediation
+    );
+
+
+    const source =
+        remediation &&
+        typeof remediation === "object"
+            ? remediation
+            : {};
+
+
+    let recommendations = [];
+
+
+    if (
+        Array.isArray(
+            source.recommendations
+        )
+    ) {
+
+        recommendations =
+            source.recommendations.filter(
+                item =>
+                    item !== null &&
+                    item !== undefined
+            );
+
+    }
+
+
+    if (
+        recommendations.length > 0
+    ) {
+
+        return `
+
+            <div class="bugai-remediation-content">
+
+                ${
+                    recommendations
+                        .map(
+                            (item, index) => {
+
+                                const recommendation =
+                                    typeof item === "string"
+                                        ? item
+                                        : (
+                                            item?.recommendation ||
+                                            item?.recommended_fix ||
+                                            item?.resolution ||
+                                            "No recommendation text available."
+                                        );
+
+
+                                const confidence =
+                                    typeof item === "object"
+                                        ? formatConfidence(
+                                            item?.confidence
+                                        )
+                                        : "";
+
+
+                                const basis =
+                                    typeof item === "object"
+                                        ? (
+                                            item?.basis ||
+                                            ""
+                                        )
+                                        : "";
+
+
+                                const sourceBugIds =
+                                    typeof item === "object" &&
+                                    Array.isArray(
+                                        item?.source_bug_ids
+                                    )
+                                        ? item.source_bug_ids
+                                        : [];
+
+
+                                const historicalResolution =
+                                    typeof item === "object"
+                                        ? (
+                                            item?.historical_resolution ||
+                                            ""
+                                        )
+                                        : "";
+
+
+                                return `
+
+                                    <div class="bugai-remediation-card">
+
+                                        <div class="bugai-remediation-card-header">
+
+                                            <strong>
+                                                Recommendation ${index + 1}
+                                            </strong>
+
+                                            ${
+                                                confidence
+                                                    ? `
+                                                        <span>
+                                                            ${escapeHtml(
+                                                                confidence
+                                                            )}
+                                                        </span>
+                                                    `
+                                                    : ""
+                                            }
+
+                                        </div>
+
+
+                                        <div class="bugai-remediation-main">
+
+                                            ${escapeHtml(
+                                                recommendation
+                                            )}
+
+                                        </div>
+
+
+                                        ${
+                                            basis
+                                                ? `
+                                                    <div class="bugai-remediation-detail">
+
+                                                        <strong>
+                                                            Basis:
+                                                        </strong>
+
+                                                        ${escapeHtml(
+                                                            basis
+                                                        )}
+
+                                                    </div>
+                                                `
+                                                : ""
+                                        }
+
+
+                                        ${
+                                            sourceBugIds.length
+                                                ? `
+                                                    <div class="bugai-remediation-detail">
+
+                                                        <strong>
+                                                            Source Bug(s):
+                                                        </strong>
+
+                                                        <div class="bugai-source-bugs">
+
+                                                            ${
+                                                                sourceBugIds
+                                                                    .map(
+                                                                        id => `
+                                                                            <span>
+                                                                                ${escapeHtml(
+                                                                                    id
+                                                                                )}
+                                                                            </span>
+                                                                        `
+                                                                    )
+                                                                    .join("")
+                                                            }
+
+                                                        </div>
+
+                                                    </div>
+                                                `
+                                                : ""
+                                        }
+
+
+                                        ${
+                                            historicalResolution
+                                                ? `
+                                                    <div class="bugai-remediation-detail">
+
+                                                        <strong>
+                                                            Historical Resolution:
+                                                        </strong>
+
+                                                        ${renderReadMore(
+                                                            historicalResolution,
+                                                            220
+                                                        )}
+
+                                                    </div>
+                                                `
+                                                : ""
+                                        }
+
+                                    </div>
+
+                                `;
+
+                            }
+                        )
+                        .join("")
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    const fallback =
+        source.recommended_fix ||
+        source.resolution ||
+        source.recommendation;
+
+
+    if (
+        fallback
+    ) {
+
+        return `
+
+            <div class="bugai-remediation-content">
+
+                <div class="bugai-remediation-card">
+
+                    <div class="bugai-remediation-card-header">
+
+                        <strong>
+                            Recommendation 1
+                        </strong>
+
+                    </div>
+
+
+                    ${renderReadMore(
+                        fallback,
+                        240
+                    )}
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div class="bugai-remediation-content">
+
+            <div class="bugai-remediation-card">
+
+                <strong>
+                    No remediation recommendation was generated.
+                </strong>
+
+                <p>
+                    The Remediation Agent completed, but the
+                    backend did not provide a recommendation
+                    from the available evidence.
+                </p>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ============================================================
+   ORCHESTRATION RENDERER
+   ============================================================ */
+
+function renderOrchestration(
+    orchestration
+) {
+
+    console.log(
+        "BUGAI Orchestration data:",
+        orchestration
+    );
+
+
+    const source =
+        orchestration &&
+        typeof orchestration === "object"
+            ? orchestration
+            : {};
+
+
+    let agents =
+        Array.isArray(
+            source.agents
+        )
+            ? source.agents.filter(
+                agent =>
+                    agent !== null &&
+                    agent !== undefined &&
+                    String(agent).trim() !== ""
+            )
+            : [];
+
+
+    if (
+        agents.length === 0
+    ) {
+
+        agents = [
+            "Triage Agent",
+            "Log Analysis Agent",
+            "Root Cause Agent",
+            "Duplicate Detection Agent",
+            "Remediation Agent"
+        ];
+
+    }
+
+
+    const contextReady =
+        source.context_ready_for_milestone_3 !== false;
+
+
+    return `
+
+        <div class="bugai-orchestration-content">
+
+            ${
+                agents
+                    .map(
+                        (
+                            agent,
+                            index
+                        ) => `
+
+                            <div class="bugai-orchestration-item">
+
+                                <span class="bugai-orchestration-number">
+
+                                    ${index + 1}
+
+                                </span>
+
+
+                                <span class="bugai-orchestration-agent">
 
                                     ${escapeHtml(
-                                        match.bug_id ||
-                                        "Unknown ID"
+                                        String(
+                                            agent
+                                        )
                                     )}
 
-                                </strong>
+                                </span>
 
 
-                                <span class="similarity">
+                                <span class="bugai-orchestration-completed">
 
-                                    ${formatConfidence(
-                                        match.similarity
-                                    )}
+                                    ✓ COMPLETED
 
                                 </span>
 
                             </div>
 
+                        `
+                    )
+                    .join("")
+            }
 
-                            <h4>
-
-                                ${escapeHtml(
-                                    match.title ||
-                                    "Untitled defect"
-                                )}
-
-                            </h4>
+        </div>
 
 
-                            <p>
+        <div class="bugai-orchestration-context">
 
-                                ${escapeHtml(
-                                    truncate(
-                                        match.description ||
-                                        "No description available.",
-                                        220
-                                    )
-                                )}
+            <strong>
+                Downstream Agent Context:
+            </strong>
 
-                            </p>
+            <span>
+
+                ${
+                    contextReady
+                        ? "Ready"
+                        : "Not Ready"
+                }
+
+            </span>
+
+        </div>
+
+    `;
+
+}
 
 
-                            <div class="defect-meta">
+/* ============================================================
+   SIMILAR DEFECTS
+   ============================================================ */
 
-                                <span>
+function renderSimilarDefects(
+    matches
+) {
 
-                                    Project:
+    if (
+        !matches ||
+        !Array.isArray(
+            matches
+        ) ||
+        matches.length === 0
+    ) {
+
+        return `
+
+            <div class="empty-state">
+
+                No similar defects were retrieved.
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div class="similar-defects">
+
+            ${
+                matches
+                    .slice(0, 8)
+                    .map(
+                        (match, index) => `
+
+                            <div class="defect-card">
+
+                                <div class="defect-card-header">
+
+                                    <strong>
+
+                                        #${index + 1}
+
+                                        ${escapeHtml(
+                                            match.bug_id ||
+                                            "Unknown ID"
+                                        )}
+
+                                    </strong>
+
+
+                                    <span class="similarity">
+
+                                        ${formatConfidence(
+                                            match.similarity
+                                        )}
+
+                                    </span>
+
+                                </div>
+
+
+                                <h4>
 
                                     ${escapeHtml(
-                                        match.project ||
-                                        "Unknown"
+                                        match.title ||
+                                        "Untitled defect"
                                     )}
 
-                                </span>
+                                </h4>
+
+
+                                <div class="defect-meta">
+
+                                    ${
+                                        match.project
+                                            ? `
+                                                <span>
+
+                                                    Project:
+
+                                                    ${escapeHtml(
+                                                        match.project
+                                                    )}
+
+                                                </span>
+                                            `
+                                            : ""
+                                    }
+
+
+                                    ${
+                                        match.classification
+                                            ? `
+
+                                                <span>
+
+                                                    Classification:
+
+                                                    ${escapeHtml(
+                                                        match.classification
+                                                    )}
+
+                                                </span>
+
+                                            `
+                                            : ""
+                                    }
+
+                                </div>
 
 
                                 ${
-                                    match.classification
+                                    match.description
                                         ? `
 
-                                            <span>
+                                            <div class="defect-description">
 
-                                                Classification:
+                                                <strong>
+                                                    Description:
+                                                </strong>
 
-                                                ${escapeHtml(
-                                                    match.classification
+                                                ${renderReadMore(
+                                                    match.description,
+                                                    220
                                                 )}
 
-                                            </span>
+                                            </div>
+
+                                        `
+                                        : ""
+                                }
+
+
+                                ${
+                                    match.exception
+                                        ? `
+
+                                            <div class="resolution">
+
+                                                <strong>
+                                                    Exception:
+                                                </strong>
+
+                                                ${renderReadMore(
+                                                    match.exception,
+                                                    180
+                                                )}
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                }
+
+
+                                ${
+                                    match.resolution_summary
+                                        ? `
+
+                                            <div class="resolution">
+
+                                                <strong>
+                                                    Historical Resolution:
+                                                </strong>
+
+                                                ${renderReadMore(
+                                                    match.resolution_summary,
+                                                    220
+                                                )}
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                }
+
+
+                                ${
+                                    match.root_cause
+                                        ? `
+
+                                            <div class="resolution">
+
+                                                <strong>
+                                                    Historical Root Cause:
+                                                </strong>
+
+                                                ${renderReadMore(
+                                                    match.root_cause,
+                                                    220
+                                                )}
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                }
+
+
+                                ${
+                                    match.reason
+                                        ? `
+
+                                            <div class="boundary-note">
+
+                                                ${renderReadMore(
+                                                    match.reason,
+                                                    220
+                                                )}
+
+                                            </div>
 
                                         `
                                         : ""
@@ -1327,39 +2669,15 @@ function renderSimilarDefects(matches) {
 
                             </div>
 
-
-                            ${
-                                match.resolution_summary
-                                    ? `
-
-                                        <div class="resolution">
-
-                                            <strong>
-                                                Historical Resolution:
-                                            </strong>
-
-                                            <p>
-
-                                                ${escapeHtml(
-                                                    match.resolution_summary
-                                                )}
-
-                                            </p>
-
-                                        </div>
-
-                                    `
-                                    : ""
-                            }
-
-                        </div>
-
-                    `
-                )
-                .join("")}
+                        `
+                    )
+                    .join("")
+            }
 
         </div>
+
     `;
+
 }
 
 
@@ -1373,243 +2691,286 @@ function renderRecommendations(
 
     if (
         !recommendations ||
-        !Array.isArray(recommendations) ||
+        !Array.isArray(
+            recommendations
+        ) ||
         recommendations.length === 0
     ) {
 
         return `
+
             <div class="empty-state">
+
                 No remediation recommendation available.
+
             </div>
+
         `;
+
     }
 
 
     return `
+
         <div class="recommendations">
 
-            ${recommendations
-                .map(
-                    (item, index) => `
+            ${
+                recommendations
+                    .map(
+                        (item, index) => `
 
-                        <div class="recommendation-card">
+                            <div class="recommendation-card">
 
-                            <div class="recommendation-header">
+                                <div class="recommendation-header">
 
-                                <span>
-                                    Recommendation
-                                    ${index + 1}
-                                </span>
+                                    <span>
 
-                                <strong>
+                                        Recommendation
+                                        ${index + 1}
 
-                                    ${formatConfidence(
-                                        item.confidence
-                                    )}
+                                    </span>
 
-                                </strong>
+
+                                    <strong>
+
+                                        ${formatConfidence(
+                                            item.confidence
+                                        )}
+
+                                    </strong>
+
+                                </div>
+
+
+                                ${renderReadMore(
+                                    item.recommendation ||
+                                    "No recommendation provided.",
+                                    240
+                                )}
+
+
+                                ${
+                                    item.basis
+                                        ? `
+
+                                            <div class="recommendation-basis">
+
+                                                <strong>
+                                                    Basis:
+                                                </strong>
+
+                                                ${renderReadMore(
+                                                    item.basis,
+                                                    200
+                                                )}
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                }
+
+
+                                ${
+                                    Array.isArray(
+                                        item.source_bug_ids
+                                    ) &&
+                                    item.source_bug_ids.length > 0
+                                        ? `
+
+                                            <div class="source-bugs">
+
+                                                <strong>
+                                                    Source Bug(s):
+                                                </strong>
+
+                                                ${
+                                                    item.source_bug_ids
+                                                        .map(
+                                                            id => `
+
+                                                                <span>
+
+                                                                    ${escapeHtml(
+                                                                        id
+                                                                    )}
+
+                                                                </span>
+
+                                                            `
+                                                        )
+                                                        .join("")
+                                                }
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                }
+
+
+                                ${
+                                    item.historical_resolution
+                                        ? `
+
+                                            <div class="historical-resolution">
+
+                                                <strong>
+                                                    Historical Resolution:
+                                                </strong>
+
+                                                ${renderReadMore(
+                                                    item.historical_resolution,
+                                                    220
+                                                )}
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                }
+
+
+                                ${
+                                    item.historical_resolution_note
+                                        ? `
+
+                                            <div class="boundary-note">
+
+                                                ${renderReadMore(
+                                                    item.historical_resolution_note,
+                                                    220
+                                                )}
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                }
+
+
+                                ${
+                                    Array.isArray(
+                                        item.implementation_guidance
+                                    ) &&
+                                    item.implementation_guidance.length > 0
+                                        ? `
+
+                                            <div class="implementation-guidance">
+
+                                                <strong>
+                                                    Implementation Guidance:
+                                                </strong>
+
+                                                <ul>
+
+                                                    ${
+                                                        item.implementation_guidance
+                                                            .map(
+                                                                step => `
+
+                                                                    <li>
+
+                                                                        ${renderReadMore(
+                                                                            step,
+                                                                            180
+                                                                        )}
+
+                                                                    </li>
+
+                                                                `
+                                                            )
+                                                            .join("")
+                                                    }
+
+                                                </ul>
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                }
+
+
+                                ${
+                                    Array.isArray(
+                                        item.validation_steps
+                                    ) &&
+                                    item.validation_steps.length > 0
+                                        ? `
+
+                                            <div class="validation-steps">
+
+                                                <strong>
+                                                    Validation Steps:
+                                                </strong>
+
+                                                <ol>
+
+                                                    ${
+                                                        item.validation_steps
+                                                            .map(
+                                                                step => `
+
+                                                                    <li>
+
+                                                                        ${renderReadMore(
+                                                                            step,
+                                                                            180
+                                                                        )}
+
+                                                                    </li>
+
+                                                                `
+                                                            )
+                                                            .join("")
+                                                    }
+
+                                                </ol>
+
+                                            </div>
+
+                                        `
+                                        : ""
+                                }
 
                             </div>
 
-
-                            <p class="recommendation-text">
-
-                                ${escapeHtml(
-                                    item.recommendation ||
-                                    "No recommendation provided."
-                                )}
-
-                            </p>
-
-
-                            ${
-                                item.basis
-                                    ? `
-
-                                        <div class="recommendation-basis">
-
-                                            <strong>
-                                                Basis:
-                                            </strong>
-
-                                            ${escapeHtml(
-                                                item.basis
-                                            )}
-
-                                        </div>
-
-                                    `
-                                    : ""
-                            }
-
-
-                            ${
-                                Array.isArray(
-                                    item.source_bug_ids
-                                ) &&
-                                item.source_bug_ids.length > 0
-                                    ? `
-
-                                        <div class="source-bugs">
-
-                                            <strong>
-                                                Source Bug(s):
-                                            </strong>
-
-                                            ${item.source_bug_ids
-                                                .map(
-                                                    id =>
-                                                        `<span>
-                                                            ${escapeHtml(id)}
-                                                        </span>`
-                                                )
-                                                .join("")}
-
-                                        </div>
-
-                                    `
-                                    : ""
-                            }
-
-
-                            ${
-                                item.historical_resolution
-                                    ? `
-
-                                        <div class="historical-resolution">
-
-                                            <strong>
-                                                Historical Resolution:
-                                            </strong>
-
-                                            <p>
-
-                                                ${escapeHtml(
-                                                    item.historical_resolution
-                                                )}
-
-                                            </p>
-
-                                        </div>
-
-                                    `
-                                    : ""
-                            }
-
-
-                            ${
-                                item.historical_resolution_note
-                                    ? `
-
-                                        <div class="boundary-note">
-
-                                            ${escapeHtml(
-                                                item.historical_resolution_note
-                                            )}
-
-                                        </div>
-
-                                    `
-                                    : ""
-                            }
-
-
-                            ${
-                                Array.isArray(
-                                    item.implementation_guidance
-                                ) &&
-                                item.implementation_guidance.length > 0
-                                    ? `
-
-                                        <div class="guidance">
-
-                                            <strong>
-                                                Implementation Guidance
-                                            </strong>
-
-                                            <ul>
-
-                                                ${item
-                                                    .implementation_guidance
-                                                    .map(
-                                                        step =>
-                                                            `<li>
-                                                                ${escapeHtml(step)}
-                                                            </li>`
-                                                    )
-                                                    .join("")}
-
-                                            </ul>
-
-                                        </div>
-
-                                    `
-                                    : ""
-                            }
-
-
-                            ${
-                                Array.isArray(
-                                    item.validation_steps
-                                ) &&
-                                item.validation_steps.length > 0
-                                    ? `
-
-                                        <div class="validation">
-
-                                            <strong>
-                                                Validation Steps
-                                            </strong>
-
-                                            <ol>
-
-                                                ${item
-                                                    .validation_steps
-                                                    .map(
-                                                        step =>
-                                                            `<li>
-                                                                ${escapeHtml(step)}
-                                                            </li>`
-                                                    )
-                                                    .join("")}
-
-                                            </ol>
-
-                                        </div>
-
-                                    `
-                                    : ""
-                            }
-
-                        </div>
-
-                    `
-                )
-                .join("")}
+                        `
+                    )
+                    .join("")
+            }
 
         </div>
+
     `;
+
 }
 
 
 /* ============================================================
-   DETECTED LOG PATTERNS
+   PATTERNS
    ============================================================ */
 
-function renderPatterns(patterns) {
+function renderPatterns(
+    patterns
+) {
 
     if (
-        !patterns ||
-        !Array.isArray(patterns) ||
+        !Array.isArray(
+            patterns
+        ) ||
         patterns.length === 0
     ) {
 
         return "";
+
     }
 
 
     return `
-        <div class="patterns">
+
+        <div class="patterns-box">
 
             <strong>
                 Detected Patterns
@@ -1618,170 +2979,85 @@ function renderPatterns(patterns) {
 
             <div class="pattern-list">
 
-                ${patterns
-                    .map(
-                        pattern => `
+                ${
+                    patterns
+                        .slice(0, 10)
+                        .map(
+                            pattern => `
 
-                            <span class="pattern-tag">
+                                <span class="pattern-tag">
 
-                                ${escapeHtml(
-                                    pattern
-                                )}
+                                    ${escapeHtml(
+                                        typeof pattern ===
+                                        "string"
+                                            ? pattern
+                                            : (
+                                                pattern?.pattern ||
+                                                pattern?.name ||
+                                                JSON.stringify(
+                                                    pattern
+                                                )
+                                            )
+                                    )}
 
-                            </span>
+                                </span>
 
-                        `
-                    )
-                    .join("")}
+                            `
+                        )
+                        .join("")
+                }
 
             </div>
 
         </div>
+
     `;
+
 }
 
 
 /* ============================================================
-   FAILURE POINT FORMAT
+   DUPLICATE STATUS
    ============================================================ */
 
-/*
- * Backend may return:
- *
- * class:
- *     "com.example.db.DatabaseConnection"
- *
- * method:
- *     "connect"
- *
- * file:
- *     "DatabaseConnection.java"
- *
- * line:
- *     32
- *
- * Desired UI:
- *
- *     DatabaseConnection.connect()
- *     → DatabaseConnection.java:32
- */
+function getDuplicateDisplayStatus(
+    duplicate,
+    matches
+) {
 
-function simplifyClassName(className) {
+    if (
+        duplicate.likely_duplicate
+    ) {
 
-    if (!className) {
-        return "";
+        return "Possible Duplicate";
+
     }
 
 
-    const value =
-        String(className).trim();
+    if (
+        matches.length > 0
+    ) {
+
+        return "Similar Defects Found";
+
+    }
 
 
     return (
-        value
-            .split(".")
-            .filter(Boolean)
-            .pop() ||
-        value
+        duplicate.status ||
+        "New / Unmatched"
     );
-}
 
-
-function formatFailurePoint(
-    failurePoint
-) {
-
-    if (!failurePoint) {
-        return "Not detected";
-    }
-
-
-    if (
-        typeof failurePoint !== "object"
-    ) {
-
-        return escapeHtml(
-            String(failurePoint)
-        );
-    }
-
-
-    const file =
-        failurePoint.file || "";
-
-
-    const line =
-        failurePoint.line
-            ? `:${failurePoint.line}`
-            : "";
-
-
-    const method =
-        String(
-            failurePoint.method || ""
-        )
-            .trim()
-            .replace(/\s+/g, "");
-
-
-    const className =
-        simplifyClassName(
-            failurePoint.class || ""
-        );
-
-
-    const location =
-        `${file}${line}`;
-
-
-    let output = "";
-
-
-    if (
-        className &&
-        method &&
-        location
-    ) {
-
-        output =
-            `${className}.${method}() → ${location}`;
-
-    } else if (
-        method &&
-        location
-    ) {
-
-        output =
-            `${method}() → ${location}`;
-
-    } else if (location) {
-
-        output =
-            location;
-
-    } else if (method) {
-
-        output =
-            `${method}()`;
-
-    } else if (className) {
-
-        output =
-            className;
-    }
-
-
-    return output
-        ? escapeHtml(output)
-        : "Not detected";
 }
 
 
 /* ============================================================
-   CONFIDENCE FORMAT
+   FORMAT CONFIDENCE
    ============================================================ */
 
-function formatConfidence(value) {
+function formatConfidence(
+    value
+) {
 
     if (
         value === null ||
@@ -1789,97 +3065,107 @@ function formatConfidence(value) {
         value === ""
     ) {
 
-        return "N/A";
+        return "Not available";
+
     }
 
 
     const number =
-        Number(value);
+        Number(
+            value
+        );
 
 
     if (
-        Number.isNaN(number)
+        !Number.isFinite(
+            number
+        )
     ) {
 
         return escapeHtml(
             String(value)
         );
+
     }
 
 
-    /*
-     * Backend normally returns:
-     *
-     * 0.74
-     * 0.98
-     *
-     * Convert to:
-     *
-     * 74.0%
-     * 98.0%
-     */
-
-    if (
+    const percentage =
         number <= 1
-    ) {
-
-        return `${(
-            number * 100
-        ).toFixed(1)}%`;
-    }
+            ? number * 100
+            : number;
 
 
-    return `${number.toFixed(1)}%`;
+    return `${percentage.toFixed(
+        1
+    )}%`;
+
 }
 
 
 /* ============================================================
-   SEVERITY CLASS
+   FAILURE POINT
    ============================================================ */
 
-function getSeverityClass(
-    severity
+function formatFailurePoint(
+    value
 ) {
 
-    const value =
-        String(
-            severity || ""
-        ).toLowerCase();
-
-
-    if (
-        value.includes("critical")
-    ) {
-
-        return "severity-critical";
+    if (!value) {
+        return "Not detected";
     }
 
 
     if (
-        value.includes("high")
+        typeof value ===
+        "string"
     ) {
 
-        return "severity-high";
+        return value;
+
     }
 
 
     if (
-        value.includes("medium")
+        typeof value ===
+        "object"
     ) {
 
-        return "severity-medium";
+        return (
+            value.file ||
+            value.path ||
+            value.location ||
+            value.line ||
+            JSON.stringify(
+                value
+            )
+        );
+
     }
 
 
-    if (
-        value.includes("low")
-    ) {
+    return String(
+        value
+    );
 
-        return "severity-low";
+}
+
+
+/* ============================================================
+   GENERIC ELEMENT VALUE
+   ============================================================ */
+
+function getElementValue(
+    element
+) {
+
+    if (!element) {
+        return "";
     }
 
+    return String(
+        element.value || ""
+    );
 
-    return "";
 }
 
 
@@ -1887,68 +3173,60 @@ function getSeverityClass(
    RESET
    ============================================================ */
 
-if (resetBtn) {
+function resetForm() {
 
-    resetBtn.addEventListener(
-        "click",
-        () => {
+    if (bugForm) {
+        bugForm.reset();
+    }
 
-            if (bugForm) {
-                bugForm.reset();
-            }
+    selectedFile = null;
 
-
-            selectedFile = null;
+    submissionDocumentId = null;
 
 
-            if (fileInfo) {
-                fileInfo.innerHTML = "";
-            }
+    if (fileInfo) {
+        fileInfo.innerHTML = "";
+    }
 
 
-            if (logFile) {
-                logFile.value = "";
-            }
+    clearResult();
 
-
-            hideResult();
-
-
-            if (bugTitle) {
-                bugTitle.focus();
-            }
-        }
-    );
 }
 
 
 /* ============================================================
-   HIDE RESULT
+   CLEAR RESULT
    ============================================================ */
 
-function hideResult() {
+function clearResult() {
 
     if (!result) {
         return;
     }
 
+    result.innerHTML = "";
 
     result.classList.add(
         "hidden"
     );
 
-
-    result.innerHTML = "";
 }
 
 
 /* ============================================================
-   ERROR MESSAGE
+   SHOW ERROR
    ============================================================ */
 
-function showError(message) {
+function showError(
+    message
+) {
 
     if (!result) {
+
+        alert(
+            message
+        );
+
         return;
     }
 
@@ -1960,50 +3238,21 @@ function showError(message) {
 
     result.innerHTML = `
 
-        <div class="error-message">
+        <div class="result-header error-header">
 
-            <h3>
-                Analysis Failed
-            </h3>
+            <div>
 
+                <h2>
+                    Analysis Error
+                </h2>
 
-            <p>
+                <p>
 
-                ${escapeHtml(
-                    message
-                )}
+                    ${escapeHtml(
+                        message
+                    )}
 
-            </p>
-
-
-            <div class="error-help">
-
-                <strong>
-                    Check:
-                </strong>
-
-
-                <ul>
-
-                    <li>
-                        Flask backend is running.
-                    </li>
-
-                    <li>
-
-                        API endpoint:
-
-                        <code>
-                            http://127.0.0.1:5000/api/analyze
-                        </code>
-
-                    </li>
-
-                    <li>
-                        Browser Console for additional errors.
-                    </li>
-
-                </ul>
+                </p>
 
             </div>
 
@@ -2016,73 +3265,64 @@ function showError(message) {
         behavior: "smooth",
         block: "start"
     });
+
 }
 
 
 /* ============================================================
-   FILE ERROR
+   DASHBOARD REFRESH
    ============================================================ */
 
-function showFileError(message) {
+function notifyDashboard() {
 
-    if (!fileInfo) {
-        return;
-    }
+    try {
 
-
-    fileInfo.innerHTML = `
-
-        <div class="file-error">
-
-            ✕ ${escapeHtml(message)}
-
-        </div>
-
-    `;
-}
-
-
-/* ============================================================
-   TRUNCATE TEXT
-   ============================================================ */
-
-function truncate(
-    text,
-    maxLength
-) {
-
-    const value =
-        String(
-            text || ""
+        localStorage.setItem(
+            "bugai-dashboard-refresh",
+            String(
+                Date.now()
+            )
         );
 
 
-    if (
-        value.length <=
-        maxLength
-    ) {
+        window.dispatchEvent(
+            new CustomEvent(
+                "bugai:submission-created"
+            )
+        );
 
-        return value;
+    } catch (error) {
+
+        console.warn(
+            "Unable to notify dashboard.",
+            error
+        );
+
     }
 
-
-    return (
-        value.substring(
-            0,
-            maxLength
-        ) + "..."
-    );
 }
 
 
 /* ============================================================
-   ESCAPE HTML
+   HTML ESCAPE
    ============================================================ */
 
-function escapeHtml(value) {
+function escapeHtml(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
 
     return String(
-        value ?? ""
+        value
     )
         .replace(
             /&/g,
@@ -2104,13 +3344,10 @@ function escapeHtml(value) {
             /'/g,
             "&#039;"
         );
+
 }
 
 
 /* ============================================================
-   FINAL DEBUG MESSAGE
+   END
    ============================================================ */
-
-console.log(
-    "BugAI Milestone 3 Bug Submission JS loaded successfully."
-);

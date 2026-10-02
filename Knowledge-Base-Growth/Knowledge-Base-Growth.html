@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        BugAI - Knowledge Base Growth
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="knowledge-base-growth.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         BUGAI SIDEBAR
+    ========================================================== -->
+
+    <aside
+        id="bugaiSidebar"
+        class="bugai-sidebar"
+    >
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                B
+            </div>
+
+            <div>
+
+                <div class="brand-name">
+                    BugAI
+                </div>
+
+                <div class="brand-subtitle">
+                    Intelligent Bug Diagnosis
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-navigation">
+
+
+            <!-- =================================================
+                 MAIN
+            ================================================== -->
+
+            <div class="navigation-label">
+                MAIN
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Dashboard/dashboard.html"
+            >
+
+                <span class="nav-icon">
+                    ⌂
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Bug-Submission/bug-submission.html"
+            >
+
+                <span class="nav-icon">
+                    ＋
+                </span>
+
+                <span class="nav-text">
+                    Bug Submission
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Workflow/workflow.html"
+            >
+
+                <span class="nav-icon">
+                    ↝
+                </span>
+
+                <span class="nav-text">
+                    Workflow
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Architecture/architecture.html"
+            >
+
+                <span class="nav-icon">
+                    ◈
+                </span>
+
+                <span class="nav-text">
+                    Architecture
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 INTELLIGENCE
+            ================================================== -->
+
+            <div class="navigation-label">
+                INTELLIGENCE
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Knowledge-Base/knowledge-base.html"
+            >
+
+                <span class="nav-icon">
+                    ▣
+                </span>
+
+                <span class="nav-text">
+                    Knowledge Base
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Semantic-Similarity/similarity.html"
+            >
+
+                <span class="nav-icon">
+                    ⌕
+                </span>
+
+                <span class="nav-text">
+                    Semantic Similarity
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 ANALYTICS
+            ================================================== -->
+
+            <div class="navigation-label">
+                ANALYTICS
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Analytics/analytics.html"
+            >
+
+                <span class="nav-icon">
+                    ▥
+                </span>
+
+                <span class="nav-text">
+                    Defect Analytics
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Validation/validation.html"
+            >
+
+                <span class="nav-icon">
+                    ✓
+                </span>
+
+                <span class="nav-text">
+                    Validation
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 KNOWLEDGE
+            ================================================== -->
+
+            <div class="navigation-label">
+                KNOWLEDGE
+            </div>
+
+
+            <a
+                class="sidebar-link active"
+                href="knowledge-base-growth.html"
+                aria-current="page"
+            >
+
+                <span class="nav-icon">
+                    ＋
+                </span>
+
+                <span class="nav-text">
+                    KB Growth
+                </span>
+
+            </a>
+
+
+            <!-- =================================================
+                 SYSTEM
+            ================================================== -->
+
+            <div class="navigation-label">
+                SYSTEM
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Settings/settings.html"
+            >
+
+                <span class="nav-icon">
+                    ⚙
+                </span>
+
+                <span class="nav-text">
+                    Settings
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+
+            <div class="sidebar-status">
+
+                <span class="status-dot"></span>
+
+                <span class="status-text">
+                    Backend Connected
+                </span>
+
+            </div>
+
+
+            <div class="sidebar-version">
+                BugAI · Milestone 4
+            </div>
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =========================================================
+         MOBILE MENU BUTTON
+    ========================================================== -->
+
+    <button
+        id="sidebarMenuButton"
+        class="sidebar-menu-button"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-controls="bugaiSidebar"
+        aria-expanded="false"
+    >
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+    </button>
+
+
+    <!-- MOBILE OVERLAY -->
+
+    <div
+        id="sidebarOverlay"
+        class="sidebar-overlay"
+    ></div>
+
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+
+    <main>
+
+
+        <!-- =====================================================
+             PAGE HEADER
+        ====================================================== -->
+
+        <header class="page-header">
+
+            <div class="eyebrow">
+                MILESTONE 4
+            </div>
+
+
+            <h1>
+                Knowledge Base Growth
+            </h1>
+
+
+            <p>
+                Review a submitted bug, confirm its diagnosis
+                and resolution, then add the verified fix to
+                the BugAI knowledge base.
+            </p>
+
+        </header>
+
+
+
+        <!-- =====================================================
+             INFORMATION CARD
+        ====================================================== -->
+
+        <section class="info-card">
+
+            <div class="info-icon">
+                KB
+            </div>
+
+
+            <div>
+
+                <h2>
+                    Confirmed Fix Workflow
+                </h2>
+
+
+                <p>
+                    Select an existing submitted bug from Firebase.
+                    The submitted analysis will populate the form
+                    automatically. Review the information, confirm
+                    the fix and approve the record before adding it
+                    to the knowledge base.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             KNOWLEDGE BASE GROWTH
+        ====================================================== -->
+
+        <section class="card">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Confirmed Fix
+                    </h2>
+
+                    <p class="muted">
+                        Select a submitted BugAI analysis and
+                        validate it before incremental KB indexing.
+                    </p>
+
+                </div>
+
+
+                <span
+                    id="firebaseStatus"
+                    class="status-badge"
+                >
+                    Firebase: Checking...
+                </span>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FORM
+            ================================================== -->
+
+            <div class="growth-grid">
+
+
+                <!-- =================================================
+                     BUG ID
+                ================================================== -->
+
+                <label>
+
+                    Bug ID *
+
+                    <select
+                        id="gBugId"
+                        name="bug_id"
+                        required
+                        aria-describedby="gBugIdHelp"
+                    >
+
+                        <option
+                            value=""
+                            selected
+                            disabled
+                        >
+                            Loading submitted bugs...
+                        </option>
+
+                    </select>
+
+
+                    <small
+                        id="gBugIdHelp"
+                        class="field-help"
+                    >
+                        Select one of the submitted BugAI
+                        analyses from Firebase.
+                        Bug ID cannot be entered manually.
+                    </small>
+
+                </label>
+
+
+
+                <!-- =================================================
+                     PROJECT
+                ================================================== -->
+
+                <label>
+
+                    Project
+
+                    <input
+                        id="gProject"
+                        type="text"
+                        placeholder="e.g. Apache"
+                    >
+
+                </label>
+
+
+
+                <!-- =================================================
+                     TITLE
+                ================================================== -->
+
+                <label>
+
+                    Title *
+
+                    <input
+                        id="gTitle"
+                        type="text"
+                        placeholder="Bug title"
+                        required
+                    >
+
+                </label>
+
+
+
+                <!-- =================================================
+                     COMPONENT
+                ================================================== -->
+
+                <label>
+
+                    Affected Component *
+
+                    <input
+                        id="gComponent"
+                        type="text"
+                        placeholder="e.g. Database"
+                        required
+                    >
+
+                </label>
+
+
+
+                <!-- =================================================
+                     DESCRIPTION
+                ================================================== -->
+
+                <label>
+
+                    Description *
+
+                    <textarea
+                        id="gDescription"
+                        placeholder="Describe the confirmed bug..."
+                        required
+                    ></textarea>
+
+                </label>
+
+
+
+                <!-- =================================================
+                     STACK TRACE
+                ================================================== -->
+
+                <label>
+
+                    Error Information / Stack Trace *
+
+                    <textarea
+                        id="gStack"
+                        placeholder="Paste error information or stack trace..."
+                        required
+                    ></textarea>
+
+                </label>
+
+
+
+                <!-- =================================================
+                     ROOT CAUSE
+                ================================================== -->
+
+                <label>
+
+                    Confirmed Root Cause *
+
+                    <textarea
+                        id="gRoot"
+                        placeholder="Describe the confirmed root cause..."
+                        required
+                    ></textarea>
+
+                </label>
+
+
+
+                <!-- =================================================
+                     RESOLUTION
+                ================================================== -->
+
+                <label>
+
+                    Confirmed Resolution / Fix *
+
+                    <textarea
+                        id="gResolution"
+                        placeholder="Describe the confirmed resolution or fix..."
+                        required
+                    ></textarea>
+
+                </label>
+
+
+
+                <!-- =================================================
+                     SEVERITY
+                ================================================== -->
+
+                <label>
+
+                    Severity
+
+                    <select id="gSeverity">
+
+                        <option value="">
+                            Select severity
+                        </option>
+
+                        <option value="Critical">
+                            Critical
+                        </option>
+
+                        <option value="High">
+                            High
+                        </option>
+
+                        <option value="Medium">
+                            Medium
+                        </option>
+
+                        <option value="Low">
+                            Low
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+
+                <!-- =================================================
+                     PRIORITY
+                ================================================== -->
+
+                <label>
+
+                    Priority
+
+                    <select id="gPriority">
+
+                        <option value="">
+                            Select priority
+                        </option>
+
+                        <option value="P1">
+                            P1
+                        </option>
+
+                        <option value="P2">
+                            P2
+                        </option>
+
+                        <option value="P3">
+                            P3
+                        </option>
+
+                        <option value="P4">
+                            P4
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+
+                <!-- =================================================
+                     CONFIRMED FIX
+                ================================================== -->
+
+                <label class="checkbox-label">
+
+                    <input
+                        type="checkbox"
+                        id="confirmedFix"
+                    >
+
+                    <span>
+                        Confirmed fix
+                    </span>
+
+                </label>
+
+
+
+                <!-- =================================================
+                     APPROVED
+                ================================================== -->
+
+                <label class="checkbox-label">
+
+                    <input
+                        type="checkbox"
+                        id="approved"
+                    >
+
+                    <span>
+                        Approved for KB
+                    </span>
+
+                </label>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ACTION
+            ================================================== -->
+
+            <div class="action-row">
+
+                <button
+                    id="addGrowth"
+                    class="primary"
+                    type="button"
+                >
+                    Validate &amp; Add to Knowledge Base
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 RESULT
+            ================================================== -->
+
+            <div
+                id="growthResult"
+                class="result-box"
+                aria-live="polite"
+            >
+                Select a submitted bug to begin.
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             WORKFLOW INFORMATION
+        ====================================================== -->
+
+        <section class="card workflow-card">
+
+            <h2>
+                Knowledge Base Growth Flow
+            </h2>
+
+
+            <div class="workflow-steps">
+
+
+                <div class="workflow-step">
+
+                    <span class="step-number">
+                        1
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Select Bug
+                        </strong>
+
+                        <p>
+                            Select an existing submitted
+                            analysis from Firebase.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="workflow-step">
+
+                    <span class="step-number">
+                        2
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Review Diagnosis
+                        </strong>
+
+                        <p>
+                            Verify the bug description,
+                            component, stack trace and root cause.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="workflow-step">
+
+                    <span class="step-number">
+                        3
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Confirm Fix
+                        </strong>
+
+                        <p>
+                            Enter or verify the confirmed
+                            resolution and select Confirmed fix.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="workflow-step">
+
+                    <span class="step-number">
+                        4
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Approve
+                        </strong>
+
+                        <p>
+                            Approve the verified record
+                            for knowledge-base growth.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="workflow-step">
+
+                    <span class="step-number">
+                        5
+                    </span>
+
+                    <div>
+
+                        <strong>
+                            Index
+                        </strong>
+
+                        <p>
+                            Send the confirmed fix to the
+                            BugAI knowledge-base growth API.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script
+        type="module"
+        src="knowledge-base-growth.js"
+    ></script>
+
+
+</body>
+
+</html>

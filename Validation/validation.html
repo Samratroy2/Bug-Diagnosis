@@ -12,734 +12,1052 @@
 
 <body>
 
-<!-- =========================================================
-     SIDEBAR
-     ========================================================= -->
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
-<aside id="bugaiSidebar" class="bugai-sidebar">
+    <aside
+        id="bugaiSidebar"
+        class="bugai-sidebar"
+    >
 
-    <div class="sidebar-brand">
-        <div class="brand-logo">B</div>
 
-        <div>
-            <div class="brand-name">BugAI</div>
-            <div class="brand-subtitle">
-                Intelligent Bug Diagnosis
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                B
             </div>
+
+
+            <div>
+
+                <div class="brand-name">
+                    BugAI
+                </div>
+
+
+                <div class="brand-subtitle">
+                    Intelligent Bug Diagnosis
+                </div>
+
+            </div>
+
         </div>
+
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-navigation">
+
+
+            <!-- =================================================
+                 MAIN
+                 ================================================= -->
+
+            <div class="navigation-label">
+                MAIN
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Dashboard/dashboard.html"
+                aria-current="page"
+            >
+
+                <span class="nav-icon">
+                    ⌂
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Bug-Submission/bug-submission.html"
+            >
+
+                <span class="nav-icon">
+                    ＋
+                </span>
+
+                <span class="nav-text">
+                    Bug Submission
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Workflow/workflow.html"
+            >
+
+                <span class="nav-icon">
+                    ↝
+                </span>
+
+                <span class="nav-text">
+                    Workflow
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Architecture/architecture.html"
+            >
+
+                <span class="nav-icon">
+                    ◈
+                </span>
+
+                <span class="nav-text">
+                    Architecture
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 INTELLIGENCE
+                 ================================================= -->
+
+            <div class="navigation-label">
+                INTELLIGENCE
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Knowledge-Base/knowledge-base.html"
+            >
+
+                <span class="nav-icon">
+                    ▣
+                </span>
+
+                <span class="nav-text">
+                    Knowledge Base
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Semantic-Similarity/similarity.html"
+            >
+
+                <span class="nav-icon">
+                    ⌕
+                </span>
+
+                <span class="nav-text">
+                    Semantic Similarity
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 ANALYTICS
+                 ================================================= -->
+
+            <div class="navigation-label">
+                ANALYTICS
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Analytics/analytics.html"
+            >
+
+                <span class="nav-icon">
+                    ▥
+                </span>
+
+                <span class="nav-text">
+                    Defect Analytics
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link active"
+                href="../Validation/validation.html"
+            >
+
+                <span class="nav-icon">
+                    ✓
+                </span>
+
+                <span class="nav-text">
+                    Validation
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 KNOWLEDGE
+                 ================================================= -->
+
+            <div class="navigation-label">
+                KNOWLEDGE
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Knowledge-Base-Growth/knowledge-base-growth.html"
+            >
+
+                <span class="nav-icon">
+                    ＋
+                </span>
+
+                <span class="nav-text">
+                    KB Growth
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 SYSTEM
+                 ================================================= -->
+
+            <div class="navigation-label">
+                SYSTEM
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Settings/settings.html"
+            >
+
+                <span class="nav-icon">
+                    ⚙
+                </span>
+
+                <span class="nav-text">
+                    Settings
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+
+        <!-- =================================================
+             SIDEBAR FOOTER
+             ================================================= -->
+
+        <div class="sidebar-footer">
+
+
+            <div class="sidebar-status">
+
+                <span class="status-dot">
+                </span>
+
+                <span class="status-text">
+                    Firebase Connected
+                </span>
+
+            </div>
+
+
+            <div class="sidebar-version">
+                BugAI · Milestone 4
+            </div>
+
+
+        </div>
+
+
+    </aside>
+
+
+    <!-- =========================================================
+         MOBILE NAVIGATION
+         ========================================================= -->
+
+    <button
+        id="sidebarMenuButton"
+        class="sidebar-menu-button"
+        type="button"
+        aria-label="Open navigation"
+        aria-controls="bugaiSidebar"
+        aria-expanded="false">
+
+        ☰
+
+    </button>
+
+
+    <div
+        id="sidebarOverlay"
+        class="sidebar-overlay">
     </div>
 
 
-    <nav class="sidebar-navigation">
+    <!-- =========================================================
+         MAIN
+         ========================================================= -->
 
-        <div class="navigation-label">MAIN</div>
+    <main>
 
-        <a class="sidebar-link"
-           href="../Dashboard/dashboard.html">
-            <span class="nav-icon">⌂</span>
-            <span class="nav-text">Dashboard</span>
-        </a>
+        <!-- =========================
+             HEADER
+             ========================= -->
 
-        <a class="sidebar-link"
-           href="../Bug-Submission/bug-submission.html">
-            <span class="nav-icon">＋</span>
-            <span class="nav-text">Bug Submission</span>
-        </a>
+        <header>
 
-        <a class="sidebar-link"
-           href="../Workflow/workflow.html">
-            <span class="nav-icon">↝</span>
-            <span class="nav-text">Workflow</span>
-        </a>
-
-        <a class="sidebar-link"
-           href="../Architecture/architecture.html">
-            <span class="nav-icon">◈</span>
-            <span class="nav-text">Architecture</span>
-        </a>
+            <span>
+                Milestone 4
+            </span>
 
 
-        <div class="navigation-label">INTELLIGENCE</div>
-
-        <a class="sidebar-link"
-           href="../Knowledge-Base/knowledge-base.html">
-            <span class="nav-icon">▣</span>
-            <span class="nav-text">Knowledge Base</span>
-        </a>
-
-        <a class="sidebar-link"
-           href="../Semantic-Similarity/similarity.html">
-            <span class="nav-icon">⌕</span>
-            <span class="nav-text">Semantic Similarity</span>
-        </a>
-
-        <a class="sidebar-link active"
-           href="../Validation/validation.html"
-           aria-current="page">
-            <span class="nav-icon">✓</span>
-            <span class="nav-text">Validation</span>
-        </a>
+            <h1>
+                Validation & End-to-End Testing
+            </h1>
 
 
-        <div class="navigation-label">SYSTEM</div>
+            <p>
+                Validate the complete BugAI diagnosis pipeline across
+                different bug types, programming languages, stack-trace
+                formats, severity levels and diagnostic conditions.
+            </p>
 
-        <a class="sidebar-link"
-           href="../analytics/analytics.html">
-            <span class="nav-icon">▥</span>
-            <span class="nav-text">Analytics</span>
-        </a>
-
-        <a class="sidebar-link"
-           href="../Settings/settings.html">
-            <span class="nav-icon">⚙</span>
-            <span class="nav-text">Settings</span>
-        </a>
-
-    </nav>
+        </header>
 
 
-    <div class="sidebar-footer">
+        <!-- =====================================================
+             VALIDATION OVERVIEW
+             ===================================================== -->
 
-        <div class="sidebar-status">
-            <span class="status-dot"></span>
-            <span class="status-text">Backend Connected</span>
-        </div>
-
-        <div class="sidebar-version">
-            BugAI · Milestone 4
-        </div>
-
-    </div>
-
-</aside>
+        <section
+            class="summary-grid"
+            id="metrics">
 
 
-<!-- Mobile navigation -->
+            <div class="metric">
 
-<button
-    id="sidebarMenuButton"
-    class="sidebar-menu-button"
-    type="button"
-    aria-label="Open navigation"
-    aria-controls="bugaiSidebar"
-    aria-expanded="false">
-    ☰
-</button>
+                <strong>--</strong>
 
-<div id="sidebarOverlay" class="sidebar-overlay"></div>
-
-
-<!-- =========================================================
-     MAIN
-     ========================================================= -->
-
-<main>
-
-    <header>
-
-        <span>Milestone 4</span>
-
-        <h1>Validation & End-to-End Testing</h1>
-
-        <p>
-            Validate the complete BugAI diagnosis pipeline across
-            different bug types, programming languages, stack-trace
-            formats, severity levels and diagnostic conditions.
-        </p>
-
-    </header>
-
-
-    <!-- =====================================================
-         VALIDATION OVERVIEW
-         ===================================================== -->
-
-    <section class="summary-grid" id="metrics">
-
-        <div class="metric">
-            <strong>--</strong>
-            <span>Overall Validation</span>
-        </div>
-
-        <div class="metric">
-            <strong>--</strong>
-            <span>Tests Passed</span>
-        </div>
-
-        <div class="metric">
-            <strong>--</strong>
-            <span>M2 Triage Accuracy</span>
-        </div>
-
-        <div class="metric">
-            <strong>--</strong>
-            <span>M2 Exception Detection</span>
-        </div>
-
-        <div class="metric">
-            <strong>--</strong>
-            <span>M3 Duplicate Classification</span>
-        </div>
-
-        <div class="metric">
-            <strong>--</strong>
-            <span>Pipeline Status</span>
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         VALIDATION SUITE
-         ===================================================== -->
-
-    <section class="card">
-
-        <div class="section-head">
-
-            <div>
-
-                <h2>Validation Results</h2>
-
-                <p id="status">
-                    Running validation suite...
-                </p>
+                <span>
+                    Overall Validation
+                </span>
 
             </div>
 
-            <button
-                id="runBtn"
-                class="primary"
-                type="button">
-                Run Validation
-            </button>
 
-        </div>
+            <div class="metric">
 
+                <strong>--</strong>
 
-        <div class="table-wrap">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-                        <th>Test Case</th>
-                        <th>Expected</th>
-                        <th>Actual</th>
-                        <th>Status</th>
-                        <th>Top Match</th>
-                    </tr>
-
-                </thead>
-
-                <tbody id="results">
-
-                    <tr>
-                        <td colspan="5">
-                            Loading validation results...
-                        </td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         E2E TEST COVERAGE
-         ===================================================== -->
-
-    <section class="card coverage-card">
-
-        <div class="section-head">
-
-            <div>
-
-                <h2>End-to-End Test Coverage</h2>
-
-                <p>
-                    Validation scenarios used to exercise the
-                    implemented diagnosis pipeline.
-                </p>
+                <span>
+                    Tests Passed
+                </span>
 
             </div>
 
-        </div>
 
+            <div class="metric">
 
-        <div class="coverage-grid">
+                <strong>--</strong>
 
-            <article class="coverage-item">
-
-                <div class="coverage-number">01</div>
-
-                <h3>Java Database Exception</h3>
-
-                <p>
-                    Tests database connection failures with
-                    Java exception and stack-trace information.
-                </p>
-
-            </article>
-
-
-            <article class="coverage-item">
-
-                <div class="coverage-number">02</div>
-
-                <h3>Python KeyError</h3>
-
-                <p>
-                    Tests Python dictionary/key-related failures
-                    and exception extraction.
-                </p>
-
-            </article>
-
-
-            <article class="coverage-item">
-
-                <div class="coverage-number">03</div>
-
-                <h3>Node.js Timeout</h3>
-
-                <p>
-                    Tests asynchronous timeout behaviour and
-                    downstream diagnosis.
-                </p>
-
-            </article>
-
-
-            <article class="coverage-item">
-
-                <div class="coverage-number">04</div>
-
-                <h3>C++ Segmentation Fault</h3>
-
-                <p>
-                    Tests native-code failure information and
-                    diagnosis from available stack evidence.
-                </p>
-
-            </article>
-
-
-            <article class="coverage-item">
-
-                <div class="coverage-number">05</div>
-
-                <h3>Sparse Diagnostic Input</h3>
-
-                <p>
-                    Tests a bug submission with limited or missing
-                    stack-trace information.
-                </p>
-
-            </article>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         VALIDATION DIMENSIONS
-         ===================================================== -->
-
-    <section class="card">
-
-        <div class="section-head">
-
-            <div>
-
-                <h2>Validation Dimensions</h2>
-
-                <p>
-                    The system is evaluated across multiple
-                    input and diagnosis dimensions.
-                </p>
+                <span>
+                    M2 Triage Coverage
+                </span>
 
             </div>
 
-        </div>
 
+            <div class="metric">
 
-        <div class="dimension-grid">
+                <strong>--</strong>
 
-            <div class="dimension">
-                <strong>Bug Types</strong>
-                <span>Database, runtime, timeout, native and sparse-input failures</span>
-            </div>
-
-            <div class="dimension">
-                <strong>Languages</strong>
-                <span>Java, Python, JavaScript / Node.js and C++</span>
-            </div>
-
-            <div class="dimension">
-                <strong>Stack Traces</strong>
-                <span>Different stack-trace and diagnostic formats</span>
-            </div>
-
-            <div class="dimension">
-                <strong>Severity</strong>
-                <span>Different severity and priority conditions</span>
-            </div>
-
-            <div class="dimension">
-                <strong>Components</strong>
-                <span>Different affected application components</span>
-            </div>
-
-            <div class="dimension">
-                <strong>Available Evidence</strong>
-                <span>Complete, partial and sparse diagnostic information</span>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         VALIDATION PIPELINE
-         ===================================================== -->
-
-    <section class="card">
-
-        <div class="section-head">
-
-            <div>
-
-                <h2>Validation Pipeline</h2>
-
-                <p>
-                    Validation follows the same sequence as the
-                    implemented BugAI diagnosis workflow.
-                </p>
+                <span>
+                    M2 Exception Detection Coverage
+                </span>
 
             </div>
 
-        </div>
 
+            <div class="metric">
 
-        <div class="validation-flow">
+                <strong>--</strong>
 
-            <div>
-                Bug Submission
+                <span>
+                    M3 Duplicate Detection Coverage
+                </span>
+
             </div>
 
-            <b>→</b>
 
-            <div>
-                Triage
+            <div class="metric">
+
+                <strong>--</strong>
+
+                <span>
+                    Pipeline Status
+                </span>
+
             </div>
 
-            <b>→</b>
+        </section>
 
-            <div>
-                Log Analysis
+
+        <!-- =====================================================
+             VALIDATION SUITE
+             ===================================================== -->
+
+        <section class="card">
+
+            <div class="section-head">
+
+                <div>
+
+                    <h2>
+                        Validation Results
+                    </h2>
+
+
+                    <p id="status">
+                        Running validation suite...
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="runBtn"
+                    class="primary"
+                    type="button">
+
+                    Run Validation
+
+                </button>
+
             </div>
 
-            <b>→</b>
 
-            <div>
-                RAG Retrieval
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Test Case
+                            </th>
+
+                            <th>
+                                Expected
+                            </th>
+
+                            <th>
+                                Actual
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Top Match
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="results">
+
+                        <tr>
+
+                            <td colspan="5">
+                                Loading validation results...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
             </div>
 
-            <b>→</b>
+        </section>
 
-            <div>
-                Root Cause
+
+        <!-- =====================================================
+             E2E TEST COVERAGE
+             ===================================================== -->
+
+        <section class="card coverage-card">
+
+            <div class="section-head">
+
+                <div>
+
+                    <h2>
+                        End-to-End Test Coverage
+                    </h2>
+
+
+                    <p>
+                        Validation scenarios used to exercise the
+                        Completed diagnosis pipeline.
+                    </p>
+
+                </div>
+
             </div>
 
-            <b>→</b>
 
-            <div>
-                Duplicate Detection
+            <div class="coverage-grid">
+
+                <!-- TEST 01 -->
+
+                <article class="coverage-item">
+
+                    <div class="coverage-number">
+                        01
+                    </div>
+
+
+                    <h3>
+                        Java Database Exception
+                    </h3>
+
+
+                    <p>
+                        Tests database connection failures with
+                        Java exception and stack-trace information.
+                    </p>
+
+                </article>
+
+
+                <!-- TEST 02 -->
+
+                <article class="coverage-item">
+
+                    <div class="coverage-number">
+                        02
+                    </div>
+
+
+                    <h3>
+                        Python KeyError
+                    </h3>
+
+
+                    <p>
+                        Tests Python dictionary/key-related failures
+                        and exception extraction.
+                    </p>
+
+                </article>
+
+
+                <!-- TEST 03 -->
+
+                <article class="coverage-item">
+
+                    <div class="coverage-number">
+                        03
+                    </div>
+
+
+                    <h3>
+                        Node.js Timeout
+                    </h3>
+
+
+                    <p>
+                        Tests asynchronous timeout behaviour and
+                        downstream diagnosis.
+                    </p>
+
+                </article>
+
+
+                <!-- TEST 04 -->
+
+                <article class="coverage-item">
+
+                    <div class="coverage-number">
+                        04
+                    </div>
+
+
+                    <h3>
+                        C++ Segmentation Fault
+                    </h3>
+
+
+                    <p>
+                        Tests native-code failure information and
+                        diagnosis from available stack evidence.
+                    </p>
+
+                </article>
+
+
+                <!-- TEST 05 -->
+
+                <article class="coverage-item">
+
+                    <div class="coverage-number">
+                        05
+                    </div>
+
+
+                    <h3>
+                        Sparse Diagnostic Input
+                    </h3>
+
+
+                    <p>
+                        Tests a bug submission with limited or missing
+                        stack-trace information.
+                    </p>
+
+                </article>
+
             </div>
 
-            <b>→</b>
+        </section>
 
-            <div>
-                Remediation
+
+        <!-- =====================================================
+             VALIDATION DIMENSIONS
+             ===================================================== -->
+
+        <section class="card">
+
+            <div class="section-head">
+
+                <div>
+
+                    <h2>
+                        Validation Dimensions
+                    </h2>
+
+
+                    <p>
+                        The system is evaluated across multiple
+                        input and diagnosis dimensions.
+                    </p>
+
+                </div>
+
             </div>
 
-            <b>→</b>
 
-            <div>
-                Structured Findings
+            <div class="dimension-grid">
+
+                <div class="dimension">
+
+                    <strong>
+                        Bug Types
+                    </strong>
+
+                    <span>
+                        Database, runtime, timeout, native and
+                        sparse-input failures
+                    </span>
+
+                </div>
+
+
+                <div class="dimension">
+
+                    <strong>
+                        Languages
+                    </strong>
+
+                    <span>
+                        Java, Python, JavaScript / Node.js and C++
+                    </span>
+
+                </div>
+
+
+                <div class="dimension">
+
+                    <strong>
+                        Stack Traces
+                    </strong>
+
+                    <span>
+                        Different stack-trace and diagnostic formats
+                    </span>
+
+                </div>
+
+
+                <div class="dimension">
+
+                    <strong>
+                        Severity
+                    </strong>
+
+                    <span>
+                        Different severity and priority conditions
+                    </span>
+
+                </div>
+
+
+                <div class="dimension">
+
+                    <strong>
+                        Components
+                    </strong>
+
+                    <span>
+                        Different affected application components
+                    </span>
+
+                </div>
+
+
+                <div class="dimension">
+
+                    <strong>
+                        Available Evidence
+                    </strong>
+
+                    <span>
+                        Complete, partial and sparse diagnostic information
+                    </span>
+
+                </div>
+
             </div>
 
-        </div>
-
-    </section>
+        </section>
 
 
-    <!-- =====================================================
-         M4 VALIDATION STATUS
-         ===================================================== -->
+        <!-- =====================================================
+             VALIDATION PIPELINE
+             ===================================================== -->
 
-    <section class="card validation-status-card">
+        <section class="card">
 
-        <h2>Milestone 4 Validation Status</h2>
+            <div class="section-head">
 
-        <ul>
+                <div>
 
-            <li>
-                Multi-language defect testing —
-                <strong>Implemented</strong>
-            </li>
-
-            <li>
-                Multiple stack-trace formats —
-                <strong>Implemented</strong>
-            </li>
-
-            <li>
-                Different severity and component conditions —
-                <strong>Implemented</strong>
-            </li>
-
-            <li>
-                Sparse diagnostic input testing —
-                <strong>Implemented</strong>
-            </li>
-
-            <li>
-                Full diagnosis pipeline validation —
-                <strong>Implemented</strong>
-            </li>
-
-            <li>
-                Validation result reporting —
-                <strong>Implemented</strong>
-            </li>
-
-        </ul>
-
-    </section>
-
-</main>
+                    <h2>
+                        Validation Pipeline
+                    </h2>
 
 
-<script src="validation.js"></script>
+                    <p>
+                        Validation follows the same sequence as the
+                        Completed BugAI diagnosis workflow.
+                    </p>
+
+                </div>
+
+            </div>
 
 
-<!-- =========================================================
-     THEME + MOBILE SIDEBAR
-     ========================================================= -->
+            <div class="validation-flow">
 
-<script>
-
-(function () {
-
-    const SETTINGS_KEY = "bugai-settings";
-    const LEGACY_KEY = "bugai-theme";
+                <div>
+                    Bug Submission
+                </div>
 
 
-    function getTheme() {
-
-        try {
-
-            const settings =
-                JSON.parse(
-                    localStorage.getItem(SETTINGS_KEY) || "{}"
-                );
-
-            if (settings.theme) {
-                return settings.theme;
-            }
-
-        } catch (error) {
-            console.warn(
-                "Unable to read BugAI settings.",
-                error
-            );
-        }
-
-        return localStorage.getItem(LEGACY_KEY) || "system";
-    }
+                <b>→</b>
 
 
-    function applyTheme() {
-
-        const theme = getTheme();
-
-        const dark =
-            theme === "dark" ||
-            (
-                theme === "system" &&
-                window.matchMedia &&
-                window.matchMedia(
-                    "(prefers-color-scheme: dark)"
-                ).matches
-            );
+                <div>
+                    Triage
+                </div>
 
 
-        document.documentElement.classList.toggle(
-            "dark-mode",
-            dark
-        );
-
-        document.documentElement.classList.toggle(
-            "dark",
-            dark
-        );
-
-        document.body.classList.toggle(
-            "dark-mode",
-            dark
-        );
-
-        document.body.classList.toggle(
-            "dark",
-            dark
-        );
-
-    }
+                <b>→</b>
 
 
-    function initMenu() {
-
-        const sidebar =
-            document.getElementById("bugaiSidebar");
-
-        const button =
-            document.getElementById("sidebarMenuButton");
-
-        const overlay =
-            document.getElementById("sidebarOverlay");
+                <div>
+                    Log Analysis
+                </div>
 
 
-        if (!sidebar || !button || !overlay) {
-            return;
-        }
+                <b>→</b>
 
 
-        function closeMenu() {
-
-            sidebar.classList.remove("open");
-
-            overlay.classList.remove("show");
-
-            button.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-
-        }
+                <div>
+                    RAG Retrieval
+                </div>
 
 
-        button.addEventListener(
-            "click",
-            function () {
-
-                const isOpen =
-                    sidebar.classList.toggle("open");
-
-                overlay.classList.toggle(
-                    "show",
-                    isOpen
-                );
-
-                button.setAttribute(
-                    "aria-expanded",
-                    String(isOpen)
-                );
-
-            }
-        );
+                <b>→</b>
 
 
-        overlay.addEventListener(
-            "click",
-            closeMenu
-        );
+                <div>
+                    Root Cause
+                </div>
 
+
+                <b>→</b>
+
+
+                <div>
+                    Duplicate Detection
+                </div>
+
+
+                <b>→</b>
+
+
+                <div>
+                    Remediation
+                </div>
+
+
+                <b>→</b>
+
+
+                <div>
+                    Structured Findings
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             M4 VALIDATION STATUS
+             ===================================================== -->
+
+        <section class="card validation-status-card">
+
+            <h2>
+                Milestone 4 Validation Status
+            </h2>
+
+
+            <ul>
+
+                <li>
+                    Multi-language defect testing —
+                    <strong>Completed</strong>
+                </li>
+
+
+                <li>
+                    Multiple stack-trace formats —
+                    <strong>Completed</strong>
+                </li>
+
+
+                <li>
+                    Different severity and component conditions —
+                    <strong>Completed</strong>
+                </li>
+
+
+                <li>
+                    Sparse diagnostic input testing —
+                    <strong>Completed</strong>
+                </li>
+
+
+                <li>
+                    Full diagnosis pipeline validation —
+                    <strong>Completed</strong>
+                </li>
+
+
+                <li>
+                    Validation result reporting —
+                    <strong>Completed</strong>
+                </li>
+
+            </ul>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================================
+         FIREBASE VALIDATION JAVASCRIPT
+         ========================================================= -->
+
+    <script
+        type="module"
+        src="validation.js">
+    </script>
+
+
+    <!-- =========================================================
+         MOBILE SIDEBAR
+         ========================================================= -->
+
+    <script>
 
         document.addEventListener(
-            "keydown",
-            function (event) {
+            "DOMContentLoaded",
+            () => {
 
-                if (event.key === "Escape") {
-                    closeMenu();
+                const sidebar =
+                    document.getElementById(
+                        "bugaiSidebar"
+                    );
+
+                const button =
+                    document.getElementById(
+                        "sidebarMenuButton"
+                    );
+
+                const overlay =
+                    document.getElementById(
+                        "sidebarOverlay"
+                    );
+
+
+                if (
+                    !sidebar ||
+                    !button ||
+                    !overlay
+                ) {
+                    return;
                 }
+
+
+                function closeMenu() {
+
+                    sidebar.classList.remove(
+                        "open"
+                    );
+
+                    overlay.classList.remove(
+                        "show"
+                    );
+
+                    button.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                }
+
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const isOpen =
+                            sidebar.classList.toggle(
+                                "open"
+                            );
+
+
+                        overlay.classList.toggle(
+                            "show",
+                            isOpen
+                        );
+
+
+                        button.setAttribute(
+                            "aria-expanded",
+                            String(isOpen)
+                        );
+
+                    }
+                );
+
+
+                overlay.addEventListener(
+                    "click",
+                    closeMenu
+                );
+
+
+                document.addEventListener(
+                    "keydown",
+                    (event) => {
+
+                        if (
+                            event.key === "Escape"
+                        ) {
+
+                            closeMenu();
+
+                        }
+
+                    }
+                );
+
+
+                window.addEventListener(
+                    "resize",
+                    () => {
+
+                        if (
+                            window.innerWidth > 900
+                        ) {
+
+                            closeMenu();
+
+                        }
+
+                    }
+                );
+
+
+                document
+                    .querySelectorAll(
+                        ".sidebar-link"
+                    )
+                    .forEach(
+                        (link) => {
+
+                            link.addEventListener(
+                                "click",
+                                closeMenu
+                            );
+
+                        }
+                    );
 
             }
         );
 
-
-        window.addEventListener(
-            "resize",
-            function () {
-
-                if (window.innerWidth > 900) {
-                    closeMenu();
-                }
-
-            }
-        );
-
-    }
-
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-
-            applyTheme();
-            initMenu();
-
-        }
-    );
-
-
-    window.addEventListener(
-        "storage",
-        function (event) {
-
-            if (
-                event.key === SETTINGS_KEY ||
-                event.key === LEGACY_KEY
-            ) {
-
-                applyTheme();
-
-            }
-
-        }
-    );
-
-
-    if (window.matchMedia) {
-
-        const mediaQuery =
-            window.matchMedia(
-                "(prefers-color-scheme: dark)"
-            );
-
-
-        if (mediaQuery.addEventListener) {
-
-            mediaQuery.addEventListener(
-                "change",
-                applyTheme
-            );
-
-        }
-
-    }
-
-})();
-
-</script>
+    </script>
 
 </body>
+
 </html>

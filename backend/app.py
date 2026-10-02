@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, redirect
 from flask_cors import CORS
 from pathlib import Path
 
@@ -5084,11 +5084,14 @@ def dataset_summary():
 
 @app.get("/")
 def root():
+    """BugAI entry point."""
+    return redirect("/Login/login.html")
 
-    return send_from_directory(
-        str(ROOT),
-        "Dashboard/dashboard.html"
-    )
+
+@app.get("/login")
+def login_page():
+    """Convenient backend URL for the BugAI login page."""
+    return redirect("/Login/login.html")
 
 
 @app.get(

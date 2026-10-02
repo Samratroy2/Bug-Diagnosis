@@ -19,14 +19,17 @@
 
 <body>
 
-    <!-- =========================================================
-         BUGAI SIDEBAR
-    ========================================================== -->
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
     <aside
         id="bugaiSidebar"
         class="bugai-sidebar"
     >
+
+
+        <!-- BRAND -->
 
         <div class="sidebar-brand">
 
@@ -34,31 +37,52 @@
                 B
             </div>
 
+
             <div>
+
                 <div class="brand-name">
                     BugAI
                 </div>
 
+
                 <div class="brand-subtitle">
                     Intelligent Bug Diagnosis
                 </div>
+
             </div>
 
         </div>
 
 
+
+        <!-- NAVIGATION -->
+
         <nav class="sidebar-navigation">
+
+
+            <!-- =================================================
+                 MAIN
+                 ================================================= -->
 
             <div class="navigation-label">
                 MAIN
             </div>
 
+
             <a
                 class="sidebar-link"
                 href="../Dashboard/dashboard.html"
+                aria-current="page"
             >
-                <span class="nav-icon">⌂</span>
-                <span class="nav-text">Dashboard</span>
+
+                <span class="nav-icon">
+                    ⌂
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+
             </a>
 
 
@@ -66,8 +90,15 @@
                 class="sidebar-link"
                 href="../Bug-Submission/bug-submission.html"
             >
-                <span class="nav-icon">＋</span>
-                <span class="nav-text">Bug Submission</span>
+
+                <span class="nav-icon">
+                    ＋
+                </span>
+
+                <span class="nav-text">
+                    Bug Submission
+                </span>
+
             </a>
 
 
@@ -75,8 +106,15 @@
                 class="sidebar-link"
                 href="../Workflow/workflow.html"
             >
-                <span class="nav-icon">↝</span>
-                <span class="nav-text">Workflow</span>
+
+                <span class="nav-icon">
+                    ↝
+                </span>
+
+                <span class="nav-text">
+                    Workflow
+                </span>
+
             </a>
 
 
@@ -84,10 +122,22 @@
                 class="sidebar-link"
                 href="../Architecture/architecture.html"
             >
-                <span class="nav-icon">◈</span>
-                <span class="nav-text">Architecture</span>
+
+                <span class="nav-icon">
+                    ◈
+                </span>
+
+                <span class="nav-text">
+                    Architecture
+                </span>
+
             </a>
 
+
+
+            <!-- =================================================
+                 INTELLIGENCE
+                 ================================================= -->
 
             <div class="navigation-label">
                 INTELLIGENCE
@@ -98,8 +148,15 @@
                 class="sidebar-link"
                 href="../Knowledge-Base/knowledge-base.html"
             >
-                <span class="nav-icon">▣</span>
-                <span class="nav-text">Knowledge Base</span>
+
+                <span class="nav-icon">
+                    ▣
+                </span>
+
+                <span class="nav-text">
+                    Knowledge Base
+                </span>
+
             </a>
 
 
@@ -107,8 +164,41 @@
                 class="sidebar-link"
                 href="../Semantic-Similarity/similarity.html"
             >
-                <span class="nav-icon">⌕</span>
-                <span class="nav-text">Semantic Similarity</span>
+
+                <span class="nav-icon">
+                    ⌕
+                </span>
+
+                <span class="nav-text">
+                    Semantic Similarity
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 ANALYTICS
+                 ================================================= -->
+
+            <div class="navigation-label">
+                ANALYTICS
+            </div>
+
+
+            <a
+                class="sidebar-link active"
+                href="../Analytics/analytics.html"
+            >
+
+                <span class="nav-icon">
+                    ▥
+                </span>
+
+                <span class="nav-text">
+                    Defect Analytics
+                </span>
+
             </a>
 
 
@@ -116,10 +206,48 @@
                 class="sidebar-link"
                 href="../Validation/validation.html"
             >
-                <span class="nav-icon">✓</span>
-                <span class="nav-text">Validation</span>
+
+                <span class="nav-icon">
+                    ✓
+                </span>
+
+                <span class="nav-text">
+                    Validation
+                </span>
+
             </a>
 
+
+
+            <!-- =================================================
+                 KNOWLEDGE
+                 ================================================= -->
+
+            <div class="navigation-label">
+                KNOWLEDGE
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Knowledge-Base-Growth/knowledge-base-growth.html"
+            >
+
+                <span class="nav-icon">
+                    ＋
+                </span>
+
+                <span class="nav-text">
+                    KB Growth
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 SYSTEM
+                 ================================================= -->
 
             <div class="navigation-label">
                 SYSTEM
@@ -127,40 +255,51 @@
 
 
             <a
-                class="sidebar-link active"
-                href="../analytics/analytics.html"
-                aria-current="page"
-            >
-                <span class="nav-icon">▥</span>
-                <span class="nav-text">Analytics</span>
-            </a>
-
-
-            <a
                 class="sidebar-link"
                 href="../Settings/settings.html"
             >
-                <span class="nav-icon">⚙</span>
-                <span class="nav-text">Settings</span>
+
+                <span class="nav-icon">
+                    ⚙
+                </span>
+
+                <span class="nav-text">
+                    Settings
+                </span>
+
             </a>
+
 
         </nav>
 
 
+
+        <!-- =================================================
+             SIDEBAR FOOTER
+             ================================================= -->
+
         <div class="sidebar-footer">
 
+
             <div class="sidebar-status">
-                <span class="status-dot"></span>
-                <span class="status-text">
-                    Backend Connected
+
+                <span class="status-dot">
                 </span>
+
+                <span class="status-text">
+                    Firebase Connected
+                </span>
+
             </div>
+
 
             <div class="sidebar-version">
                 BugAI · Milestone 4
             </div>
 
+
         </div>
+
 
     </aside>
 
@@ -195,9 +334,7 @@
 
     <main>
 
-        <!-- =====================================================
-             PAGE HEADER
-        ====================================================== -->
+        <!-- PAGE HEADER -->
 
         <header class="page-header">
 
@@ -210,9 +347,9 @@
             </h1>
 
             <p>
-                Recurring themes, components, severity,
+                Analyze recurring themes, components, severity,
                 exceptions, sources and time-based patterns
-                across historical and submitted bugs.
+                across the BugAI defect knowledge base.
             </p>
 
         </header>
@@ -227,7 +364,6 @@
             <h2>
                 Analytics Filters
             </h2>
-
 
             <div class="filters">
 
@@ -375,7 +511,7 @@
 
         <section class="grid">
 
-            <!-- Severity -->
+            <!-- SEVERITY -->
 
             <div class="card">
 
@@ -391,7 +527,7 @@
             </div>
 
 
-            <!-- Component -->
+            <!-- COMPONENT -->
 
             <div class="card">
 
@@ -407,7 +543,7 @@
             </div>
 
 
-            <!-- Exceptions -->
+            <!-- EXCEPTIONS -->
 
             <div class="card">
 
@@ -423,7 +559,7 @@
             </div>
 
 
-            <!-- Errors -->
+            <!-- ERROR PATTERNS -->
 
             <div class="card">
 
@@ -460,335 +596,37 @@
 
 
         <!-- =====================================================
-             KNOWLEDGE BASE GROWTH
+             ANALYTICS STATUS
         ====================================================== -->
 
         <section class="card">
 
-            <h2>
-                Knowledge Base Growth — Confirmed Fix
-            </h2>
-
-            <p class="muted">
-                Select an existing submitted bug, review its
-                diagnosis, confirm the fix and approve it for
-                incremental knowledge-base indexing.
-            </p>
-
-
-            <div class="growth-grid">
-
-
-                <!-- =================================================
-                     BUG ID
-                ================================================== -->
-
-                <label>
-
-                    Bug ID *
-
-                    <select
-                        id="gBugId"
-                        name="bug_id"
-                        required
-                        aria-describedby="gBugIdHelp"
-                    >
-
-                        <option
-                            value=""
-                            selected
-                            disabled
-                        >
-                            Loading submitted bugs...
-                        </option>
-
-                    </select>
-
-                    <small
-                        id="gBugIdHelp"
-                        class="field-help"
-                    >
-                        Select one of the submitted BugAI analyses.
-                        Bug ID cannot be entered manually.
-                    </small>
-
-                </label>
-
-
-                <!-- =================================================
-                     PROJECT
-                ================================================== -->
-
-                <label>
-
-                    Project
-
-                    <input
-                        id="gProject"
-                        type="text"
-                        placeholder="e.g. Apache"
-                    >
-
-                </label>
-
-
-                <!-- =================================================
-                     TITLE
-                ================================================== -->
-
-                <label>
-
-                    Title *
-
-                    <input
-                        id="gTitle"
-                        type="text"
-                        placeholder="Bug title"
-                        required
-                    >
-
-                </label>
-
-
-                <!-- =================================================
-                     COMPONENT
-                ================================================== -->
-
-                <label>
-
-                    Affected Component *
-
-                    <input
-                        id="gComponent"
-                        type="text"
-                        placeholder="e.g. Database"
-                        required
-                    >
-
-                </label>
-
-
-                <!-- =================================================
-                     DESCRIPTION
-                ================================================== -->
-
-                <label>
-
-                    Description *
-
-                    <textarea
-                        id="gDescription"
-                        placeholder="Describe the confirmed bug..."
-                        required
-                    ></textarea>
-
-                </label>
-
-
-                <!-- =================================================
-                     STACK TRACE
-                ================================================== -->
-
-                <label>
-
-                    Error Information / Stack Trace *
-
-                    <textarea
-                        id="gStack"
-                        placeholder="Paste error information or stack trace..."
-                        required
-                    ></textarea>
-
-                </label>
-
-
-                <!-- =================================================
-                     ROOT CAUSE
-                ================================================== -->
-
-                <label>
-
-                    Confirmed Root Cause *
-
-                    <textarea
-                        id="gRoot"
-                        placeholder="Describe the confirmed root cause..."
-                        required
-                    ></textarea>
-
-                </label>
-
-
-                <!-- =================================================
-                     RESOLUTION
-                ================================================== -->
-
-                <label>
-
-                    Confirmed Resolution / Fix *
-
-                    <textarea
-                        id="gResolution"
-                        placeholder="Describe the confirmed resolution or fix..."
-                        required
-                    ></textarea>
-
-                </label>
-
-
-                <!-- =================================================
-                     SEVERITY
-                ================================================== -->
-
-                <label>
-
-                    Severity
-
-                    <select id="gSeverity">
-
-                        <option value="">
-                            Select severity
-                        </option>
-
-                        <option value="Critical">
-                            Critical
-                        </option>
-
-                        <option value="High">
-                            High
-                        </option>
-
-                        <option value="Medium">
-                            Medium
-                        </option>
-
-                        <option value="Low">
-                            Low
-                        </option>
-
-                    </select>
-
-                </label>
-
-
-                <!-- =================================================
-                     PRIORITY
-                ================================================== -->
-
-                <label>
-
-                    Priority
-
-                    <select id="gPriority">
-
-                        <option value="">
-                            Select priority
-                        </option>
-
-                        <option value="P1">
-                            P1
-                        </option>
-
-                        <option value="P2">
-                            P2
-                        </option>
-
-                        <option value="P3">
-                            P3
-                        </option>
-
-                        <option value="P4">
-                            P4
-                        </option>
-
-                    </select>
-
-                </label>
-
-
-                <!-- =================================================
-                     CONFIRMED FIX
-                ================================================== -->
-
-                <label class="checkbox-label">
-
-                    <input
-                        type="checkbox"
-                        id="confirmedFix"
-                    >
-
-                    <span>
-                        Confirmed fix
-                    </span>
-
-                </label>
-
-
-                <!-- =================================================
-                     APPROVED
-                ================================================== -->
-
-                <label class="checkbox-label">
-
-                    <input
-                        type="checkbox"
-                        id="approved"
-                    >
-
-                    <span>
-                        Approved for KB
-                    </span>
-
-                </label>
+            <div class="section-heading-row">
+
+                <div>
+                    <h2>
+                        Analytics Status
+                    </h2>
+
+                    <p class="muted">
+                        Current status of the Milestone 4 analytics
+                        service and historical defect dataset.
+                    </p>
+                </div>
+
+                <span
+                    id="analyticsStatus"
+                    class="status-badge"
+                >
+                    Checking...
+                </span>
 
             </div>
 
-
-            <!-- =================================================
-                 GROWTH ACTION
-            ================================================== -->
-
-            <button
-                id="addGrowth"
-                class="primary"
-                type="button"
-            >
-                Validate &amp; Add to Knowledge Base
-            </button>
-
-
-            <pre id="growthResult"></pre>
-
-        </section>
-
-
-        <!-- =====================================================
-             END-TO-END TEST
-        ====================================================== -->
-
-        <section class="card">
-
-            <h2>
-                End-to-End Test
-            </h2>
-
-            <p class="muted">
-                Runs five distinct cases through
-                Triage → Log Analysis → RAG → Root Cause
-                → Duplicate Detection → Remediation.
-            </p>
-
-
-            <button
-                id="runE2E"
-                class="primary"
-                type="button"
-            >
-                Run Milestone 4 E2E Test
-            </button>
-
-
-            <pre id="e2eResult"></pre>
+            <div
+                id="analyticsStatusDetails"
+                class="status-details"
+            ></div>
 
         </section>
 
@@ -796,238 +634,10 @@
 
 
     <!-- =========================================================
-         ANALYTICS JAVASCRIPT
+         SCRIPT
     ========================================================== -->
 
-    <script src="analytics.js"></script>
-
-
-    <!-- =========================================================
-         THEME + MOBILE SIDEBAR
-    ========================================================== -->
-
-    <script>
-
-        (function () {
-
-            const SETTINGS_KEY = "bugai-settings";
-            const LEGACY_KEY = "bugai-theme";
-
-
-            function getTheme() {
-
-                try {
-
-                    const settings =
-                        JSON.parse(
-                            localStorage.getItem(
-                                SETTINGS_KEY
-                            ) || "{}"
-                        );
-
-                    if (settings.theme) {
-                        return settings.theme;
-                    }
-
-                } catch (error) {
-                    console.warn(
-                        "Unable to read BugAI settings.",
-                        error
-                    );
-                }
-
-                return (
-                    localStorage.getItem(
-                        LEGACY_KEY
-                    ) || "system"
-                );
-            }
-
-
-            function applyTheme() {
-
-                const theme = getTheme();
-
-                const dark =
-                    theme === "dark" ||
-                    (
-                        theme === "system" &&
-                        window.matchMedia &&
-                        window.matchMedia(
-                            "(prefers-color-scheme: dark)"
-                        ).matches
-                    );
-
-
-                document.documentElement.classList.toggle(
-                    "dark-mode",
-                    dark
-                );
-
-                document.documentElement.classList.toggle(
-                    "dark",
-                    dark
-                );
-
-                document.body.classList.toggle(
-                    "dark-mode",
-                    dark
-                );
-
-                document.body.classList.toggle(
-                    "dark",
-                    dark
-                );
-            }
-
-
-            function initMenu() {
-
-                const sidebar =
-                    document.getElementById(
-                        "bugaiSidebar"
-                    );
-
-                const button =
-                    document.getElementById(
-                        "sidebarMenuButton"
-                    );
-
-                const overlay =
-                    document.getElementById(
-                        "sidebarOverlay"
-                    );
-
-
-                if (
-                    !sidebar ||
-                    !button ||
-                    !overlay
-                ) {
-                    return;
-                }
-
-
-                function closeMenu() {
-
-                    sidebar.classList.remove(
-                        "open"
-                    );
-
-                    overlay.classList.remove(
-                        "show"
-                    );
-
-                    button.setAttribute(
-                        "aria-expanded",
-                        "false"
-                    );
-                }
-
-
-                button.addEventListener(
-                    "click",
-                    function () {
-
-                        const isOpen =
-                            sidebar.classList.toggle(
-                                "open"
-                            );
-
-                        overlay.classList.toggle(
-                            "show",
-                            isOpen
-                        );
-
-                        button.setAttribute(
-                            "aria-expanded",
-                            String(isOpen)
-                        );
-                    }
-                );
-
-
-                overlay.addEventListener(
-                    "click",
-                    closeMenu
-                );
-
-
-                document.addEventListener(
-                    "keydown",
-                    function (event) {
-
-                        if (
-                            event.key === "Escape"
-                        ) {
-                            closeMenu();
-                        }
-                    }
-                );
-
-
-                window.addEventListener(
-                    "resize",
-                    function () {
-
-                        if (
-                            window.innerWidth > 900
-                        ) {
-                            closeMenu();
-                        }
-                    }
-                );
-            }
-
-
-            document.addEventListener(
-                "DOMContentLoaded",
-                function () {
-
-                    applyTheme();
-                    initMenu();
-
-                }
-            );
-
-
-            window.addEventListener(
-                "storage",
-                function (event) {
-
-                    if (
-                        event.key === SETTINGS_KEY ||
-                        event.key === LEGACY_KEY
-                    ) {
-                        applyTheme();
-                    }
-                }
-            );
-
-
-            if (window.matchMedia) {
-
-                const mediaQuery =
-                    window.matchMedia(
-                        "(prefers-color-scheme: dark)"
-                    );
-
-                if (
-                    mediaQuery.addEventListener
-                ) {
-
-                    mediaQuery.addEventListener(
-                        "change",
-                        applyTheme
-                    );
-
-                }
-
-            }
-
-        })();
-
-    </script>
+    <script type="module" src="analytics.js"></script>
 
 </body>
 

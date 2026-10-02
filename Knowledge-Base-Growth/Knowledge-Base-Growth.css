@@ -1,0 +1,1109 @@
+/* =========================================================
+   BUGAI — KNOWLEDGE BASE GROWTH
+   Milestone 4
+========================================================= */
+
+
+/* =========================================================
+   01. GLOBAL
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    background: #f5f7fb;
+    color: #172033;
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    line-height: 1.55;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   02. SIDEBAR
+========================================================= */
+
+.bugai-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 22px 16px;
+
+    background: #111827;
+    color: #ffffff;
+
+    z-index: 1000;
+
+    overflow-y: auto;
+}
+
+
+/* BRAND */
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 4px 8px 25px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand-logo {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.brand-name {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.brand-subtitle {
+    margin-top: 2px;
+
+    color: #94a3b8;
+
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+
+/* NAVIGATION */
+
+.sidebar-navigation {
+    flex: 1;
+    padding-top: 20px;
+}
+
+.navigation-label {
+    margin: 18px 10px 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    min-height: 42px;
+
+    margin-bottom: 4px;
+    padding: 9px 11px;
+
+    border-radius: 8px;
+
+    color: #cbd5e1;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+}
+
+.sidebar-link.active {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.sidebar-link:active {
+    transform: translateY(1px);
+}
+
+.nav-icon {
+    width: 22px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 17px;
+}
+
+.nav-text {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* FOOTER */
+
+.sidebar-footer {
+    padding-top: 18px;
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 0 8px;
+
+    color: #cbd5e1;
+
+    font-size: 11px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    flex: 0 0 auto;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+}
+
+.sidebar-version {
+    margin-top: 8px;
+    padding: 0 8px;
+
+    color: #64748b;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   03. MOBILE MENU
+========================================================= */
+
+.sidebar-menu-button {
+    position: fixed;
+
+    top: 15px;
+    left: 15px;
+
+    width: 44px;
+    height: 44px;
+
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    border: 1px solid #d7dce5;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #172033;
+
+    z-index: 1100;
+}
+
+.sidebar-menu-button span {
+    width: 20px;
+    height: 2px;
+
+    border-radius: 2px;
+
+    background: currentColor;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+
+    background: rgba(15, 23, 42, 0.5);
+
+    z-index: 900;
+}
+
+
+/* =========================================================
+   04. MAIN
+========================================================= */
+
+main {
+    min-height: 100vh;
+
+    margin-left: 250px;
+
+    padding: 42px 48px;
+
+    max-width: 1800px;
+}
+
+
+/* =========================================================
+   05. PAGE HEADER
+========================================================= */
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.eyebrow {
+    margin-bottom: 7px;
+
+    color: #2563eb;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.page-header h1 {
+    margin: 0 0 8px;
+
+    color: #111827;
+
+    font-size: 34px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+.page-header p {
+    max-width: 900px;
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   06. INFORMATION CARD
+========================================================= */
+
+.info-card {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 16px;
+
+    margin-bottom: 24px;
+    padding: 20px 22px;
+
+    border: 1px solid #dbeafe;
+    border-radius: 14px;
+
+    background: #eff6ff;
+
+    box-shadow:
+        0 4px 14px rgba(15, 23, 42, 0.03);
+}
+
+.info-icon {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.info-card h2 {
+    margin: 0 0 5px;
+
+    color: #1e3a8a;
+
+    font-size: 17px;
+}
+
+.info-card p {
+    margin: 0;
+
+    color: #475569;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   07. CARD
+========================================================= */
+
+.card {
+    margin-bottom: 24px;
+    padding: 24px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 4px 14px rgba(15, 23, 42, 0.04);
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.card h2 {
+    margin: 0 0 10px;
+
+    color: #111827;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.muted {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   08. SECTION HEADING
+========================================================= */
+
+.section-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+}
+
+
+/* =========================================================
+   09. STATUS BADGE
+========================================================= */
+
+.status-badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 30px;
+
+    padding: 5px 12px;
+
+    border-radius: 999px;
+
+    background: #eff6ff;
+    color: #2563eb;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.status-badge.success {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.status-badge.warning {
+    background: #fffbeb;
+    color: #b45309;
+}
+
+.status-badge.error {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+
+/* =========================================================
+   10. GROWTH FORM
+========================================================= */
+
+.growth-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 22px;
+}
+
+.growth-grid label {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    min-width: 0;
+
+    color: #374151;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.growth-grid input,
+.growth-grid select,
+.growth-grid textarea {
+    width: 100%;
+
+    border: 1px solid #d7dce5;
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #ffffff;
+    color: #172033;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.growth-grid input,
+.growth-grid select {
+    min-height: 42px;
+
+    padding: 10px 12px;
+}
+
+.growth-grid textarea {
+    min-height: 115px;
+
+    padding: 10px 12px;
+
+    resize: vertical;
+
+    line-height: 1.5;
+}
+
+.growth-grid input:focus,
+.growth-grid select:focus,
+.growth-grid textarea:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.growth-grid input::placeholder,
+.growth-grid textarea::placeholder {
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   11. BUG ID
+========================================================= */
+
+#gBugId {
+    width: 100%;
+
+    min-height: 42px;
+
+    padding: 10px 38px 10px 12px;
+
+    border: 1px solid #d7dce5;
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #ffffff;
+    color: #172033;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+#gBugId:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+#gBugId:disabled {
+    opacity: 0.7;
+
+    cursor: not-allowed;
+
+    background: #f8fafc;
+}
+
+#gBugId option {
+    color: #172033;
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   12. FIELD HELP
+========================================================= */
+
+.field-help {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #64748b;
+
+    font-size: 11px;
+    font-weight: 400;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   13. CHECKBOXES
+========================================================= */
+
+.checkbox-label {
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center;
+
+    gap: 10px !important;
+
+    min-height: 42px;
+
+    padding: 8px 0;
+
+    color: #374151;
+
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+
+    margin: 0;
+
+    flex: 0 0 auto;
+
+    accent-color: #2563eb;
+
+    cursor: pointer;
+}
+
+.checkbox-label span {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   14. ACTION ROW
+========================================================= */
+
+.action-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 4px;
+}
+
+.primary {
+    min-height: 44px;
+
+    padding: 10px 20px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+.primary:hover {
+    background: #1d4ed8;
+}
+
+.primary:active {
+    transform: translateY(1px);
+}
+
+.primary:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   15. RESULT
+========================================================= */
+
+.result-box {
+    width: 100%;
+
+    min-height: 100px;
+
+    margin-top: 20px;
+    padding: 16px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+
+    background: #f8fafc;
+    color: #475569;
+
+    font-family:
+        "Cascadia Code",
+        "Consolas",
+        monospace;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.result-box.loading {
+    border-color: #dbeafe;
+
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.result-box.result-success {
+    border-color: #bbf7d0;
+
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.result-box.result-error {
+    border-color: #fecaca;
+
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+
+/* =========================================================
+   16. WORKFLOW CARD
+========================================================= */
+
+.workflow-card {
+    margin-bottom: 0;
+}
+
+.workflow-card h2 {
+    margin-bottom: 20px;
+}
+
+.workflow-steps {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.workflow-step {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+
+    padding: 17px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+
+    background: #f8fafc;
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.workflow-step strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #111827;
+
+    font-size: 13px;
+}
+
+.workflow-step p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   17. LOADING / EMPTY
+========================================================= */
+
+.loading-state,
+.empty-state {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 80px;
+
+    padding: 18px;
+
+    border-radius: 10px;
+
+    background: #f8fafc;
+    color: #64748b;
+
+    text-align: center;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   18. ERROR
+========================================================= */
+
+.error-state {
+    display: flex;
+
+    align-items: center;
+
+    min-height: 60px;
+
+    padding: 14px;
+
+    border-radius: 10px;
+
+    background: #fef2f2;
+    color: #b91c1c;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   19. RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    main {
+        padding: 35px 30px;
+    }
+
+    .workflow-steps {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =========================================================
+   20. RESPONSIVE — SMALL TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .bugai-sidebar {
+        transform: translateX(-100%);
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .bugai-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-menu-button {
+        display: flex;
+    }
+
+    .sidebar-overlay.open {
+        display: block;
+    }
+
+    main {
+        margin-left: 0;
+
+        padding:
+            80px 24px
+            30px;
+    }
+
+    .growth-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .workflow-steps {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =========================================================
+   21. RESPONSIVE — MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    main {
+        padding:
+            75px 16px
+            25px;
+    }
+
+    .page-header h1 {
+        font-size: 27px;
+    }
+
+    .page-header p {
+        font-size: 14px;
+    }
+
+    .info-card {
+        padding: 17px;
+
+        gap: 12px;
+    }
+
+    .info-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .card {
+        padding: 18px;
+
+        border-radius: 12px;
+    }
+
+    .section-heading {
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+    .workflow-steps {
+        grid-template-columns: 1fr;
+    }
+
+    .action-row {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .action-row .primary {
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   22. VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .page-header h1 {
+        font-size: 24px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .info-card {
+        flex-direction: column;
+    }
+
+}
+
+
+/* =========================================================
+   23. ACCESSIBILITY
+========================================================= */
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+    outline: 3px solid
+        rgba(37, 99, 235, 0.25);
+
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   24. REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+
+        scroll-behavior: auto !important;
+
+        transition-duration:
+            0.01ms !important;
+
+        animation-duration:
+            0.01ms !important;
+
+        animation-iteration-count:
+            1 !important;
+    }
+
+}

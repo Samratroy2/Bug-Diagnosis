@@ -6,17 +6,95 @@
 
 
 /* =========================================================
+   FIREBASE
+   Uses the existing shared Firebase configuration.
+   ========================================================= */
+
+import {
+    auth,
+    db,
+    collection,
+    getDocs,
+    onAuthStateChanged
+} from "../firebase.js";
+
+
+/* =========================================================
    API CONFIGURATION
    ========================================================= */
 
-const API_BASE_URL = "http://127.0.0.1:5000";
+const API_BASE_URL =
+    "http://127.0.0.1:5000";
 
 
 /* =========================================================
    CACHE CONFIGURATION
    ========================================================= */
 
-const KB_STATS_CACHE_KEY = "bugaiKnowledgeBaseStats";
+const KB_STATS_CACHE_KEY =
+    "bugaiKnowledgeBaseStats";
+
+
+/* =========================================================
+   WAIT FOR FIREBASE AUTHENTICATION
+   ========================================================= */
+
+function waitForFirebaseAuth() {
+
+    return new Promise(
+        (resolve, reject) => {
+
+            let completed = false;
+
+            const unsubscribe =
+                onAuthStateChanged(
+                    auth,
+
+                    (user) => {
+
+                        if (completed) {
+                            return;
+                        }
+
+                        completed = true;
+
+                        unsubscribe();
+
+                        if (!user) {
+
+                            reject(
+                                new Error(
+                                    "No authenticated Firebase user found."
+                                )
+                            );
+
+                            return;
+                        }
+
+                        console.log(
+                            "✅ Firebase authentication ready:",
+                            user.uid
+                        );
+
+                        resolve(user);
+                    },
+
+                    (error) => {
+
+                        if (completed) {
+                            return;
+                        }
+
+                        completed = true;
+
+                        unsubscribe();
+
+                        reject(error);
+                    }
+                );
+        }
+    );
+}
 
 
 /* =========================================================
@@ -25,21 +103,85 @@ const KB_STATS_CACHE_KEY = "bugaiKnowledgeBaseStats";
 
 async function loadDashboard() {
 
-    console.log("🚀 BugAI Dashboard loading...");
+    console.log(
+        "🚀 BugAI Dashboard loading..."
+    );
 
-    /*
-     * Load independent Dashboard sections in parallel.
-     *
-     * Historical Defects uses sessionStorage cache.
-     * Total Analyses and Recent Analyses come from backend.
-     */
+
+    /* =====================================================
+       WAIT FOR FIREBASE LOGIN
+       ===================================================== */
+
+    try {
+
+        await waitForFirebaseAuth();
+
+    } catch (error) {
+
+        console.error(
+            "❌ Firebase authentication failed:",
+            error
+        );
+
+
+        const totalElement =
+            document.getElementById(
+                "totalAnalyses"
+            );
+
+
+        const recentContainer =
+            document.getElementById(
+                "recentAnalyses"
+            );
+
+
+        if (totalElement) {
+
+            totalElement.textContent =
+                "0";
+        }
+
+
+        if (recentContainer) {
+
+            recentContainer.innerHTML = `
+                <p class="muted">
+                    Please sign in to view Firebase analyses.
+                </p>
+            `;
+        }
+
+
+        /*
+         * Knowledge Base does not depend
+         * on Firebase authentication.
+         */
+
+        await loadKnowledgeBaseStats();
+
+        return;
+    }
+
+
+    /* =====================================================
+       FIREBASE AUTHENTICATED
+       ===================================================== */
+
     await Promise.allSettled([
+
         loadKnowledgeBaseStats(),
+
         loadTotalAnalyses(),
+
         loadRecentAnalyses()
+
     ]);
 
-    console.log("✅ BugAI Dashboard loaded");
+
+    console.log(
+        "✅ BugAI Dashboard loaded"
+    );
 }
 
 
@@ -52,20 +194,25 @@ async function loadDashboard() {
  *
  * The Knowledge Base contains 1.31M+ records.
  *
- * We do NOT request /api/knowledge-base/stats on every
- * Dashboard refresh.
+ * We do NOT request /api/knowledge-base/stats
+ * on every Dashboard refresh.
  *
- * Once the value is successfully obtained, it is stored
- * in sessionStorage and reused during page refreshes.
+ * Once the value is successfully obtained,
+ * it is stored in sessionStorage and reused
+ * during page refreshes.
  *
- * This prevents the backend from repeatedly loading
- * defects.csv just because the Dashboard was refreshed.
+ * This prevents the backend from repeatedly
+ * loading defects.csv just because the Dashboard
+ * was refreshed.
  */
 
 async function loadKnowledgeBaseStats() {
 
     const historical =
-        document.getElementById("historicalDefects");
+        document.getElementById(
+            "historicalDefects"
+        );
+
 
     if (!historical) {
 
@@ -90,9 +237,14 @@ async function loadKnowledgeBaseStats() {
                 KB_STATS_CACHE_KEY
             );
 
+
         if (cached) {
 
-            cachedStats = JSON.parse(cached);
+            cachedStats =
+                JSON.parse(
+                    cached
+                );
+
 
             if (
                 cachedStats &&
@@ -104,15 +256,22 @@ async function loadKnowledgeBaseStats() {
                         cachedStats.total_records
                     );
 
+
                 historical.textContent =
-                    Number.isFinite(totalRecords)
-                        ? totalRecords.toLocaleString("en-IN")
+                    Number.isFinite(
+                        totalRecords
+                    )
+                        ? totalRecords.toLocaleString(
+                            "en-IN"
+                        )
                         : "—";
+
 
                 console.log(
                     "⚡ Historical Defects loaded from session cache:",
                     totalRecords
                 );
+
 
                 /*
                  * VERY IMPORTANT:
@@ -121,9 +280,11 @@ async function loadKnowledgeBaseStats() {
                  *
                  * Do NOT call the backend again.
                  *
-                 * This prevents the Dashboard refresh from
-                 * triggering another large KB statistics load.
+                 * This prevents the Dashboard refresh
+                 * from triggering another large KB
+                 * statistics load.
                  */
+
                 return;
             }
         }
@@ -141,7 +302,8 @@ async function loadKnowledgeBaseStats() {
        NO CACHE AVAILABLE
        ----------------------------------------------------- */
 
-    historical.textContent = "Loading...";
+    historical.textContent =
+        "Loading...";
 
 
     try {
@@ -175,10 +337,13 @@ async function loadKnowledgeBaseStats() {
 
         let stats;
 
+
         try {
 
             stats =
-                JSON.parse(responseText);
+                JSON.parse(
+                    responseText
+                );
 
         } catch (jsonError) {
 
@@ -215,7 +380,11 @@ async function loadKnowledgeBaseStats() {
             );
 
 
-        if (!Number.isFinite(totalRecords)) {
+        if (
+            !Number.isFinite(
+                totalRecords
+            )
+        ) {
 
             throw new Error(
                 "Invalid total_records value."
@@ -228,7 +397,9 @@ async function loadKnowledgeBaseStats() {
            ------------------------------------------------- */
 
         historical.textContent =
-            totalRecords.toLocaleString("en-IN");
+            totalRecords.toLocaleString(
+                "en-IN"
+            );
 
 
         /* -------------------------------------------------
@@ -257,6 +428,7 @@ async function loadKnowledgeBaseStats() {
 
                 })
             );
+
 
             console.log(
                 "💾 Knowledge Base statistics cached."
@@ -288,12 +460,14 @@ async function loadKnowledgeBaseStats() {
         /*
          * Keep an existing value if one is available.
          */
+
         if (
             !historical.textContent ||
             historical.textContent === "Loading..."
         ) {
 
-            historical.textContent = "—";
+            historical.textContent =
+                "—";
         }
     }
 }
@@ -304,8 +478,8 @@ async function loadKnowledgeBaseStats() {
    ========================================================= */
 
 /*
- * This function is intentionally available if the KB is
- * rebuilt or its size changes.
+ * This function is intentionally available
+ * if the KB is rebuilt or its size changes.
  *
  * You can call:
  *
@@ -322,6 +496,7 @@ function clearKnowledgeBaseStatsCache() {
             KB_STATS_CACHE_KEY
         );
 
+
         console.log(
             "🗑️ Knowledge Base statistics cache cleared."
         );
@@ -337,20 +512,21 @@ function clearKnowledgeBaseStatsCache() {
 
 
 /* =========================================================
-   TOTAL ANALYSES
+   TOTAL ANALYSES — FIREBASE
    ========================================================= */
 
 /*
- * Backend endpoint:
+ * Source:
  *
- * /api/analytics/submitted-count
+ *     Firestore
+ *     └── bugSubmissions
  *
- * Example:
+ * No:
+ *     localStorage
+ *     backend analytics API
+ *     local history
  *
- * {
- *     "ok": true,
- *     "total_analyses": 2
- * }
+ * is used here.
  */
 
 async function loadTotalAnalyses() {
@@ -371,89 +547,100 @@ async function loadTotalAnalyses() {
     }
 
 
+    element.textContent =
+        "Loading...";
+
+
     try {
 
-        element.textContent =
-            "Loading...";
-
-
-        const response =
-            await fetch(
-                `${API_BASE_URL}/api/analytics/submitted-count?t=${Date.now()}`,
-                {
-                    method: "GET",
-                    cache: "no-store"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
-
-
-        const data =
-            await response.json();
-
-
         console.log(
-            "✅ Submitted analyses:",
-            data
+            "🔥 Reading bugSubmissions from Firebase..."
         );
 
 
-        if (
-            data.ok !== true &&
-            data.total_analyses === undefined
-        ) {
-
-            throw new Error(
-                data.error ||
-                "Invalid submitted-count response."
+        const submissionsReference =
+            collection(
+                db,
+                "bugSubmissions"
             );
-        }
 
 
-        const count =
-            Number(
-                data.total_analyses ?? 0
+        const snapshot =
+            await getDocs(
+                submissionsReference
             );
+
+
+        const total =
+            snapshot.size;
+
+
+        console.log(
+            "🔥 Firebase bugSubmissions:",
+            snapshot
+        );
+
+
+        console.log(
+            "🔥 Firebase document count:",
+            total
+        );
 
 
         element.textContent =
-            Number.isFinite(count)
-                ? count.toLocaleString("en-IN")
-                : "0";
+            total.toLocaleString(
+                "en-IN"
+            );
 
+
+        console.log(
+            "✅ Total Analyses from Firebase:",
+            total
+        );
 
     } catch (error) {
 
         console.error(
-            "❌ Failed to load Total Analyses:",
+            "❌ Failed to load Total Analyses from Firebase.",
             error
         );
 
 
+        console.error(
+            "Firebase error code:",
+            error?.code || "unknown"
+        );
+
+
+        console.error(
+            "Firebase error message:",
+            error?.message || "unknown"
+        );
+
+
         /*
-         * Do not break the Dashboard if the backend
-         * is temporarily unavailable.
+         * Do NOT use localStorage here.
          */
-        element.textContent = "0";
+
+        element.textContent =
+            "0";
     }
 }
 
 
 /* =========================================================
-   RECENT ANALYSES
+   RECENT ANALYSES — FIREBASE
    ========================================================= */
 
 /*
- * Backend endpoint:
+ * Source:
  *
- * /api/analytics/submitted-records
+ *     Firestore
+ *     └── bugSubmissions
+ *
+ * Latest 5 documents are displayed.
+ *
+ * No localStorage is used.
  */
 
 async function loadRecentAnalyses() {
@@ -483,64 +670,196 @@ async function loadRecentAnalyses() {
 
     try {
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/api/analytics/submitted-records?t=${Date.now()}`,
-                {
-                    method: "GET",
-                    cache: "no-store"
+        console.log(
+            "🔥 Loading recent analyses from Firebase..."
+        );
+
+
+        const submissionsReference =
+            collection(
+                db,
+                "bugSubmissions"
+            );
+
+
+        const snapshot =
+            await getDocs(
+                submissionsReference
+            );
+
+
+        const analyses =
+            snapshot.docs.map(
+                (documentSnapshot) => {
+
+                    const data =
+                        documentSnapshot.data() || {};
+
+
+                    return {
+
+                        id:
+                            documentSnapshot.id,
+
+                        ...data
+
+                    };
                 }
             );
 
 
-        if (!response.ok) {
-
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
-
-
-        const data =
-            await response.json();
-
-
         console.log(
-            "✅ Recent analyses:",
-            data
+            "🔥 Firebase analyses loaded:",
+            analyses.length
         );
 
 
-        if (
-            data.ok !== true ||
-            !Array.isArray(data.results)
-        ) {
+        /*
+         * Sort newest first.
+         *
+         * Firestore serverTimestamp()
+         * becomes a Timestamp object.
+         */
 
-            throw new Error(
-                "Invalid recent analyses response."
+        analyses.sort(
+            (a, b) => {
+
+                const aTime =
+                    getFirebaseTimestamp(
+                        a.createdAt ||
+                        a.updatedAt
+                    );
+
+
+                const bTime =
+                    getFirebaseTimestamp(
+                        b.createdAt ||
+                        b.updatedAt
+                    );
+
+
+                return bTime - aTime;
+            }
+        );
+
+
+        /*
+         * Only display the newest 5.
+         */
+
+        const recentAnalyses =
+            analyses.slice(
+                0,
+                5
             );
-        }
 
 
         renderRecentAnalyses(
-            data.results
+            recentAnalyses
         );
 
 
     } catch (error) {
 
         console.error(
-            "❌ Failed to load Recent Analyses:",
+            "❌ Failed to load Recent Analyses from Firebase.",
             error
+        );
+
+
+        console.error(
+            "Firebase error code:",
+            error?.code || "unknown"
+        );
+
+
+        console.error(
+            "Firebase error message:",
+            error?.message || "unknown"
         );
 
 
         container.innerHTML = `
             <p class="muted">
-                Unable to load recent analyses.
+                Unable to load recent analyses from Firebase.
             </p>
         `;
     }
+}
+
+
+/* =========================================================
+   FIREBASE TIMESTAMP HELPER
+   ========================================================= */
+
+function getFirebaseTimestamp(
+    timestamp
+) {
+
+    if (!timestamp) {
+
+        return 0;
+    }
+
+
+    /*
+     * Firestore Timestamp
+     */
+
+    if (
+        typeof timestamp.toMillis ===
+        "function"
+    ) {
+
+        return timestamp.toMillis();
+    }
+
+
+    /*
+     * Firestore Timestamp-like object
+     */
+
+    if (
+        typeof timestamp === "object" &&
+        typeof timestamp.seconds ===
+        "number"
+    ) {
+
+        return (
+            timestamp.seconds * 1000
+        ) + (
+            Number(
+                timestamp.nanoseconds || 0
+            ) / 1000000
+        );
+    }
+
+
+    /*
+     * JavaScript Date
+     */
+
+    if (
+        timestamp instanceof Date
+    ) {
+
+        return timestamp.getTime();
+    }
+
+
+    /*
+     * ISO/string date
+     */
+
+    const parsed =
+        new Date(
+            timestamp
+        ).getTime();
+
+
+    return Number.isFinite(parsed)
+        ? parsed
+        : 0;
 }
 
 
@@ -564,10 +883,6 @@ function renderRecentAnalyses(
     }
 
 
-    /* -----------------------------------------------------
-       NO ANALYSES
-       ----------------------------------------------------- */
-
     if (
         !Array.isArray(analyses) ||
         analyses.length === 0
@@ -583,189 +898,92 @@ function renderRecentAnalyses(
     }
 
 
-    /* -----------------------------------------------------
-       SORT NEWEST FIRST
-       ----------------------------------------------------- */
-
-    const sorted =
-        [...analyses].sort(
-            function (a, b) {
-
-                const dateA =
-                    new Date(
-                        a.timestamp ||
-                        a.created_at ||
-                        0
-                    ).getTime();
-
-
-                const dateB =
-                    new Date(
-                        b.timestamp ||
-                        b.created_at ||
-                        0
-                    ).getTime();
-
-
-                return dateB - dateA;
-            }
-        );
-
-
-    /* -----------------------------------------------------
-       DISPLAY LATEST 5
-       ----------------------------------------------------- */
-
-    const recent =
-        sorted.slice(0, 5);
-
-
-    /* -----------------------------------------------------
-       BUILD HTML
-       ----------------------------------------------------- */
-
     container.innerHTML =
-        recent
+        analyses
             .map(
-                function (analysis) {
+                (analysis) => {
 
                     const title =
-                        escapeHTML(
-                            analysis.title ||
-                            "Untitled Analysis"
-                        );
+                        analysis.title ||
+                        analysis.bug?.title ||
+                        "Untitled Bug";
 
 
                     const project =
-                        escapeHTML(
-                            analysis.project ||
-                            "Custom Project"
-                        );
+                        analysis.project ||
+                        analysis.bug?.project ||
+                        "Unknown Project";
+
+
+                    const status =
+                        analysis.status ||
+                        "Submitted";
 
 
                     const severity =
-                        escapeHTML(
-                            analysis.severity ||
-                            "Unknown"
-                        );
+                        analysis.severity ||
+                        analysis.analysis
+                            ?.triage
+                            ?.severity ||
+                        analysis.analysis
+                            ?.triage_analysis
+                            ?.severity ||
+                        "Unknown";
 
 
                     const priority =
-                        escapeHTML(
-                            analysis.priority ||
-                            "Unknown"
-                        );
+                        analysis.priority ||
+                        analysis.analysis
+                            ?.triage
+                            ?.priority ||
+                        analysis.analysis
+                            ?.triage_analysis
+                            ?.priority ||
+                        "Unknown";
 
 
-                    const component =
-                        escapeHTML(
-                            analysis.affected_component ||
-                            analysis.component ||
-                            "Unknown"
-                        );
-
-
-                    const timestamp =
-                        analysis.timestamp ||
-                        analysis.created_at ||
-                        "";
-
-
-                    let formattedDate = "";
-
-
-                    if (timestamp) {
-
-                        try {
-
-                            const date =
-                                new Date(
-                                    timestamp
-                                );
-
-
-                            if (
-                                !Number.isNaN(
-                                    date.getTime()
-                                )
-                            ) {
-
-                                formattedDate =
-                                    date.toLocaleString(
-                                        "en-IN",
-                                        {
-                                            dateStyle: "medium",
-                                            timeStyle: "short"
-                                        }
-                                    );
-
-                            } else {
-
-                                formattedDate =
-                                    String(timestamp);
-                            }
-
-                        } catch (error) {
-
-                            formattedDate =
-                                String(timestamp);
-                        }
-                    }
-
-
-                    const bugId =
-                        escapeHTML(
-                            analysis.bug_id ||
-                            ""
+                    const createdAt =
+                        formatFirebaseDate(
+                            analysis.createdAt ||
+                            analysis.updatedAt
                         );
 
 
                     return `
-                        <div class="analysis-row">
+                        <div class="analysis-item">
 
                             <div class="analysis-main">
 
                                 <strong>
-                                    ${title}
+                                    ${escapeHTML(title)}
                                 </strong>
 
-                                <div class="muted">
-
-                                    ${project}
-
-                                    ·
-
-                                    ${severity}
-
-                                    ·
-
-                                    ${priority}
-
-                                    ·
-
-                                    ${component}
-
-                                </div>
-
-                                ${
-                                    bugId
-                                        ? `
-                                            <div class="muted">
-                                                ${bugId}
-                                            </div>
-                                        `
-                                        : ""
-                                }
+                                <span class="muted">
+                                    ${escapeHTML(project)}
+                                </span>
 
                             </div>
 
 
-                            <div class="muted analysis-date">
+                            <div class="analysis-meta">
 
-                                ${escapeHTML(
-                                    formattedDate
-                                )}
+                                <span>
+                                    ${escapeHTML(severity)}
+                                </span>
 
+                                <span>
+                                    ${escapeHTML(priority)}
+                                </span>
+
+                                <span>
+                                    ${escapeHTML(status)}
+                                </span>
+
+                            </div>
+
+
+                            <div class="analysis-date">
+                                ${escapeHTML(createdAt)}
                             </div>
 
                         </div>
@@ -777,48 +995,65 @@ function renderRecentAnalyses(
 
 
 /* =========================================================
-   GET LOCAL ANALYSIS HISTORY
+   FIREBASE DATE FORMATTER
+   ========================================================= */
+
+function formatFirebaseDate(
+    timestamp
+) {
+
+    const milliseconds =
+        getFirebaseTimestamp(
+            timestamp
+        );
+
+
+    if (!milliseconds) {
+
+        return "Date unavailable";
+    }
+
+
+    const date =
+        new Date(
+            milliseconds
+        );
+
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+}
+
+
+/* =========================================================
+   LOCAL ANALYSIS HISTORY
    ========================================================= */
 
 /*
- * Kept for compatibility with older BugAI frontend code.
+ * Deprecated.
+ *
+ * Dashboard Total Analyses and Recent Analyses
+ * now come exclusively from Firebase.
+ *
+ * This function is retained only so older code
+ * that may call it does not break.
  */
 
 function getLocalAnalyses() {
 
-    try {
+    console.warn(
+        "⚠️ getLocalAnalyses() is deprecated. Dashboard data comes from Firebase."
+    );
 
-        const raw =
-            localStorage.getItem(
-                "bugaiAnalyses"
-            );
-
-
-        if (!raw) {
-
-            return [];
-        }
-
-
-        const data =
-            JSON.parse(raw);
-
-
-        return Array.isArray(data)
-            ? data
-            : [];
-
-
-    } catch (error) {
-
-        console.error(
-            "❌ Unable to read local analyses:",
-            error
-        );
-
-
-        return [];
-    }
+    return [];
 }
 
 
@@ -850,6 +1085,7 @@ function escapeHTML(value) {
 
                 "'":
                     "&#039;"
+
             };
 
 
@@ -867,20 +1103,30 @@ function escapeHTML(value) {
    ========================================================= */
 
 /*
- * Bug Submission page writes:
+ * Bug Submission page can write:
  *
  *     localStorage.setItem(
  *         "bugai-analysis-updated",
  *         timestamp
  *     );
  *
- * The storage event works when Dashboard and
- * Bug Submission are opened in different documents/tabs.
+ * The storage event works when Dashboard
+ * and Bug Submission are opened in different
+ * documents/tabs.
+ *
+ * IMPORTANT:
+ *
+ * localStorage is used ONLY as a refresh signal.
+ *
+ * The actual Total Analyses and Recent Analyses
+ * data always comes from Firebase.
  */
 
 window.addEventListener(
     "storage",
-    function (event) {
+    function (
+        event
+    ) {
 
         /* -----------------------------------------------
            NEW BUG ANALYSIS
@@ -892,15 +1138,17 @@ window.addEventListener(
         ) {
 
             console.log(
-                "🔄 New BugAI analysis detected."
+                "🔄 New BugAI analysis detected. Refreshing Firebase data..."
             );
 
 
             /*
-             * Only refresh analysis-related data.
+             * Refresh only Firebase-backed
+             * analysis data.
              *
              * Historical Defects is NOT touched.
              */
+
             loadTotalAnalyses();
 
             loadRecentAnalyses();
@@ -909,9 +1157,13 @@ window.addEventListener(
         }
 
 
-        /* -----------------------------------------------
-           OLD LOCAL HISTORY EVENT
-           ----------------------------------------------- */
+        /*
+         * Legacy local history event.
+         *
+         * Even if this event occurs,
+         * Dashboard data is still fetched
+         * from Firebase.
+         */
 
         if (
             event.key ===
@@ -919,7 +1171,7 @@ window.addEventListener(
         ) {
 
             console.log(
-                "🔄 Local analysis history changed."
+                "🔄 Legacy analysis event detected. Refreshing Firebase data..."
             );
 
 
@@ -927,6 +1179,7 @@ window.addEventListener(
 
             loadTotalAnalyses();
         }
+
     }
 );
 
@@ -956,10 +1209,12 @@ window.addEventListener(
 
 window.addEventListener(
     "bugai-analysis-updated",
-    function (event) {
+    function (
+        event
+    ) {
 
         console.log(
-            "🔄 BugAI analysis completed. Refreshing Dashboard...",
+            "🔄 BugAI analysis completed. Refreshing Firebase Dashboard data...",
             event?.detail || ""
         );
 
@@ -967,6 +1222,7 @@ window.addEventListener(
         loadTotalAnalyses();
 
         loadRecentAnalyses();
+
     }
 );
 
@@ -976,11 +1232,13 @@ window.addEventListener(
    ========================================================= */
 
 /*
- * Other BugAI pages can manually request an
- * analysis refresh using:
+ * Other BugAI pages can manually request
+ * an analysis refresh using:
  *
  * window.dispatchEvent(
- *     new Event("bugai-dashboard-refresh")
+ *     new Event(
+ *         "bugai-dashboard-refresh"
+ *     )
  * );
  */
 
@@ -989,13 +1247,14 @@ window.addEventListener(
     function () {
 
         console.log(
-            "🔄 Manual Dashboard analysis refresh requested."
+            "🔄 Manual Dashboard Firebase refresh requested."
         );
 
 
         loadTotalAnalyses();
 
         loadRecentAnalyses();
+
     }
 );
 
