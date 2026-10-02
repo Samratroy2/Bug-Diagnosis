@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>BugAI - Knowledge Base Pipeline</title>
+
+    <link
+        rel="stylesheet"
+        href="knowledge-base-pipeline.css"
+    >
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>    
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside
+        id="bugaiSidebar"
+        class="bugai-sidebar"
+    >
+
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                B
+            </div>
+
+
+            <div>
+
+                <div class="brand-name">
+                    BugAI
+                </div>
+
+
+                <div class="brand-subtitle">
+                    Intelligent Bug Diagnosis
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-navigation">
+
+
+            <!-- =================================================
+                 MAIN
+                 ================================================= -->
+
+            <div class="navigation-label">
+                MAIN
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Dashboard/dashboard.html"
+                aria-current="page"
+            >
+
+                <span class="material-symbols-outlined">home</span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Bug-Submission/bug-submission.html"
+            >
+
+                <span class="material-symbols-outlined">add</span>
+
+                <span class="nav-text">
+                    Bug Submission
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Workflow/workflow.html"
+            >
+
+                <span class="material-symbols-outlined">account_tree</span>
+
+                <span class="nav-text">
+                    Workflow
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Architecture/architecture.html"
+            >
+
+                <span class="material-symbols-outlined">architecture</span>
+
+                <span class="nav-text">
+                    Architecture
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 INTELLIGENCE
+                 ================================================= -->
+
+            <div class="navigation-label">
+                INTELLIGENCE
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Knowledge-Base/knowledge-base.html"
+            >
+
+                <span class="material-symbols-outlined">database</span>
+
+                <span class="nav-text">
+                    Knowledge Base
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link active"
+                href="../Knowledge-Base-Pipeline/knowledge-Base-Pipeline.html"
+            >
+
+                <span class="material-symbols-outlined">network_intelligence</span>
+
+                <span class="nav-text">
+                    Knowledge Base Pipeline
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Semantic-Similarity/similarity.html"
+            >
+
+                <span class="material-symbols-outlined">search</span>
+
+                <span class="nav-text">
+                    Semantic Similarity
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 ANALYTICS
+                 ================================================= -->
+
+            <div class="navigation-label">
+                ANALYTICS
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Analytics/analytics.html"
+            >
+
+                <span class="material-symbols-outlined">analytics</span>
+
+                <span class="nav-text">
+                    Defect Analytics
+                </span>
+
+            </a>
+
+
+            <a
+                class="sidebar-link"
+                href="../Validation/validation.html"
+            >
+
+                <span class="material-symbols-outlined">check_circle</span>
+
+                <span class="nav-text">
+                    Validation
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 KNOWLEDGE
+                 ================================================= -->
+
+            <div class="navigation-label">
+                KNOWLEDGE
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Knowledge-Base-Growth/knowledge-base-growth.html"
+            >
+
+                <span class="material-symbols-outlined">add</span>
+
+                <span class="nav-text">
+                    KB Growth
+                </span>
+
+            </a>
+
+
+
+            <!-- =================================================
+                 SYSTEM
+                 ================================================= -->
+
+            <div class="navigation-label">
+                SYSTEM
+            </div>
+
+
+            <a
+                class="sidebar-link"
+                href="../Settings/settings.html"
+            >
+
+                <span class="material-symbols-outlined">settings</span>
+
+                <span class="nav-text">
+                    Settings
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+
+        <!-- =================================================
+             SIDEBAR FOOTER
+             ================================================= -->
+
+        <div class="sidebar-footer">
+
+
+            <div class="sidebar-status">
+
+                <span class="status-dot">
+                </span>
+
+                <span class="status-text">
+                    Firebase Connected
+                </span>
+
+            </div>
+
+
+            <div class="sidebar-version">
+                BugAI · Milestone 4
+            </div>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MOBILE MENU
+    ====================================================== -->
+
+    <button
+        id="sidebarMenuButton"
+        class="sidebar-menu-button"
+        type="button"
+        aria-label="Open navigation"
+        aria-controls="bugaiSidebar"
+        aria-expanded="false"
+    >
+        ☰
+    </button>
+
+
+    <div
+        id="sidebarOverlay"
+        class="sidebar-overlay"
+        aria-hidden="true"
+    ></div>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="page-header">
+
+            <div>
+
+                <span class="page-eyebrow">
+                    INTELLIGENCE
+                </span>
+
+                <h1>
+                    Knowledge Base Pipeline
+                </h1>
+
+                <p>
+                    Understand how historical defect data is
+                    transformed into searchable knowledge for
+                    BugAI diagnosis.
+                </p>
+
+            </div>
+
+
+            <div class="pipeline-status">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    Pipeline Ready
+                </span>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             OVERVIEW
+        ================================================== -->
+
+        <section class="overview-card">
+
+
+            <div class="section-title">
+
+                <div>
+
+                    <span class="section-number">
+                        01
+                    </span>
+
+                    <h2>
+                        Pipeline Overview
+                    </h2>
+
+                </div>
+
+                <p>
+                    From historical defects to retrieval-ready
+                    knowledge.
+                </p>
+
+            </div>
+
+
+
+            <!-- PIPELINE -->
+
+            <div class="pipeline-flow">
+
+
+                <!-- STEP 01 -->
+
+                <article
+                    class="pipeline-step"
+                    data-step="1"
+                >
+
+                    <div class="step-icon">
+                        01
+                    </div>
+
+                    <span class="step-label">
+                        DATA
+                    </span>
+
+                    <h3>
+                        Historical Defects
+                    </h3>
+
+                    <p>
+                        Collect defect records from supported
+                        historical project datasets.
+                    </p>
+
+                </article>
+
+
+                <div class="pipeline-arrow">
+                    →
+                </div>
+
+
+                <!-- STEP 02 -->
+
+                <article
+                    class="pipeline-step"
+                    data-step="2"
+                >
+
+                    <div class="step-icon">
+                        02
+                    </div>
+
+                    <span class="step-label">
+                        CLEAN
+                    </span>
+
+                    <h3>
+                        Cleaning & Normalization
+                    </h3>
+
+                    <p>
+                        Prepare defect information into a
+                        consistent searchable representation.
+                    </p>
+
+                </article>
+
+
+                <div class="pipeline-arrow">
+                    →
+                </div>
+
+
+                <!-- STEP 03 -->
+
+                <article
+                    class="pipeline-step"
+                    data-step="3"
+                >
+
+                    <div class="step-icon">
+                        03
+                    </div>
+
+                    <span class="step-label">
+                        DOCUMENT
+                    </span>
+
+                    <h3>
+                        Defect Documents
+                    </h3>
+
+                    <p>
+                        Convert structured defect information
+                        into documents for embedding.
+                    </p>
+
+                </article>
+
+
+                <div class="pipeline-arrow">
+                    →
+                </div>
+
+
+                <!-- STEP 04 -->
+
+                <article
+                    class="pipeline-step"
+                    data-step="4"
+                >
+
+                    <div class="step-icon">
+                        04
+                    </div>
+
+                    <span class="step-label">
+                        EMBED
+                    </span>
+
+                    <h3>
+                        Embeddings
+                    </h3>
+
+                    <p>
+                        Convert defect documents into numerical
+                        vector representations.
+                    </p>
+
+                </article>
+
+
+                <div class="pipeline-arrow">
+                    →
+                </div>
+
+
+                <!-- STEP 05 -->
+
+                <article
+                    class="pipeline-step"
+                    data-step="5"
+                >
+
+                    <div class="step-icon">
+                        05
+                    </div>
+
+                    <span class="step-label">
+                        INDEX
+                    </span>
+
+                    <h3>
+                        FAISS Index
+                    </h3>
+
+                    <p>
+                        Store vectors in a searchable similarity
+                        index.
+                    </p>
+
+                </article>
+
+
+            </div>
+
+
+
+            <!-- SECOND ROW -->
+
+            <div class="pipeline-flow secondary-flow">
+
+
+                <!-- STEP 06 -->
+
+                <article
+                    class="pipeline-step"
+                    data-step="6"
+                >
+
+                    <div class="step-icon">
+                        06
+                    </div>
+
+                    <span class="step-label">
+                        QUERY
+                    </span>
+
+                    <h3>
+                        Bug Query
+                    </h3>
+
+                    <p>
+                        A submitted bug becomes the query for
+                        knowledge retrieval.
+                    </p>
+
+                </article>
+
+
+                <div class="pipeline-arrow">
+                    →
+                </div>
+
+
+                <!-- STEP 07 -->
+
+                <article
+                    class="pipeline-step"
+                    data-step="7"
+                >
+
+                    <div class="step-icon">
+                        07
+                    </div>
+
+                    <span class="step-label">
+                        SEARCH
+                    </span>
+
+                    <h3>
+                        Similarity Retrieval
+                    </h3>
+
+                    <p>
+                        Search the vector index for related
+                        historical defects.
+                    </p>
+
+                </article>
+
+
+                <div class="pipeline-arrow">
+                    →
+                </div>
+
+
+                <!-- STEP 08 -->
+
+                <article
+                    class="pipeline-step"
+                    data-step="8"
+                >
+
+                    <div class="step-icon">
+                        08
+                    </div>
+
+                    <span class="step-label">
+                        TOP-K
+                    </span>
+
+                    <h3>
+                        Relevant Defects
+                    </h3>
+
+                    <p>
+                        Select the most relevant retrieved
+                        historical records.
+                    </p>
+
+                </article>
+
+
+                <div class="pipeline-arrow">
+                    →
+                </div>
+
+
+                <!-- STEP 09 -->
+
+                <article
+                    class="pipeline-step"
+                    data-step="9"
+                >
+
+                    <div class="step-icon">
+                        09
+                    </div>
+
+                    <span class="step-label">
+                        RAG
+                    </span>
+
+                    <h3>
+                        Context
+                    </h3>
+
+                    <p>
+                        Retrieved knowledge becomes context for
+                        the diagnosis process.
+                    </p>
+
+                </article>
+
+
+                <div class="pipeline-arrow">
+                    →
+                </div>
+
+
+                <!-- STEP 10 -->
+
+                <article
+                    class="pipeline-step"
+                    data-step="10"
+                >
+
+                    <div class="step-icon">
+                        10
+                    </div>
+
+                    <span class="step-label">
+                        AI
+                    </span>
+
+                    <h3>
+                        Bug Diagnosis
+                    </h3>
+
+                    <p>
+                        Diagnosis agents use the retrieved
+                        knowledge to support their analysis.
+                    </p>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             KNOWLEDGE BASE STATISTICS
+        ================================================== -->
+
+        <section class="stats-section">
+
+
+            <div class="section-title">
+
+                <div>
+
+                    <span class="section-number">
+                        02
+                    </span>
+
+                    <h2>
+                        Knowledge Base Status
+                    </h2>
+
+                </div>
+
+                <p>
+                    Current indexed knowledge available to BugAI.
+                </p>
+
+            </div>
+
+
+
+            <div class="stats-grid">
+
+
+                <article class="metric-card">
+
+                    <span class="metric-label">
+                        Knowledge Records
+                    </span>
+
+                    <strong id="totalRecords">
+                        —
+                    </strong>
+
+                    <small>
+                        Historical defect records
+                    </small>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span class="metric-label">
+                        Vector Dimensions
+                    </span>
+
+                    <strong id="vectorDimension">
+                        —
+                    </strong>
+
+                    <small>
+                        Embedding representation
+                    </small>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span class="metric-label">
+                        FAISS Vectors
+                    </span>
+
+                    <strong id="faissVectors">
+                        —
+                    </strong>
+
+                    <small>
+                        Indexed vectors
+                    </small>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span class="metric-label">
+                        Index Status
+                    </span>
+
+                    <strong
+                        id="indexStatus"
+                        class="status-value"
+                    >
+                        —
+                    </strong>
+
+                    <small>
+                        Vector search availability
+                    </small>
+
+                </article>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             EMBEDDING CONFIGURATION
+        ================================================== -->
+
+        <section class="configuration-section">
+
+
+            <div class="section-title">
+
+                <div>
+
+                    <span class="section-number">
+                        03
+                    </span>
+
+                    <h2>
+                        Embedding Configuration
+                    </h2>
+
+                </div>
+
+                <p>
+                    Configuration used by the knowledge retrieval
+                    layer.
+                </p>
+
+            </div>
+
+
+
+            <div class="configuration-card">
+
+                <div class="config-item">
+
+                    <span>
+                        Embedding Model
+                    </span>
+
+                    <strong>
+                        all-MiniLM-L6-v2
+                    </strong>
+
+                </div>
+
+
+                <div class="config-item">
+
+                    <span>
+                        Framework
+                    </span>
+
+                    <strong>
+                        Sentence Transformers
+                    </strong>
+
+                </div>
+
+
+                <div class="config-item">
+
+                    <span>
+                        Vector Dimension
+                    </span>
+
+                    <strong>
+                        384
+                    </strong>
+
+                </div>
+
+
+                <div class="config-item">
+
+                    <span>
+                        Vector Index
+                    </span>
+
+                    <strong>
+                        FAISS
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PROJECT DISTRIBUTION
+        ================================================== -->
+
+        <section class="projects-section">
+
+
+            <div class="section-title">
+
+                <div>
+
+                    <span class="section-number">
+                        04
+                    </span>
+
+                    <h2>
+                        Knowledge Distribution
+                    </h2>
+
+                </div>
+
+                <p>
+                    Distribution of historical defects by project.
+                </p>
+
+            </div>
+
+
+
+            <div class="project-grid">
+
+
+                <article class="project-card">
+
+                    <div class="project-header">
+
+                        <span>
+                            Apache
+                        </span>
+
+                        <strong id="apacheCount">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-track">
+
+                        <div
+                            id="apacheBar"
+                            class="progress-bar"
+                            style="width: 0%"
+                        ></div>
+
+                    </div>
+
+                    <small id="apachePercentage">
+                        —
+                    </small>
+
+                </article>
+
+
+                <article class="project-card">
+
+                    <div class="project-header">
+
+                        <span>
+                            Eclipse
+                        </span>
+
+                        <strong id="eclipseCount">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-track">
+
+                        <div
+                            id="eclipseBar"
+                            class="progress-bar"
+                            style="width: 0%"
+                        ></div>
+
+                    </div>
+
+                    <small id="eclipsePercentage">
+                        —
+                    </small>
+
+                </article>
+
+
+                <article class="project-card">
+
+                    <div class="project-header">
+
+                        <span>
+                            Mozilla
+                        </span>
+
+                        <strong id="mozillaCount">
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-track">
+
+                        <div
+                            id="mozillaBar"
+                            class="progress-bar"
+                            style="width: 0%"
+                        ></div>
+
+                    </div>
+
+                    <small id="mozillaPercentage">
+                        —
+                    </small>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             HOW RETRIEVAL WORKS
+        ================================================== -->
+
+        <section class="retrieval-section">
+
+
+            <div class="section-title">
+
+                <div>
+
+                    <span class="section-number">
+                        05
+                    </span>
+
+                    <h2>
+                        How Knowledge Retrieval Works
+                    </h2>
+
+                </div>
+
+                <p>
+                    What happens when a new bug is submitted.
+                </p>
+
+            </div>
+
+
+
+            <div class="retrieval-flow">
+
+
+                <article class="retrieval-card">
+
+                    <div class="retrieval-number">
+                        01
+                    </div>
+
+                    <h3>
+                        New Bug
+                    </h3>
+
+                    <p>
+                        The submitted title, description and error
+                        information form the diagnosis query.
+                    </p>
+
+                </article>
+
+
+                <div class="retrieval-arrow">
+                    →
+                </div>
+
+
+                <article class="retrieval-card">
+
+                    <div class="retrieval-number">
+                        02
+                    </div>
+
+                    <h3>
+                        Query Embedding
+                    </h3>
+
+                    <p>
+                        The query is represented in the same vector
+                        space as the indexed knowledge.
+                    </p>
+
+                </article>
+
+
+                <div class="retrieval-arrow">
+                    →
+                </div>
+
+
+                <article class="retrieval-card">
+
+                    <div class="retrieval-number">
+                        03
+                    </div>
+
+                    <h3>
+                        Vector Search
+                    </h3>
+
+                    <p>
+                        FAISS searches for historically similar
+                        defect vectors.
+                    </p>
+
+                </article>
+
+
+                <div class="retrieval-arrow">
+                    →
+                </div>
+
+
+                <article class="retrieval-card">
+
+                    <div class="retrieval-number">
+                        04
+                    </div>
+
+                    <h3>
+                        Retrieved Context
+                    </h3>
+
+                    <p>
+                        Relevant historical defects are provided
+                        as knowledge for downstream analysis.
+                    </p>
+
+                </article>
+
+
+                <div class="retrieval-arrow">
+                    →
+                </div>
+
+
+                <article class="retrieval-card">
+
+                    <div class="retrieval-number">
+                        05
+                    </div>
+
+                    <h3>
+                        Diagnosis
+                    </h3>
+
+                    <p>
+                        AI agents use the available evidence for
+                        root cause, duplicate detection and
+                        remediation.
+                    </p>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             DATA FLOW EXPLANATION
+        ================================================== -->
+
+        <section class="explanation-section">
+
+
+            <div class="section-title">
+
+                <div>
+
+                    <span class="section-number">
+                        06
+                    </span>
+
+                    <h2>
+                        Pipeline Responsibilities
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="explanation-grid">
+
+
+                <article class="explanation-card">
+
+                    <span class="explanation-icon">
+                        DB
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Historical Knowledge
+                        </h3>
+
+                        <p>
+                            Stores previously observed defects and
+                            their associated information so they can
+                            be reused during diagnosis.
+                        </p>
+
+                    </div>
+
+                </article>
+
+
+                <article class="explanation-card">
+
+                    <span class="explanation-icon">
+                        AI
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Vector Representation
+                        </h3>
+
+                        <p>
+                            Embeddings provide a numerical
+                            representation that allows semantic
+                            comparison between defects.
+                        </p>
+
+                    </div>
+
+                </article>
+
+
+                <article class="explanation-card">
+
+                    <span class="explanation-icon">
+                        FAISS
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Fast Retrieval
+                        </h3>
+
+                        <p>
+                            The vector index makes it possible to
+                            search the historical knowledge base for
+                            semantically related defects.
+                        </p>
+
+                    </div>
+
+                </article>
+
+
+                <article class="explanation-card">
+
+                    <span class="explanation-icon">
+                        RAG
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            Retrieval-Augmented Diagnosis
+                        </h3>
+
+                        <p>
+                            Retrieved historical evidence provides
+                            context that can support the downstream
+                            diagnosis agents.
+                        </p>
+
+                    </div>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PIPELINE STATUS
+        ================================================== -->
+
+        <section class="pipeline-status-section">
+
+
+            <div class="section-title">
+
+                <div>
+
+                    <span class="section-number">
+                        07
+                    </span>
+
+                    <h2>
+                        Pipeline Components
+                    </h2>
+
+                </div>
+
+                <p>
+                    Current availability of the knowledge pipeline
+                    components.
+                </p>
+
+            </div>
+
+
+
+            <div class="component-list">
+
+
+                <div class="component-row">
+
+                    <div class="component-info">
+
+                        <span class="component-icon">
+                            01
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Historical Dataset
+                            </strong>
+
+                            <small>
+                                Defect records available
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span class="component-status ready">
+                        READY
+                    </span>
+
+                </div>
+
+
+                <div class="component-row">
+
+                    <div class="component-info">
+
+                        <span class="component-icon">
+                            02
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Document Processing
+                            </strong>
+
+                            <small>
+                                Documents prepared for embedding
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span class="component-status ready">
+                        READY
+                    </span>
+
+                </div>
+
+
+                <div class="component-row">
+
+                    <div class="component-info">
+
+                        <span class="component-icon">
+                            03
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Embedding Model
+                            </strong>
+
+                            <small id="embeddingStatus">
+                                Loading configuration
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span
+                        id="embeddingStatusBadge"
+                        class="component-status"
+                    >
+                        CHECKING
+                    </span>
+
+                </div>
+
+
+                <div class="component-row">
+
+                    <div class="component-info">
+
+                        <span class="component-icon">
+                            04
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                FAISS Vector Index
+                            </strong>
+
+                            <small>
+                                Vector retrieval index
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span
+                        id="faissStatusBadge"
+                        class="component-status"
+                    >
+                        CHECKING
+                    </span>
+
+                </div>
+
+
+                <div class="component-row">
+
+                    <div class="component-info">
+
+                        <span class="component-icon">
+                            05
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Semantic Retrieval
+                            </strong>
+
+                            <small>
+                                Similarity-based knowledge search
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span class="component-status ready">
+                        READY
+                    </span>
+
+                </div>
+
+
+                <div class="component-row">
+
+                    <div class="component-info">
+
+                        <span class="component-icon">
+                            06
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                RAG Context
+                            </strong>
+
+                            <small>
+                                Retrieved knowledge for diagnosis
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span class="component-status ready">
+                        READY
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         KNOWLEDGE BASE PIPELINE JAVASCRIPT
+    ====================================================== -->
+
+    <script
+        type="module"
+        src="knowledge-base-pipeline.js"
+    ></script>
+
+
+
+    <!-- =====================================================
+         MOBILE SIDEBAR
+         
+         No localStorage
+    ====================================================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                const sidebar =
+                    document.getElementById(
+                        "bugaiSidebar"
+                    );
+
+                const menuButton =
+                    document.getElementById(
+                        "sidebarMenuButton"
+                    );
+
+                const overlay =
+                    document.getElementById(
+                        "sidebarOverlay"
+                    );
+
+
+                if (
+                    !sidebar ||
+                    !menuButton ||
+                    !overlay
+                ) {
+
+                    return;
+
+                }
+
+
+                function closeMenu() {
+
+                    sidebar.classList.remove(
+                        "open"
+                    );
+
+                    overlay.classList.remove(
+                        "show"
+                    );
+
+                    menuButton.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                    overlay.setAttribute(
+                        "aria-hidden",
+                        "true"
+                    );
+
+                }
+
+
+                function toggleMenu() {
+
+                    const isOpen =
+                        sidebar.classList.toggle(
+                            "open"
+                        );
+
+                    overlay.classList.toggle(
+                        "show",
+                        isOpen
+                    );
+
+                    menuButton.setAttribute(
+                        "aria-expanded",
+                        String(isOpen)
+                    );
+
+                    overlay.setAttribute(
+                        "aria-hidden",
+                        String(!isOpen)
+                    );
+
+                }
+
+
+                menuButton.addEventListener(
+                    "click",
+                    toggleMenu
+                );
+
+
+                overlay.addEventListener(
+                    "click",
+                    closeMenu
+                );
+
+
+                sidebar
+                    .querySelectorAll(
+                        ".sidebar-link"
+                    )
+                    .forEach(
+                        (link) => {
+
+                            link.addEventListener(
+                                "click",
+                                closeMenu
+                            );
+
+                        }
+                    );
+
+
+                document.addEventListener(
+                    "keydown",
+                    (event) => {
+
+                        if (
+                            event.key === "Escape"
+                        ) {
+
+                            closeMenu();
+
+                        }
+
+                    }
+                );
+
+
+                window.addEventListener(
+                    "resize",
+                    () => {
+
+                        if (
+                            window.innerWidth > 900
+                        ) {
+
+                            closeMenu();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>
