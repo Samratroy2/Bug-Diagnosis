@@ -1,0 +1,8 @@
+Flask
+flask-cors
+gunicorn
+numpy
+pandas
+faiss-cpu
+sentence-transformers
+scikit-learn
